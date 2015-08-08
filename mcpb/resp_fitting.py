@@ -3,13 +3,13 @@ This module was written for generating the resp fitting input file and doing
 the RESP charge fitting.
 """
 from __future__ import absolute_import
-from pymsmtmol.mol import get_reslist
-from pymsmtmol.element import Atnum
-from pymsmtmol.readpdb import get_atominfo_fpdb
-from pymsmtmol.getlist import get_mc_blist
-from pymsmtmol.gauio import get_esp_from_gau
-from pymsmtmol.gmsio import get_esp_from_gms
-from pymsmtlib.lib import get_lib_dict
+from msmtmol.mol import get_reslist
+from msmtmol.element import Atnum
+from msmtmol.readpdb import get_atominfo_fpdb
+from msmtmol.getlist import get_mc_blist
+from msmtmol.gauio import get_esp_from_gau
+from msmtmol.gmsio import get_esp_from_gms
+from lib.lib import get_lib_dict
 from pymsmtexp import *
 import os
 

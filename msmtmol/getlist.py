@@ -3,10 +3,10 @@ This module use the bond linkage information to generate all the linkage
 (angle, dihedral and nonbonded) information.
 """
 from __future__ import absolute_import
-from pymsmtmol.mol import Linklist
-from pymsmtmol.readmol2 import get_pure_type
-from pymsmtmol.cal import calc_bond
-from pymsmtmol.element import CoRadiiDict
+from msmtmol.mol import Linklist
+from msmtmol.readmol2 import get_pure_type
+from msmtmol.cal import calc_bond
+from msmtmol.element import CoRadiiDict
 
 #sort the barray diction to a list
 #barrayc = sorted(barray.iteritems(), key=lambda d:d[0])

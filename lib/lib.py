@@ -2,7 +2,7 @@
 This module is used for getting the parameter information from mol2 and
 parm*.dat file.
 """
-from pymsmtmol.readmol2 import get_atominfo
+from msmtmol.readmol2 import get_atominfo
 import os
 import numpy
 from scipy.optimize import curve_fit
@@ -19,7 +19,7 @@ def get_lib_dict(parms):
 
     amberhome = os.getenv('AMBERHOME')
 
-    add = amberhome + '/AmberTools/src/pymsmt/pymsmtlib/'
+    add = amberhome + '/AmberTools/src/pymsmt/lib/'
 
     if parms in ['ff94', 'ff99', 'ff99SB']:
       mol, atids, resids = get_atominfo(add + 'parm94.mol2')
@@ -440,7 +440,7 @@ def expf(x, a, b, c):
 
 def getfc(fname, dis):
     amberhome = os.getenv('AMBERHOME')
-    add = amberhome + '/AmberTools/src/pymsmt/pymsmtlib/' + fname
+    add = amberhome + '/AmberTools/src/pymsmt/lib/' + fname
 
     lengthl = []
     fcl = []

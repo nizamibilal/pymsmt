@@ -13,15 +13,15 @@ the sub-matrix of the Hessian Matrix to generate the force constants.
 constants.
 """
 from __future__ import absolute_import
-from pymsmtmol.readpdb import get_atominfo_fpdb
-from pymsmtmol.getlist import get_alist, get_mc_blist
-from pymsmtmol.gauio import (get_crds_from_fchk, get_matrix_from_fchk,
-                             get_fc_from_log)
-from pymsmtmol.gmsio import get_crds_from_gms, get_matrix_from_gms
-from pymsmtmol.cal import calc_bond, calc_angle, calc_dih
-from pymsmtmol.element import ionnamel
-from pymsmtmol.constants import *
-from pymsmtlib.lib import getfc
+from msmtmol.readpdb import get_atominfo_fpdb
+from msmtmol.getlist import get_alist, get_mc_blist
+from msmtmol.gauio import (get_crds_from_fchk, get_matrix_from_fchk,
+                           get_fc_from_log)
+from msmtmol.gmsio import get_crds_from_gms, get_matrix_from_gms
+from msmtmol.cal import calc_bond, calc_angle, calc_dih
+from msmtmol.element import ionnamel
+from msmtmol.constants import *
+from lib.lib import getfc
 from pymsmtexp import *
 from numpy import average, array, dot, cross, std
 from numpy.linalg import eigvals, eig, norm

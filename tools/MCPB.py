@@ -50,7 +50,7 @@ from mcpb.gene_final_frcmod_file import (gene_by_empirical_way,
           gene_by_QM_fitting_sem, gene_by_QM_fitting_zmatrix)
 from mcpb.amber_modeling import gene_leaprc
 from mcpb.title import print_title
-from pymsmtmol.element import resnamel
+from msmtmol.element import resnamel
 from pymsmtexp import *
 import warnings
 import os

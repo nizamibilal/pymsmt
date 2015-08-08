@@ -1,8 +1,9 @@
 "This module is for GAMESS"
+from __future__ import absolute_import
 import linecache
 import numpy
 from chemistry.periodic_table import AtomicNum
-from constants import B_TO_A
+from msmtmol.constants import B_TO_A
 
 #------------------------------------------------------------------------------
 #--------------------------Write GAMESS input file-----------------------------

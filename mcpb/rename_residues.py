@@ -2,8 +2,8 @@
 This module is written for detecting the disulfide bond and renaming the
 residues.
 """
-from pymsmtmol.cal import calc_bond
-from pymsmtmol.mol import get_reslist
+from msmtmol.cal import calc_bond
+from msmtmol.mol import get_reslist
 
 def get_diS_bond(mol, atids):
 

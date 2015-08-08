@@ -1,7 +1,7 @@
 from chemistry.amber.readparm import AmberParm
-from pymsmtmol.element import AtnumRev
-from pymsmtmol.rstfile import read_rstf
-from pymsmtmol.mol import *
+from msmtmol.element import AtnumRev
+from msmtmol.rstfile import read_rstf
+from msmtmol.mol import *
 
 def read_amber_prm(pfile, cfile):
 

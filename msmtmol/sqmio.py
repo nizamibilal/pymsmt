@@ -1,7 +1,7 @@
 "This module for SQM"
 
 import linecache
-from pymsmtmol.mol import gauatm
+from msmtmol.mol import gauatm
 from chemistry.periodic_table import AtomicNum
 
 #------------------------------------------------------------------------------

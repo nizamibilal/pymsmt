@@ -26,9 +26,9 @@ from chemistry.amber import AmberParm, AmberMask
 from chemistry.openmm import StateDataReporter, NetCDFReporter, RestartReporter
 
 # pyMSMT Imports
-from pymsmtmol.cal import calc_bond
-from pymsmtmol.element import Atnum, CoRadiiDict
-from pymsmtapi.AmberParm import read_amber_prm
+from msmtmol.cal import calc_bond
+from msmtmol.element import Atnum, CoRadiiDict
+from api.AmberParm import read_amber_prm
 
 # Other Imports
 from optparse import OptionParser

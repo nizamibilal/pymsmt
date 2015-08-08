@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-from pymsmtmol.element import resnamel
+from msmtmol.element import resnamel
 
 """
 This is the code for defining the molecule class 

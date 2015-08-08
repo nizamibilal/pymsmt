@@ -16,10 +16,10 @@ The orignal Pdbseacher software is come from:
 ** M. B. Peters, Y. Yang, B. Wang, L. Fusti-Molnar, M. N. Weaver, K. M. Merz,
    JCTC, 2010, 6, 2935-2947
 """
-from pymsmtmol.readpdb import get_atominfo_fpdb, writepdbatm
-from pymsmtmol.element import Metalpdb, CoRadiiDict, resdict
-from pymsmtmol.mol import pdbatm
-from pymsmtmol.cal import calc_bond, det_geo
+from msmtmol.readpdb import get_atominfo_fpdb, writepdbatm
+from msmtmol.element import Metalpdb, CoRadiiDict, resdict
+from msmtmol.mol import pdbatm
+from msmtmol.cal import calc_bond, det_geo
 from optparse import OptionParser
 from mcpb.title import print_title
 import os

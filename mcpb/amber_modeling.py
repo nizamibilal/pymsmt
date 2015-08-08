@@ -2,11 +2,11 @@
 This module contains the function to model leap input files for use.
 """
 from __future__ import absolute_import
-from pymsmtmol.mol import get_reslist
-from pymsmtmol.readpdb import get_atominfo_fpdb, writepdb
-from pymsmtmol.readmol2 import get_atominfo
-from pymsmtmol.getlist import get_mc_blist
-from pymsmtmol.element import resnamel, IonHFEparal, IonCMparal, IonIODparal
+from msmtmol.mol import get_reslist
+from msmtmol.readpdb import get_atominfo_fpdb, writepdb
+from msmtmol.readmol2 import get_atominfo
+from msmtmol.getlist import get_mc_blist
+from msmtmol.element import resnamel, IonHFEparal, IonCMparal, IonIODparal
 from mcpb.rename_residues import rename_res, get_diS_bond
 from pymsmtexp import *
 import warnings

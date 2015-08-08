@@ -6,10 +6,10 @@ This program is to get the force constant from Hessian Matrix
 from __future__ import absolute_import
 from mcpb.gene_final_frcmod_file import (get_bond_fc_with_sem,
      get_ang_fc_with_sem, get_dih_fc_with_sem, get_imp_fc_with_sem)
-from pymsmtmol.readpdb import get_atominfo_fpdb
-from pymsmtmol.getlist import get_blist, get_all_list
-from pymsmtmol.gauio import get_crds_from_fchk, get_matrix_from_fchk
-from pymsmtmol.gmsio import get_crds_from_gms, get_matrix_from_gms
+from msmtmol.readpdb import get_atominfo_fpdb
+from msmtmol.getlist import get_blist, get_all_list
+from msmtmol.gauio import get_crds_from_fchk, get_matrix_from_fchk
+from msmtmol.gmsio import get_crds_from_gms, get_matrix_from_gms
 from optparse import OptionParser
 
 parser = OptionParser("usage: -i PDB_file -f Hess_file [--bavg] [--aavg] [--dih]"

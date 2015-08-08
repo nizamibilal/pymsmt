@@ -7,8 +7,8 @@ output file.
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 
-from pymsmtmol.gauio import get_esp_from_gau
-from pymsmtmol.gmsio import get_esp_from_gms
+from msmtmol.gauio import get_esp_from_gau
+from msmtmol.gmsio import get_esp_from_gms
 from optparse import OptionParser
 
 parser = OptionParser("usage: -i input_file -o output_file [-v software]")

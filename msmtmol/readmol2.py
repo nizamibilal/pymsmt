@@ -3,8 +3,8 @@ This module is written for reading the atom and bond information from mol2
 file.
 """
 from __future__ import absolute_import
-from pymsmtmol.mol import Atom, Residue, Molecule
-from pymsmtmol.element import ionnamel, Metalpdb
+from msmtmol.mol import Atom, Residue, Molecule
+from msmtmol.element import ionnamel, Metalpdb
 import sys
 import linecache
 

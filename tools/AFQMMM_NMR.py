@@ -12,9 +12,9 @@ modeling:
 The Automated Fragmentation QM/MM approach:
 ** X. He, B. Wang and K. M. Merz. JPCB, 2009, 113, 10380-10388.
 """
-from pymsmtapi.AmberParm import read_amber_prm
-from pymsmtmol.cal import calc_bond
-from pymsmtmol.element import Atnum, CoRadiiDict, ResChgDict, resnamel
+from api.AmberParm import read_amber_prm
+from msmtmol.cal import calc_bond
+from msmtmol.element import Atnum, CoRadiiDict, ResChgDict, resnamel
 from pymsmtexp import *
 
 from chemistry.amber.readparm import AmberParm

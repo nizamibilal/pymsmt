@@ -2,11 +2,11 @@
 This module is written for generate the pre-frcmod file for the metal site.
 """
 from __future__ import absolute_import
-from pymsmtmol.readpdb import get_atominfo_fpdb
-from pymsmtmol.cal import calc_bond
-from pymsmtmol.getlist import get_all_list, get_mc_blist
-from pymsmtlib.lib import get_lib_dict, get_parm_dict
-from pymsmtmol.element import Mass, CoRadiiDict, get_ionljparadict
+from msmtmol.readpdb import get_atominfo_fpdb
+from msmtmol.cal import calc_bond
+from msmtmol.getlist import get_all_list, get_mc_blist
+from msmtmol.element import Mass, CoRadiiDict, get_ionljparadict
+from lib.lib import get_lib_dict, get_parm_dict
 import os
 
 def addspace(atomtype):

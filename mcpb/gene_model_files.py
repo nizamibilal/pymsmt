@@ -4,17 +4,17 @@ standard and large models and Gaussian input file of sidechain (for bond and
 angle parameter fitting) and large models(for RESP charge fitting).
 """
 from __future__ import absolute_import
-from pymsmtmol.readpdb import get_atominfo_fpdb, writepdbatm
-from pymsmtmol.cal import calc_bond
-from pymsmtmol.mol import pdbatm, gauatm, get_reslist
-from pymsmtmol.element import (Atnum, CoRadiiDict,
+from msmtmol.readpdb import get_atominfo_fpdb, writepdbatm
+from msmtmol.cal import calc_bond
+from msmtmol.mol import pdbatm, gauatm, get_reslist
+from msmtmol.element import (Atnum, CoRadiiDict,
                               get_ionljparadict, AtnumRev, bdld)
-from pymsmtmol.gauio import (write_gauatm, write_gauatm_opth, write_gau_optf,
+from msmtmol.gauio import (write_gauatm, write_gauatm_opth, write_gau_optf,
                              write_gau_fcf, write_gau_mkf)
-from pymsmtmol.gmsio import (write_gmsatm, write_gms_optf, write_gms_fcf,
+from msmtmol.gmsio import (write_gmsatm, write_gms_optf, write_gms_fcf,
                              write_gms_mkf)
-from pymsmtmol.sqmio import get_crdinfo_from_sqm, write_sqm_optf
-from pymsmtlib.lib import get_lib_dict
+from msmtmol.sqmio import get_crdinfo_from_sqm, write_sqm_optf
+from lib.lib import get_lib_dict
 import os
 
 H_NAMES = ['HH31', 'HH32', 'HH33']  #hydrogen names for ACE and NME methyl group
