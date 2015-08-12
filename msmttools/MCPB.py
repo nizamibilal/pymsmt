@@ -15,7 +15,7 @@ are welcome to send to Pengfei Li (Email address: ldsoar1990@gmail.com).
 Please cite the following papers if you use the software to perform the
 modeling:
 
-The parameterization scheme is come from:
+The parameterization scheme is adapted from:
 ** M. B. Peters, Y. Yang, B. Wang, L. Fusti-Molnar, M. N. Weaver, K. M. Merz,
    JCTC, 2010, 6, 2935-2947
 
@@ -27,7 +27,7 @@ The Emprical method is from:
 
 The RESP fitting radii, VDW parameters and 12-6-4 parameter sets of +1 metal
 ions and halide ions are come from:
-** P. Li, L. F. Song, K. M. Merz, JCTC, Accepted
+** P. Li, L. F. Song, K. M. Merz, JCTC, 11, 1645-1657
 
 The RESP fitting radii and VDW parameters of +2 metal ions are come from:
 ** P. Li, B. P. Roberts, D. K. Chakravorty, K. M. Merz, JCTC, 2013, 9,
@@ -488,7 +488,7 @@ else:
 # Related define
 #==============================================================================
 #Get the renamed residue name
-mcresname0, mcresname = get_ms_resnames(orpdbf, ionids, cutoff)
+mcresname0, mcresname = get_ms_resnames(orpdbf, ionids, cutoff, addres)
 for i in mcresname0:
     if (i not in resnamel) and (i+'.mol2' not in naamol2fs):
         raise pymsmtError('%s is required in naa_mol2files but not '

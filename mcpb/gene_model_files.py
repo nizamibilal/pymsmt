@@ -36,7 +36,8 @@ def count_lines(fname):
     fp.close()
 
 #-------------------Get metal center residue names-----------------------------
-def get_ms_resnames(pdbfile, ionids, cutoff):
+def get_ms_resnames(pdbfile, ionids, cutoff, addres):
+
     mol, atids, resids = get_atominfo_fpdb(pdbfile)
     ionids = ionids #metal ion atom id
     metresids = [] #metal ion residue id
@@ -47,7 +48,7 @@ def get_ms_resnames(pdbfile, ionids, cutoff):
       metresids.append(resid)
 
     msresids = [] #metal site residues
-    msresids = msresids + metresids
+    msresids = msresids + metresids + addres
 
     #Get the atoms which is in the cutoff of metal ion
     for met in ionids:
@@ -59,6 +60,7 @@ def get_ms_resnames(pdbfile, ionids, cutoff):
               msresids.append(mol.atoms[i].resid)
 
     msresids.sort()
+
     mcresnames = []
     tmpl = []
     for i in msresids:
