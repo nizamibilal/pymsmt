@@ -433,7 +433,7 @@ def get_esp_from_gau(logfile, espfile):
     fp = open(logfile, 'r')
     for line in fp:
         if ln >= bln:
-            if ' Atom' in line:
+            if ' Atom ' in line:
                 line = line.strip('\n')
                 line = line.split()
                 esp = float(line[-1])
