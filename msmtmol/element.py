@@ -1,7 +1,8 @@
 """
 module for define the normally used data about elements, amino acids et al.
 """
-from chemistry.periodic_table import AtomicNum
+from __future__ import absolute_import
+from msmtmol.pt import AtomicNum
 #-----------------------------------------------------------------------------
 
 #Ion names which has the VDW parameters

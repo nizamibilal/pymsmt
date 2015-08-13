@@ -1,8 +1,8 @@
 "This module for SQM"
-
+from __future__ import absolute_import
 import linecache
 from msmtmol.mol import gauatm
-from chemistry.periodic_table import AtomicNum
+from msmtmol.pt import AtomicNum
 
 #------------------------------------------------------------------------------
 #------------------------------Write SQM input file----------------------------

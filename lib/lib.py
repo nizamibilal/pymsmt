@@ -3,6 +3,7 @@ This module is used for getting the parameter information from mol2 and
 parm*.dat file.
 """
 from msmtmol.readmol2 import get_atominfo
+from pymsmtexp import *
 import os
 import numpy
 from scipy.optimize import curve_fit
@@ -15,11 +16,20 @@ import linecache
 
 #-----------------------------------------------------------------------------
 
+#Test amberhome or msmthome
+amberhome = os.getenv('AMBERHOME')
+if amberhome is None:
+  msmthome = os.getenv('MSMTHOME')
+  if (amberhome is None) and (msmthome is None):
+    raise pymsmtError('Could not perform modeling without setting either '
+                      '$AMBEHROME or $MSMTHOME in the computer setting.')
+  add = msmthome + '/lib/'
+else:
+  add = amberhome + '/AmberTools/src/pymsmt/lib/'
+
 def get_lib_dict(parms):
 
-    amberhome = os.getenv('AMBERHOME')
-
-    add = amberhome + '/AmberTools/src/pymsmt/lib/'
+    global add
 
     if parms in ['ff94', 'ff99', 'ff99SB']:
       mol, atids, resids = get_atominfo(add + 'parm94.mol2')
@@ -286,7 +296,8 @@ def get_parm_dict(ffchoice, gaff, frcmodfs):
     #-------------------------------------------------------------------------
     #1. Read the parm*.dat file
     #-------------------------------------------------------------------------
-    add = os.getenv('AMBERHOME') + '/dat/leap/parm/'
+
+    global add
 
     if ffchoice == 'ff94': #parm94
       parmf = add + 'parm94.dat'
@@ -439,12 +450,12 @@ def expf(x, a, b, c):
     return a * numpy.exp(-b * x) + c
 
 def getfc(fname, dis):
-    amberhome = os.getenv('AMBERHOME')
-    add = amberhome + '/AmberTools/src/pymsmt/lib/' + fname
+
+    global add
 
     lengthl = []
     fcl = []
-    fcf = open(add, 'r')
+    fcf = open(add + fname, 'r')
     for line in fcf:
       length, fc = line.split()[:2]
       length = float(length)
