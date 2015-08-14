@@ -2,18 +2,17 @@ language: python
 
 sudo: false
 
-addons:
-    apt:
-        sources:
-            - ubuntu-toolchain-r-test
-        packages:
-            - scipy
-            - numpy
 python:
     - "2.6"
     - "2.7"
 
+addons:
+    apt:
+        sources:
+            - ubuntu-toolchain-r-test
+
 install:
+    - source devtools/travis-ci/setup_env.sh
     #- export MSMTHOME=`pwd`
     #- export MSMTBINDIR=$MSMTHOME/bin
     #- export PATH=$MSMTHOME/bin:$PATH
