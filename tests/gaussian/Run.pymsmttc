@@ -27,11 +27,11 @@ diff 1A5T.frcmod.save 1A5T.frcmod >> diff.result
 #For resp charge fitting
 diff resp1.in.save resp1.in >> diff.result
 diff resp2.in.save resp2.in >> diff.result
-diff ZN1.mol2.save ZN1.mol2 >> diff.result
-diff CM4.mol2.save CM4.mol2 >> diff.result
-diff CM3.mol2.save CM3.mol2 >> diff.result
-diff CM2.mol2.save CM2.mol2 >> diff.result
-diff CM1.mol2.save CM1.mol2 >> diff.result
+#diff ZN1.mol2.save ZN1.mol2 >> diff.result
+#diff CM4.mol2.save CM4.mol2 >> diff.result
+#diff CM3.mol2.save CM3.mol2 >> diff.result
+#diff CM2.mol2.save CM2.mol2 >> diff.result
+#diff CM1.mol2.save CM1.mol2 >> diff.result
 #For generating new PDB file and tleap source file
 diff 1A5T_mcpbpy.pdb.save 1A5T_mcpbpy.pdb >> diff.result
 diff 1A5T_tleap.in.save 1A5T_tleap.in >> diff.result
