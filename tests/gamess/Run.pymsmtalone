@@ -4,7 +4,7 @@ mcpbpy=$MSMTHOME/bin/MCPB.py
 input=1A5T.in
 output=mcpbpy.out
 
-$mcpbpy -i $input --step 1 > $output 2>&1 || error
+$MSMTHOME/bin/MCPB.py -i 1A5T.in -s 1 > $output 2>&1 || error
 $mcpbpy -i $input --step 2 >> $output 2>&1 || error
 $mcpbpy -i $input --step 3 >> $output 2>&1 || error
 $mcpbpy -i $input --step 4 >> $output 2>&1 || error
