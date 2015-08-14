@@ -26,3 +26,6 @@ script:
     - echo "Using `which python` (`python -V`)::"
     - make testalone
 
+notifications:
+    email: false
+
