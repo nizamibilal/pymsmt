@@ -6,6 +6,7 @@ env:
     matrix:
         #- PYTHON_VERSION=2.6
         - PYTHON_VERSION=2.7
+        - PYTHON_VERSION=3.4
 
 addons:
     apt:
