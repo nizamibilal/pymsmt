@@ -32,8 +32,8 @@ testalone:
     cd $(MSMTHOME)/tests/gamess ; ./Run.pymsmtalone
 
 testtc:
-	cd ./tests/gaussian ; ls ; MCPB.py -h ; sh Run.pymsmtalone ;\
-    cd ./tests/gamess ; sh Run.pymsmtalone
+	cd ./tests/gaussian ; ls ; MCPB.py -h ; sh Run.pymsmttc ;\
+    cd ./tests/gamess ; sh Run.pymsmttc
 
 skip:
 	@echo ""
