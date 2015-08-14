@@ -22,3 +22,9 @@ else
 fi
 
 source activate myenv
+
+export MSMTHOME=`pwd`
+export MSMTBINDIR=$MSMTHOME/bin
+export PATH=$MSMTHOME/bin:$PATH
+export PYTHON=python
+
