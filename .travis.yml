@@ -2,9 +2,10 @@ language: python
 
 sudo: false
 
-python:
-    - "2.6"
-    - "2.7"
+env:
+    matrix:
+        - PYTHON_VERSION=2.6
+        - PYTHON_VERSION=2.7
 
 addons:
     apt:
