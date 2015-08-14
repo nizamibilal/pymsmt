@@ -36,15 +36,17 @@ diff resp2.in.save resp2.in >> diff.result
 diff 1A5T_mcpbpy.pdb.save 1A5T_mcpbpy.pdb >> diff.result
 diff 1A5T_tleap.in.save 1A5T_tleap.in >> diff.result
 
+/bin/rm -f $output
+
 diffnum=`cat diff.result | wc -l`
 
 if [ $diffnum -eq 0 ]
 then
    echo "GAUSSIAN-MCPBPY TEST PASSED."
+   exit 0
 else
    echo "GAUSSIAN-MCPBPY TEST DON'T PASS, PLEASE CHECK THE diff.result FILE IN tests/gaussian/ DIRECTORY FOR DETAILS."
+   exit 1
 fi
 
-/bin/rm -f $output
 
-exit 0

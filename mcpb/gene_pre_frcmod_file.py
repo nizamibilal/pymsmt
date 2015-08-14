@@ -308,7 +308,7 @@ def gene_pre_frcmod_file(ionids, naamol2f, stpdbf, stfpf, scresf, prefcdf,
         valv = dihparamsdict[keyv]
         keyv = keyv[0] + '-' + keyv[1] + '-' + keyv[2] + '-' + keyv[3]
         temp = len(valv)/3
-        for i in range(0, temp):
+        for i in range(0, int(round(temp, 0))):
           temp1 = i * 3
           print >> fmf, 'YES', keyv, valv[temp1] + valv[temp1+1] + \
                    valv[temp1+2]

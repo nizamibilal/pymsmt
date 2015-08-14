@@ -38,13 +38,14 @@ diff 1A5T_tleap.in.save 1A5T_tleap.in >> diff.result
 
 diffnum=`cat diff.result | wc -l`
 
+/bin/rm -f $output
+
 if [ $diffnum -eq 0 ]
 then
    echo "GAMESS-MCPBPY TEST PASSED."
+   exit 0
 else
    echo "GAMESS-MCPBPY TEST DON'T PASS, PLEASE CHECK THE diff.result FILE IN tests/gaussian/ DIRECTORY FOR DETAILS."
+   exit 1
 fi
 
-/bin/rm -f $output
-
-exit 0
