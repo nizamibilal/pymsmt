@@ -1,22 +1,28 @@
 language: python
 
-python:
-  - "2.6"
-  - "2.7"
+sudo: false
 
-virtualenv:
-  system_site_packages: true
+addons:
+    apt:
+        sources:
+            - ubuntu-toolchain-r-test
+        packages:
+            - scipy
+            - numpy
 
-before_install:
-  - sudo apt-get install python-scipy python-numpy
+env:
+    matrix:
+        - PYTHON_VERSION=2.6
+        - PYTHON_VERSION=2.7
 
 install:
-  - export MSMTHOME=`pwd`
-  - export MSMTBINDIR=$MSMTHOME/bin
-  - export PATH=$MSMTHOME/bin:$PATH
-  - export PYTHON=python
-  - make installalone
+    - export MSMTHOME=`pwd`
+    - export MSMTBINDIR=$MSMTHOME/bin
+    - export PATH=$MSMTHOME/bin:$PATH
+    - export PYTHON=python
+    - make installalone
 
 script:
-  - make testalone
+    - echo "Using `which python` (`python -V`)::"
+    - make testalone
 
