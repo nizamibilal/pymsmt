@@ -23,7 +23,7 @@ install:
 
 script:
     - echo "Using `which python` (`python -V`)::"
-    - make testalone
+    - make testtc
 
 notifications:
     email: false
