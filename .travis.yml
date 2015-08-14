@@ -9,6 +9,7 @@ install:
   - export MSMTBINDIR=$MSMTHOME/bin
   - export PATH=$MSMTHOME/bin:$PATH
   - export PYTHON=python
+  - export PYTHONPATH=$MSMTHOME/build/lib:$PYTHONPATH
   - make installalone
 
 script:
