@@ -33,7 +33,7 @@ testalone:
 
 testtc:
 	cd ./tests/gaussian ; ls ; MCPB.py -h ; sh Run.pymsmttc ;\
-    cd ./tests/gamess ; sh Run.pymsmttc
+    cd ../gamess ; ls ; MCPB.py -h ; sh Run.pymsmttc
 
 skip:
 	@echo ""
