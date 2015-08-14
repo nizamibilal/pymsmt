@@ -6,7 +6,7 @@ output=mcpbpy.out
 
 $mcpbpy -i $input -s 1 > $output 2>&1 || error
 $mcpbpy -i $input -s 2 >> $output 2>&1 || error
-$mcpbpy -i $input -s 3 >> $output 2>&1 || error
+$mcpbpy -i $input --step 3 >> $output 2>&1 || error
 $mcpbpy -i $input -s 4 >> $output 2>&1 || error
 
 #For modeling files generation
