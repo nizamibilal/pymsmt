@@ -10,7 +10,8 @@ installalone:
 	$(PYTHON) setup.py install --prefix=$(MSMTHOME) --install-scripts=$(MSMTBINDIR)
 
 installtc:
-	python setup.py install
+	mkdir -p bin ; \
+	python setup.py install --prefix=$(MSMTHOME) --install-scripts=$(MSMTBINDIR)
 
 clean:
 	/bin/rm -rf build/
@@ -32,8 +33,8 @@ testalone:
     cd $(MSMTHOME)/tests/gamess ; ./Run.pymsmtalone
 
 testtc:
-	cd ./tests/gaussian ; MCPB.py -h ; ./Run.pymsmtalone ;\
-    cd ./tests/gamess ; ./Run.pymsmtalone
+	cd ./tests/gaussian ; ls ; MCPB.py -h ; sh Run.pymsmtalone ;\
+    cd ./tests/gamess ; sh Run.pymsmtalone
 
 skip:
 	@echo ""
