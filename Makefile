@@ -25,8 +25,8 @@ test:
      cd $(AMBERHOME)/AmberTools/test/pymsmt/mcpb ; ./Run.pymsmt
 
 testalone:
-	cd $(MSMTHOME)/tests/gaussian ; ls ; which MCPB.py ; MCPB.py -h ; sh Run.pymsmtalone ;\
-    cd $(MSMTHOME)/tests/gamess ; ls ; sh Run.pymsmtalone
+	cd $(MSMTHOME)/tests/gaussian ; ./Run.pymsmtalone ;\
+    cd $(MSMTHOME)/tests/gamess ; ./Run.pymsmtalone
 
 skip:
 	@echo ""

@@ -11,10 +11,10 @@ fi
 input=1A5T.in
 output=mcpbpy.out
 
-$mcpbpy -i $input --step 1 > $output 2>&1 || error
-$mcpbpy -i $input --step 2 >> $output 2>&1 || error
-$mcpbpy -i $input --step 3 >> $output 2>&1 || error
-$mcpbpy -i $input --step 4 >> $output 2>&1 || error
+$mcpbpy -i $input -s 1 > $output 2>&1 || error
+$mcpbpy -i $input -s 2 >> $output 2>&1 || error
+$mcpbpy -i $input -s 3 >> $output 2>&1 || error
+$mcpbpy -i $input -s 4 >> $output 2>&1 || error
 tleap -s -f 1A5T_tleap.in > 1A5T_tleap.out
 
 #For modeling files generation
