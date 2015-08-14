@@ -16,7 +16,7 @@ install:
     #- export MSMTHOME=`pwd`
     #- export MSMTBINDIR=$MSMTHOME/bin
     #- export PATH=$MSMTHOME/bin:$PATH
-    - export PYTHON=python
+    #- export PYTHON=python
     #- make installalone
     - make installtc
 
