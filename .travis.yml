@@ -14,11 +14,12 @@ python:
     - "2.7"
 
 install:
-    - export MSMTHOME=`pwd`
-    - export MSMTBINDIR=$MSMTHOME/bin
-    - export PATH=$MSMTHOME/bin:$PATH
+    #- export MSMTHOME=`pwd`
+    #- export MSMTBINDIR=$MSMTHOME/bin
+    #- export PATH=$MSMTHOME/bin:$PATH
     - export PYTHON=python
-    - make installalone
+    #- make installalone
+    - make installtc
 
 script:
     - echo "Using `which python` (`python -V`)::"

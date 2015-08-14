@@ -9,6 +9,9 @@ installalone:
 	mkdir -p bin ; \
 	$(PYTHON) setup.py install --prefix=$(MSMTHOME) --install-scripts=$(MSMTBINDIR)
 
+installtc:
+	$(PYTHON) setup.py install
+
 clean:
 	/bin/rm -rf build/
 
