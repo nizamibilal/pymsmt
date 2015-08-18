@@ -2,6 +2,7 @@
 This module is written for detecting the disulfide bond and renaming the
 residues.
 """
+from __future__ import absolute_import
 from msmtmol.cal import calc_bond
 from msmtmol.mol import get_reslist
 

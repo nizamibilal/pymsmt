@@ -3,7 +3,7 @@
 """
 This program is to get the force constant from Hessian Matrix
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 from mcpb.gene_final_frcmod_file import (get_bond_fc_with_sem,
      get_ang_fc_with_sem, get_dih_fc_with_sem, get_imp_fc_with_sem)
 from msmtmol.readpdb import get_atominfo_fpdb
@@ -81,15 +81,15 @@ for i in all_list.bondlist:
     else:
         dis, fcfinal = get_bond_fc_with_sem(crds, fcmatrix, nat1, nat2, options.scalef, 0)
 
-    print '### Bond force constant between ' + \
+    print('### Bond force constant between ' + \
           mol.atoms[at1].resname + str(mol.atoms[at1].resid) + '@' + mol.atoms[at1].atname + ' and ' + \
-          mol.atoms[at2].resname + str(mol.atoms[at2].resid) + '@' + mol.atoms[at2].atname + ' :',
+          mol.atoms[at2].resname + str(mol.atoms[at2].resid) + '@' + mol.atoms[at2].atname + ' :', end=' ')
 
     if options.bondavg is True:
-        print str(round(fcfinal, 1)) + ' with StdDev ' + str(round(stdv, 1)) + \
-              ' with bond distance : ' + str(round(dis, 4))
+        print(str(round(fcfinal, 1)) + ' with StdDev ' + str(round(stdv, 1)) + \
+              ' with bond distance : ' + str(round(dis, 4)))
     else:
-        print str(round(fcfinal, 1)) + ' with bond distance : ' + str(round(dis, 4))
+        print(str(round(fcfinal, 1)) + ' with bond distance : ' + str(round(dis, 4)))
 
 for i in all_list.anglist:
     at1 = i[0]
@@ -104,16 +104,16 @@ for i in all_list.anglist:
     else:
         angval, fcfinal = get_ang_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, options.scalef, 0)
 
-    print '### Angle force constant between ' + \
+    print('### Angle force constant between ' + \
           mol.atoms[at1].resname + str(mol.atoms[at1].resid) + '@' + mol.atoms[at1].atname + ', ' + \
           mol.atoms[at2].resname + str(mol.atoms[at2].resid) + '@' + mol.atoms[at2].atname + ' and ' + \
-          mol.atoms[at3].resname + str(mol.atoms[at3].resid) + '@' + mol.atoms[at3].atname + ' :',
+          mol.atoms[at3].resname + str(mol.atoms[at3].resid) + '@' + mol.atoms[at3].atname + ' :', end=' ')
 
     if options.angavg is True:
-        print str(round(fcfinal, 2)) + ' with StdDev ' + str(round(stdv, 2)) + \
-              ' with angle value : ' + str(round(angval, 2))
+        print(str(round(fcfinal, 2)) + ' with StdDev ' + str(round(stdv, 2)) + \
+              ' with angle value : ' + str(round(angval, 2)))
     else:
-        print str(round(fcfinal, 2)) + ' with angle value : ' + str(round(angval, 2))
+        print(str(round(fcfinal, 2)) + ' with angle value : ' + str(round(angval, 2)))
 
 if options.dihedral is True:
     for i in all_list.dihlist:
@@ -136,13 +136,13 @@ if options.dihedral is True:
         nat3 = natids[at3]
         nat4 = natids[at4]
         dihval, fcfinal1, fcfinal = get_dih_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, nat4, n1, n2, options.scalef)
-        print '### Dihedral force constant between ' + \
+        print('### Dihedral force constant between ' + \
               mol.atoms[at1].resname + str(mol.atoms[at1].resid) + '@' + mol.atoms[at1].atname + ', ' + \
               mol.atoms[at2].resname + str(mol.atoms[at2].resid) + '@' + mol.atoms[at2].atname + ', ' + \
               mol.atoms[at3].resname + str(mol.atoms[at3].resid) + '@' + mol.atoms[at3].atname + ' and ' + \
               mol.atoms[at4].resname + str(mol.atoms[at4].resid) + '@' + mol.atoms[at4].atname + ' : ' + \
               str(round(fcfinal, 2)) + ' with angle value ' + str(round(dihval, 2)) + \
-              ' *or* ' + str(round(fcfinal1, 2)) + ' (as kpi in kpi(pi-pi0)^2), pi is the dihedral.'
+              ' *or* ' + str(round(fcfinal1, 2)) + ' (as kpi in kpi(pi-pi0)^2), pi is the dihedral.')
 
 if options.improper is True:
     for i in all_list.implist:
@@ -158,39 +158,39 @@ if options.improper is True:
  
         if mol.atoms[at1].element == mol.atoms[at2].element:
             fcfinal1, fcfinal = get_imp_fc_with_sem(crds, fcmatrix, nat3, nat1, nat2, nat4, options.scalef) #Treat the central atom first
-            print '### Improper torsion force constant between ' + \
+            print('### Improper torsion force constant between ' + \
               mol.atoms[at1].resname + str(mol.atoms[at1].resid) + '@' + mol.atoms[at1].atname + '-' + \
               mol.atoms[at2].resname + str(mol.atoms[at2].resid) + '@' + mol.atoms[at2].atname + '-' + \
               mol.atoms[at3].resname + str(mol.atoms[at3].resid) + '@' + mol.atoms[at3].atname + '(central atom)-' + \
               mol.atoms[at4].resname + str(mol.atoms[at4].resid) + '@' + mol.atoms[at4].atname + ' : ' + \
-              str(round(fcfinal, 2)) 
-            print '    *or* ' + str(round(fcfinal1, 2)) + ' (as kb in kb(b)^2), b is the distance of central atom to the plane of the other three atoms.'
+              str(round(fcfinal, 2))) 
+            print('    *or* ' + str(round(fcfinal1, 2)) + ' (as kb in kb(b)^2), b is the distance of central atom to the plane of the other three atoms.')
         elif mol.atoms[at1].element == mol.atoms[at4].element:
             fcfinal1, fcfinal = get_imp_fc_with_sem(crds, fcmatrix, nat3, nat1, nat4, nat2, options.scalef) #Treat the central atom first
-            print '### Improper torsion force constant between ' + \
+            print('### Improper torsion force constant between ' + \
               mol.atoms[at1].resname + str(mol.atoms[at1].resid) + '@' + mol.atoms[at1].atname + '-' + \
               mol.atoms[at4].resname + str(mol.atoms[at4].resid) + '@' + mol.atoms[at4].atname + '-' + \
               mol.atoms[at3].resname + str(mol.atoms[at3].resid) + '@' + mol.atoms[at3].atname + '(central atom)-' + \
               mol.atoms[at2].resname + str(mol.atoms[at2].resid) + '@' + mol.atoms[at2].atname + ' : ' + \
-              str(round(fcfinal, 2))
-            print '    *or* ' + str(round(fcfinal1, 2)) + ' (as kb in kb(b)^2), b is the distance of central atom to the plane of the other three atoms.'
+              str(round(fcfinal, 2)))
+            print('    *or* ' + str(round(fcfinal1, 2)) + ' (as kb in kb(b)^2), b is the distance of central atom to the plane of the other three atoms.')
         elif mol.atoms[at2].element == mol.atoms[at4].element:
             fcfinal1, fcfinal = get_imp_fc_with_sem(crds, fcmatrix, nat3, nat2, nat4, nat1, options.scalef) #Treat the central atom first
-            print '### Improper torsion force constant between ' + \
+            print('### Improper torsion force constant between ' + \
               mol.atoms[at4].resname + str(mol.atoms[at4].resid) + '@' + mol.atoms[at4].atname + '-' + \
               mol.atoms[at2].resname + str(mol.atoms[at2].resid) + '@' + mol.atoms[at2].atname + '-' + \
               mol.atoms[at3].resname + str(mol.atoms[at3].resid) + '@' + mol.atoms[at3].atname + '(central atom)-' + \
               mol.atoms[at1].resname + str(mol.atoms[at1].resid) + '@' + mol.atoms[at1].atname + ' : ' + \
-              str(round(fcfinal, 2))
-            print '    *or* ' + str(round(fcfinal1, 2)) + ' (as kb in kb(b)^2), b is the distance of central atom to the plane of the other three atoms.'
+              str(round(fcfinal, 2)))
+            print('    *or* ' + str(round(fcfinal1, 2)) + ' (as kb in kb(b)^2), b is the distance of central atom to the plane of the other three atoms.')
         else:
             fcfinal1, fcfinal = get_imp_fc_with_sem(crds, fcmatrix, nat3, nat1, nat2, nat4, options.scalef) #Treat the central atom first
-            print '### Improper torsion force constant between ' + \
+            print('### Improper torsion force constant between ' + \
               mol.atoms[at1].resname + str(mol.atoms[at1].resid) + '@' + mol.atoms[at1].atname + '-' + \
               mol.atoms[at2].resname + str(mol.atoms[at2].resid) + '@' + mol.atoms[at2].atname + '-' + \
               mol.atoms[at3].resname + str(mol.atoms[at3].resid) + '@' + mol.atoms[at3].atname + '(central atom)-' + \
               mol.atoms[at4].resname + str(mol.atoms[at4].resid) + '@' + mol.atoms[at4].atname + ' : ' + \
-              str(round(fcfinal, 2))
-            print '    *or* ' + str(round(fcfinal1, 2)) + ' (as kb in kb(b)^2), b is the distance of central atom to the plane of the other three atoms.'
+              str(round(fcfinal, 2)))
+            print('    *or* ' + str(round(fcfinal1, 2)) + ' (as kb in kb(b)^2), b is the distance of central atom to the plane of the other three atoms.')
  
 quit()

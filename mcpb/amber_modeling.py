@@ -1,7 +1,7 @@
 """
 This module contains the function to model leap input files for use.
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 from msmtmol.mol import get_reslist
 from msmtmol.readpdb import get_atominfo_fpdb, writepdb
 from msmtmol.readmol2 import get_atominfo
@@ -19,17 +19,17 @@ def gene_ion_libfile(resname, atname, element, charge):
 
     atomtyp = element + str(charge) + '+'
     ionfname = '%s.cmd' %resname
+
     ionf = open(ionfname, 'w')
-    print >> ionf, 'i = createAtom   %s  %s  %s' %(atname, atomtyp,
-                                                   str(charge))
-    print >> ionf, 'set i    element %s' %element
-    print >> ionf, 'set i    position { 0 0 0 }'
-    print >> ionf, 'r = createResidue %s' %resname
-    print >> ionf, 'add r i'
-    print >> ionf, '%s = createUnit %s' %(resname, resname)
-    print >> ionf, 'add %s r' %resname
-    print >> ionf, 'saveOff %s ./%s' %(resname, resname + '.lib')
-    print >> ionf, 'quit'
+    print('i = createAtom   %s  %s  %s' %(atname, atomtyp, str(charge)), file=ionf)
+    print('set i    element %s' %element, file=ionf)
+    print('set i    position { 0 0 0 }', file=ionf)
+    print('r = createResidue %s' %resname, file=ionf)
+    print('add r i', file=ionf)
+    print('%s = createUnit %s' %(resname, resname), file=ionf)
+    print('add %s r' %resname, file=ionf)
+    print('saveOff %s ./%s' %(resname, resname + '.lib'), file=ionf)
+    print('quit', file=ionf)
     ionf.close()
 
     os.system('tleap -s -f %s.cmd > %s.log' %(resname, resname))
@@ -113,11 +113,11 @@ def gene_leaprc(gname, orpdbf, fipdbf, stpdbf, stfpf, ionids,\
                 ionmol2fs, ioninf, mcresname, naamol2fs, ff_choice, frcmodfs,
                 finfcdf, ileapf, model, watermodel='tip3p', paraset='cm'):
 
-    print "******************************************************************"
-    print "*                                                                *"
-    print "*=================Generating input file for leap=================*"
-    print "*                                                                *"
-    print "******************************************************************"
+    print("******************************************************************")
+    print("*                                                                *")
+    print("*=================Generating input file for leap=================*")
+    print("*                                                                *")
+    print("******************************************************************")
 
     #---------------------Generate the new pdb file--------------------------
     #mol0 is the old mol while mol is new mol file with new names
@@ -215,54 +215,53 @@ def gene_leaprc(gname, orpdbf, fipdbf, stpdbf, stfpf, ionids,\
 
     #-----------------------Generate the leap input file-----------------------
 
-    print 'Generating the leap input file...'
+    print('Generating the leap input file...')
 
     ##Generate the tleap.in file
     lp = open(ileapf, 'w')
     if ff_choice in ['ff94', 'ff99', 'ff99SB', 'ff03', 'ff10']:
-      print >> lp, 'source oldff/leaprc.%s' %ff_choice
+      print('source oldff/leaprc.%s' %ff_choice, file=lp)
     elif ff_choice in ['ff03.r1', 'ff12SB', 'ff14SB']:
-      print >> lp, 'source leaprc.%s' %ff_choice
-
-    print >> lp, 'source leaprc.gaff'
+      print('source leaprc.%s' %ff_choice, file=lp)
+    print('source leaprc.gaff', file=lp)
     #Add atom types, for bonded model
     if model in [1, 2]:
       if atomdefs.keys() != []:
-        print >> lp, 'addAtomTypes {'
+        print('addAtomTypes {', file=lp)
         for i in atomdefs.keys():
-          print >> lp, '        { "%s"  "%s" "sp3" }' %(i, atomdefs[i])
-        print >> lp, '}'
+          print('        { "%s"  "%s" "sp3" }' %(i, atomdefs[i]), file=lp)
+        print('}', file=lp)
 
     #load lib and frcmod files for monovalent ions (for salt)
     if ff_choice in ['ff94', 'ff99', 'ff99SB', 'ff03', 'ff03.r1']:
-      print >> lp, 'loadoff atomic_ions.lib'
-    print >> lp, 'loadamberparams frcmod.ions1lsm_hfe_%s' %watermodel
+      print('loadoff atomic_ions.lib', file=lp)
+    print('loadamberparams frcmod.ions1lsm_hfe_%s' %watermodel, file=lp)
 
     #Load mol2 file for the refitting charge residues
     if model in [1, 2]:
       for i in resns:
-        print >> lp, '%s = loadmol2 %s.mol2' %(i, i)
+        print('%s = loadmol2 %s.mol2' %(i, i), file=lp)
     elif model == 3:
       for i in naamol2fs:
-        print >> lp, '%s = loadmol2 %s.mol2' %(i, i)
+        print('%s = loadmol2 %s.mol2' %(i, i), file=lp)
 
     #Load frcmod files for non-standard residues and metal site
     for i in frcmodfs:
-      print >> lp, 'loadamberparams %s' %i
+      print('loadamberparams %s' %i, file=lp)
 
     if model == 1:
-      print >> lp, 'loadamberparams %s' %finfcdf
+      print('loadamberparams %s' %finfcdf, file=lp)
     elif model == 2:
       for frcmodf in frcmodfs:
-        print >> lp, 'loadamberparams %s' %frcmodf
+        print('loadamberparams %s' %frcmodf, file=lp)
     elif model == 3:
       for metresn in metresns:
-        print >> lp, 'loadoff %s.lib' %metresn
+        print('loadoff %s.lib' %metresn, file=lp)
       for frcmodf in frcmodfs:
-        print >> lp, 'loadamberparams %s' %frcmodf
+        print('loadamberparams %s' %frcmodf, file=lp)
 
     #load pdb file
-    print >> lp, 'mol = loadpdb %s' %fipdbf
+    print('mol = loadpdb %s' %fipdbf, file=lp)
 
     ##The Disulfur Bond information
     if disul != []:
@@ -273,8 +272,8 @@ def gene_leaprc(gname, orpdbf, fipdbf, stpdbf, stfpf, ionids,\
         resid2 = mol.atoms[at2].resid
         atname1 = mol.atoms[at1].atname
         atname2 = mol.atoms[at2].atname
-        print >> lp, 'bond', 'mol.' + str(resid1) + '.' + atname1, 'mol.' + \
-                 str(resid2) + '.' + atname2
+        print('bond', 'mol.' + str(resid1) + '.' + atname1, 'mol.' + \
+              str(resid2) + '.' + atname2, file=lp)
 
     ##Bond including the metal ions
     if model == 1:
@@ -286,8 +285,8 @@ def gene_leaprc(gname, orpdbf, fipdbf, stpdbf, stfpf, ionids,\
           resid2 = mol.atoms[at2].resid
           atname1 = mol.atoms[at1].atname
           atname2 = mol.atoms[at2].atname
-          print >> lp, 'bond', 'mol.' + str(resid1) + '.' + atname1, 'mol.' + \
-                   str(resid2) + '.' + atname2
+          print('bond', 'mol.' + str(resid1) + '.' + atname1, 'mol.' + \
+                str(resid2) + '.' + atname2, file=lp)
 
     ##Nonstandard residues with nearby residues
 
@@ -295,7 +294,7 @@ def gene_leaprc(gname, orpdbf, fipdbf, stpdbf, stfpf, ionids,\
       bondcmds = []
       for i in metcenres1:
         resname = mol0.residues[i].resname
-        print 'Renamed residues includes: ' + str(i) + '-' + resname
+        print('Renamed residues includes: ' + str(i) + '-' + resname)
         if i in reslist0.nterm:
           cmdi = 'bond mol.' + str(i) + '.C' + ' mol.' + str(i+i) + '.N'
           if cmdi not in bondcmds:
@@ -312,34 +311,34 @@ def gene_leaprc(gname, orpdbf, fipdbf, stpdbf, stfpf, ionids,\
           if cmdi not in bondcmds:
             bondcmds.append(cmdi)
       for j in bondcmds:
-          print >> lp, j
+          print(j, file=lp)
 
     #Save dry structure
-    print >> lp, 'savepdb mol %s_dry.pdb' %gname
-    print >> lp, 'saveamberparm mol %s_dry.prmtop %s_dry.inpcrd' \
-                 %(gname, gname)
+    print('savepdb mol %s_dry.pdb' %gname, file=lp)
+    print('saveamberparm mol %s_dry.prmtop %s_dry.inpcrd' \
+          %(gname, gname), file=lp)
     #Solvatebox
     if watermodel == 'tip3p':
-      print >> lp, 'solvatebox mol TIP3PBOX 10.0'
+      print('solvatebox mol TIP3PBOX 10.0', file=lp)
     elif watermodel == 'spce':
-      print >> lp, 'solvatebox mol SPCBOX 10.0'
-      print >> lp, 'loadamberparams frcmod.spce'
+      print('solvatebox mol SPCBOX 10.0', file=lp)
+      print('loadamberparams frcmod.spce', file=lp)
     elif watermodel == 'tip4pew':
-      print >> lp, 'solvatebox mol TIP4PEWBOX 10.0'
-      print >> lp, 'loadamberparams frcmod.tip4pew'
+      print('solvatebox mol TIP4PEWBOX 10.0', file=lp)
+      print('loadamberparams frcmod.tip4pew', file=lp)
     #Add counter ions
-    print >> lp, 'addions mol Na+ 0'
-    print >> lp, 'addions mol Cl- 0'
+    print('addions mol Na+ 0', file=lp)
+    print('addions mol Cl- 0', file=lp)
     #Save solvated structure
-    print >> lp, 'savepdb mol %s_solv.pdb' %gname
-    print >> lp, 'saveamberparm mol %s_solv.prmtop %s_solv.inpcrd' \
-                 %(gname, gname)
-    print >> lp, 'quit'
-    print >> lp, ' '
+    print('savepdb mol %s_solv.pdb' %gname, file=lp)
+    print('saveamberparm mol %s_solv.prmtop %s_solv.inpcrd' \
+          %(gname, gname), file=lp)
+    print('quit', file=lp)
+    print(' ', file=lp)
 
     lp.close()
 
-    print 'Finish generating the leap input file.'
+    print('Finish generating the leap input file.')
 
     #tleap
     #os.system('tleap -s -f %s > %s' %(ileapf, oleapf))

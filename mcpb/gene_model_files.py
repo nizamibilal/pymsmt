@@ -3,7 +3,7 @@ This module was used to generate the pdb, fingerprint files of the sidechain,
 standard and large models and Gaussian input file of sidechain (for bond and
 angle parameter fitting) and large models(for RESP charge fitting).
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 from msmtmol.readpdb import get_atominfo_fpdb, writepdbatm
 from msmtmol.cal import calc_bond
 from msmtmol.mol import pdbatm, gauatm, get_reslist
@@ -120,8 +120,8 @@ def write_ace(mol, i, gatms, pdbf, fpf=None):
 
     global H_NAMES, SH_NAMES, GH_NAMES
 
-    print "Creating the residue " + str(i) + '-' + \
-          mol.residues[i].resname +  " into ACE..."
+    print("Creating the residue " + str(i) + '-' + \
+          mol.residues[i].resname +  " into ACE...")
 
     #get the coordinates of the CA atom
     for j in mol.residues[i].resconter:
@@ -190,7 +190,7 @@ def write_ace(mol, i, gatms, pdbf, fpf=None):
         #fingerprint file
         if fpf is not None:
           fpff = open(fpf, 'a')
-          print >> fpff, str(resid) + '-' + 'ACE-' + atname
+          print(str(resid) + '-' + 'ACE-' + atname, file=fpff)
           fpff.close()
 
 #---------------------Write CH3NH2 residue into the PDB file-------------------
@@ -212,8 +212,8 @@ def write_ant(mol, i, gatms, pdbf, fpf=None):
     #and change CA to CH3, HA, CB and C to HH31, HH32, HH33
     if mol.residues[i].resname != 'PRO':
 
-      print "Creating the residue " + str(i) + '-' + \
-            mol.residues[i].resname + " into ANT..."
+      print("Creating the residue " + str(i) + '-' + \
+            mol.residues[i].resname + " into ANT...")
 
       #get the coordinates of the CA atom
       for j in mol.residues[i].resconter:
@@ -297,14 +297,14 @@ def write_ant(mol, i, gatms, pdbf, fpf=None):
           #fingerprint file
           if fpf is not None:
             fpff = open(fpf, 'a')
-            print >> fpff, str(resid) + '-' + 'ANT-' + atname
+            print(str(resid) + '-' + 'ANT-' + atname, file=fpff)
             fpff.close()
 
     #If the resname is PRO, change HA, C to HA2, HA3 and keep the ring
     elif mol.residues[i].resname == 'PRO':
 
-      print "Creating the residue " + str(i) + '-' + \
-            mol.residues[i].resname + " into ANT..."
+      print("Creating the residue " + str(i) + '-' + \
+            mol.residues[i].resname + " into ANT...")
 
       #get the coordinates of the CA atom
       for j in mol.residues[i].resconter:
@@ -383,7 +383,7 @@ def write_ant(mol, i, gatms, pdbf, fpf=None):
           #fingerprint file
           if fpf is not None:
             fpff = open(fpf, 'a')
-            print >> fpff, str(resid) + '-' + 'PNT-' + atname
+            print(str(resid) + '-' + 'PNT-' + atname, file=fpff)
             fpff.close()
 
 #---------------------Write CH3CO2- residue into the PDB file---------------------
@@ -401,8 +401,8 @@ def write_act(mol, i, gatms, pdbf, fpf=None):
 
     global H_NAMES, SH_NAMES, GH_NAMES
    
-    print "Creating the residue " + str(i) + '-' + \
-          mol.residues[i].resname + " into ACT..."
+    print("Creating the residue " + str(i) + '-' + \
+          mol.residues[i].resname + " into ACT...")
    
     #get the coordinates of the CA atom
     for j in mol.residues[i].resconter:
@@ -473,7 +473,7 @@ def write_act(mol, i, gatms, pdbf, fpf=None):
         #fingerprint file
         if fpf is not None:
           fpff = open(fpf, 'a')
-          print >> fpff, str(resid) + '-' + 'ACT-' + atname
+          print(str(resid) + '-' + 'ACT-' + atname, file=fpff)
           fpff.close()
 
 #---------------------Write NME residue into the PDB file---------------------
@@ -493,8 +493,8 @@ def write_nme(mol, i, gatms, pdbf, fpf=None):
 
     global H_NAMES, SH_NAMES, GH_NAMES
 
-    print "Creating the residue " + str(i) + '-' + \
-          mol.residues[i].resname + " into NME..."
+    print("Creating the residue " + str(i) + '-' + \
+          mol.residues[i].resname + " into NME...")
 
     #If the resname is not PRO
     if mol.residues[i].resname != 'PRO':
@@ -571,7 +571,7 @@ def write_nme(mol, i, gatms, pdbf, fpf=None):
           #fingerprint file
           if fpf is not None:
             fpff = open(fpf, 'a')
-            print >> fpff, str(resid) + '-' + 'NME-' + atname
+            print(str(resid) + '-' + 'NME-' + atname, file=fpff)
             fpff.close()
 
     #If the resname is PRO
@@ -652,7 +652,7 @@ def write_nme(mol, i, gatms, pdbf, fpf=None):
           #fingerprint file
           if fpf is not None:
             fpff = open(fpf, 'a')
-            print >> fpff, str(resid) + '-' + 'NME-' + atname
+            print(str(resid) + '-' + 'NME-' + atname, file=fpff)
             fpff.close()
 
 #---------------------Write GLY residue into the PDB file---------------------
@@ -670,8 +670,8 @@ def write_gly(mol, i, gatms, pdbf, fpf=None):
     global H_NAMES, SH_NAMES, GH_NAMES
 
     #get the coordinates of the CA atom
-    print "Creating the residue " + str(i) + '-' + \
-          mol.residues[i].resname + " into GLY..."
+    print("Creating the residue " + str(i) + '-' + \
+          mol.residues[i].resname + " into GLY...")
 
     #If the resname is not PRO
     if mol.residues[i].resname != 'PRO':
@@ -768,7 +768,7 @@ def write_gly(mol, i, gatms, pdbf, fpf=None):
           #fingerprint file
           if fpf is not None:
             fpff = open(fpf, 'a')
-            print >> fpff, str(resid) + '-' + 'GLY-' + atname
+            print(str(resid) + '-' + 'GLY-' + atname, file=fpff)
             fpff.close()
 
     #If the resname is PRO
@@ -862,14 +862,14 @@ def write_gly(mol, i, gatms, pdbf, fpf=None):
           #fingerprint file
           if fpf is not None:
             fpff = open(fpf, 'a')
-            print >> fpff, str(resid) + '-' + 'GLY-' + atname
+            print(str(resid) + '-' + 'GLY-' + atname, file=fpff)
             fpff.close()
 
 #---------------------Write normal residue into the PDB file---------------------
 def write_normal(mol, reslist, i, gatms, pdbf, fpf=None):
 
-    print "It contains the residue " + str(i) + '-' + \
-          mol.residues[i].resname + " as normal."
+    print("It contains the residue " + str(i) + '-' + \
+          mol.residues[i].resname + " as normal.")
 
     for j in mol.residues[i].resconter:
       tiker = mol.atoms[j].gtype
@@ -905,7 +905,7 @@ def write_normal(mol, reslist, i, gatms, pdbf, fpf=None):
       #Fingerprint file
       if fpf is not None:
         fpff = open(fpf, 'a')
-        print >> fpff, str(resid) + '-' + resname + '-' + atname
+        print(str(resid) + '-' + resname + '-' + atname, file=fpff)
         fpff.close()
 
 #-----------------------Write Sidechain residues-------------------------------
@@ -913,8 +913,8 @@ def write_sc(mol, i, gatms, sidechf):
 
     global H_NAMES, SH_NAMES, GH_NAMES
 
-    print "It contains the residue " + str(i) + '-' + \
-          mol.residues[i].resname + " as sidechain coordinated."
+    print("It contains the residue " + str(i) + '-' + \
+          mol.residues[i].resname + " as sidechain coordinated.")
 
     #get the coordinates of the Ca atom
     for j in mol.residues[i].resconter:
@@ -988,8 +988,8 @@ def write_sc_knh(mol, i, gatms, sidechf):
 
     global H_NAMES, SH_NAMES, GH_NAMES, SH_NAMES2
 
-    print "It contains the residue " + str(i) + '-' + \
-          mol.residues[i].resname + " as keeping sidechain and NH group."
+    print("It contains the residue " + str(i) + '-' + \
+          mol.residues[i].resname + " as keeping sidechain and NH group.")
 
     #get the coordinates of the Ca atom
     for j in mol.residues[i].resconter:
@@ -1070,8 +1070,8 @@ def write_sc_kco(mol, i, gatms, sidechf):
 
     global H_NAMES, SH_NAMES, GH_NAMES, SH_NAMES2
 
-    print "It contains the residue " + str(i) + '-' + \
-          mol.residues[i].resname + " as keeping sidechain and CO group."
+    print("It contains the residue " + str(i) + '-' + \
+          mol.residues[i].resname + " as keeping sidechain and CO group.")
 
     #get the coordinates of the Ca atom
     for j in mol.residues[i].resconter:
@@ -1174,7 +1174,7 @@ def build_sidechain_model(mol, reslist, scresids, scresace, scresnme,
     ###############################Sidechain model############################
     #-------------------------------------------------------------------------
 
-    print "***Creating the sidechain model..."
+    print("***Creating the sidechain model...")
 
     gatms = [] #gaussian atom list
 
@@ -1208,7 +1208,7 @@ def build_sidechain_model(mol, reslist, scresids, scresace, scresnme,
         write_normal(mol, reslist, i, gatms, sidechf)
 
     ln = count_lines(sidechf)
-    print "Totally there are " + str(ln) + " atoms in the sidechain model."
+    print("Totally there are " + str(ln) + " atoms in the sidechain model.")
 
     #Calculate the spin number and print it into gaussian file
     gaelemts = 0
@@ -1218,7 +1218,7 @@ def build_sidechain_model(mol, reslist, scresids, scresace, scresnme,
 
     SpinNum = gaelemts - scchg
     SpinNum = int(round(SpinNum, 0))
-    print "Totally there are " + str(SpinNum) + " electrons in the sidechain model."
+    print("Totally there are " + str(SpinNum) + " electrons in the sidechain model.")
 
     if SpinNum%2 == 0:
       SpinNum = 1
@@ -1239,15 +1239,15 @@ def build_sidechain_model(mol, reslist, scresids, scresace, scresnme,
       del_files([siopf, soopf])
       write_sqm_optf(siopf, scchg, gatms)
       if SpinNum == 1:
-        print "Performing SQM optimization of sidechain model, please wait..."
+        print("Performing SQM optimization of sidechain model, please wait...")
         #Run SQM to optimize the coordinates
         os.system("sqm -i %s -o %s" %(siopf, soopf))
         gatms2 = get_crdinfo_from_sqm(soopf)
         write_gau_optf(outf, goptf, scchg, SpinNum, gatms2, 4)
         write_gms_optf(goptf2, scchg, SpinNum, gatms2, 4)
       else:
-        print "Could not perform SQM optimization for the sidechain model " + \
-              "with spin number not equal to 1."
+        print("Could not perform SQM optimization for the sidechain model " + \
+              "with spin number not equal to 1.")
 
 #------------------------------------Standard model---------------------------
 def build_standard_model(mol, reslist, cutoff, msresids, outf, ionids,
@@ -1262,11 +1262,11 @@ def build_standard_model(mol, reslist, cutoff, msresids, outf, ionids,
     ###############################Standard model#############################
     #-------------------------------------------------------------------------
 
-    print "***Creating the standard model..."
+    print("***Creating the standard model...")
 
     for i in msresids:
-      print "It contains the residue " + str(i) + '-' + \
-            mol.residues[i].resname + " as normal."
+      print("It contains the residue " + str(i) + '-' + \
+            mol.residues[i].resname + " as normal.")
 
       for j in mol.residues[i].resconter:
 
@@ -1342,8 +1342,8 @@ def build_standard_model(mol, reslist, cutoff, msresids, outf, ionids,
               k7 = k - 27 + 1
               attype2 = 'B' + str(k7)
 
-        print >> stpff, str(resid) + '-' + resname + '-' + atname, \
-                 str(atid), attype, '->', attype2
+        print(str(resid) + '-' + resname + '-' + atname,
+              str(atid), attype, '->', attype2, file=stpff)
         stpff.close()
 
     #Print the link information into sidechain fingerprint file
@@ -1352,12 +1352,12 @@ def build_standard_model(mol, reslist, cutoff, msresids, outf, ionids,
       for i in bdedatms:
         dis = calc_bond(mol.atoms[met].crd, mol.atoms[i].crd)
         if (dis <= cutoff):
-          print >> stpff, "LINK", str(met)+'-'+mol.atoms[met].atname, \
-                   str(i)+'-'+mol.atoms[i].atname
+          print("LINK", str(met)+'-'+mol.atoms[met].atname,
+                str(i)+'-'+mol.atoms[i].atname, file=stpff)
     stpff.close()
 
     ln = count_lines(stf)
-    print "Totally there are " + str(ln) + " atoms in the standard model."
+    print("Totally there are " + str(ln) + " atoms in the standard model.")
 
 #---------------------------------Large model---------------------------------
 def build_large_model(mol, reslist, lmsresids, lmsresace, lmsresnme,
@@ -1377,7 +1377,7 @@ def build_large_model(mol, reslist, lmsresids, lmsresace, lmsresnme,
     ###############################Large model################################
     #-------------------------------------------------------------------------
 
-    print "***Creating the large model..."
+    print("***Creating the large model...")
     gatms = []
     for i in lmsresids:
       #1) for atoms in ACE ---------------------------------------------------
@@ -1394,7 +1394,7 @@ def build_large_model(mol, reslist, lmsresids, lmsresace, lmsresnme,
         write_normal(mol, reslist, i, gatms, largef, lfpf)
 
     ln = count_lines(largef)
-    print "Totally there are " + str(ln) + " atoms in the large model."
+    print("Totally there are " + str(ln) + " atoms in the large model.")
 
     #Calculate the spin number and print it into gaussian file
     gaelemts = 0
@@ -1404,7 +1404,7 @@ def build_large_model(mol, reslist, lmsresids, lmsresace, lmsresnme,
 
     SpinNum = gaelemts - lgchg
     SpinNum = int(round(SpinNum, 0))
-    print "Totally there are " + str(SpinNum) + " electrons in the large model."
+    print("Totally there are " + str(SpinNum) + " electrons in the large model.")
 
     if SpinNum%2 == 0:
       SpinNum = 1
@@ -1428,15 +1428,15 @@ def build_large_model(mol, reslist, lmsresids, lmsresace, lmsresnme,
       del_files([simkf, somkf])
       write_sqm_optf(simkf, lgchg, gatms)
       if SpinNum == 1:
-        print "Performing SQM optimization of large model, please wait..."
+        print("Performing SQM optimization of large model, please wait...")
         os.system("sqm -i %s -o %s" %(simkf, somkf))
         gatms2 = get_crdinfo_from_sqm(somkf)
         write_gau_mkf(outf, gmkf, lgchg, SpinNum, gatms, ionnames,
                       chargedict, IonLJParaDict, largeopt, 4)
         write_gms_mkf(gmsf, lgchg, SpinNum, gatms2, 4)
       else:
-        print "Could not perform SQM optimization for the large model " + \
-              "with spin number not equal to 1."
+        print("Could not perform SQM optimization for the large model " + \
+              "with spin number not equal to 1.")
 
 def gene_model_files(pdbfile, ionids, addres, outf, ffchoice, naamol2f, cutoff, \
                      watermodel, autoattyp, largeopt, sqmopt, scchg, lgchg):
@@ -1456,20 +1456,20 @@ def gene_model_files(pdbfile, ionids, addres, outf, ffchoice, naamol2f, cutoff, 
     # Get the residues in the metal site
     #-------------------------------------------------------------------------
 
-    print "******************************************************************"
-    print "*                                                                *"
-    print "*=======================Metal Site Information===================*"
-    print "*                                                                *"
-    print "******************************************************************"
+    print("******************************************************************")
+    print("*                                                                *")
+    print("*=======================Metal Site Information===================*")
+    print("*                                                                *")
+    print("******************************************************************")
 
     #1. Metal ions information
     metresids = [] #metal ion residue id
     for i in ionids:
       resid = mol.atoms[i].resid
       metresids.append(resid)
-      print "***Selected Metal ion " + mol.atoms[i].atname + " is atom " + \
+      print("***Selected Metal ion " + mol.atoms[i].atname + " is atom " + \
             str(i) + " in residue " + str(mol.atoms[i].resid) + '-' + \
-            mol.residues[resid].resname
+            mol.residues[resid].resname)
     ionids = list(set(ionids))
     ionids.sort()
 
@@ -1479,10 +1479,10 @@ def gene_model_files(pdbfile, ionids, addres, outf, ffchoice, naamol2f, cutoff, 
 
     #3. Get the metal site containing residues
     for i in bdedatms:
-      print str(mol.atoms[i].resid) + '-' + \
+      print(str(mol.atoms[i].resid) + '-' + \
             mol.atoms[i].resname + \
             '@' + mol.atoms[i].atname + ' is in ' + str(cutoff) + \
-            ' Angstrom of these metal ions' #+
+            ' Angstrom of these metal ions') #+
             #str(mol.atoms[i].resid) + '-' + \
             #mol.atoms[i].resname + '@' + \
             #mol.atoms[i].atname
@@ -1492,10 +1492,10 @@ def gene_model_files(pdbfile, ionids, addres, outf, ffchoice, naamol2f, cutoff, 
     msresids = msresids + metresids + addres
     msresids.sort()
 
-    print "***The following residues are in the Metal Site:"
+    print("***The following residues are in the Metal Site:")
     totchg = 0.0
     for i in msresids:
-      print "Residue " + str(i) + '-' + mol.residues[i].resname
+      print("Residue " + str(i) + '-' + mol.residues[i].resname)
       if i in reslist.nterm:
         totchg = totchg + chargedict['N' + mol.residues[i].resname]
       elif i in reslist.cterm:
@@ -1638,23 +1638,23 @@ def gene_model_files(pdbfile, ionids, addres, outf, ffchoice, naamol2f, cutoff, 
 
     w_scresf = open(scresf, 'w')
     for i in scresace:
-      print >> w_scresf, 'ACE-', i
+      print('ACE-', i, file=w_scresf)
     for i in scresnme:
-      print >> w_scresf, 'NME-', i
+      print('NME-', i, file=w_scresf)
     for i in scresgly:
-      print >> w_scresf, 'GLY-', i
+      print('GLY-', i, file=w_scresf)
     for i in scresknh:
-      print >> w_scresf, 'KNH-', i
+      print('KNH-', i, file=w_scresf)
     for i in screskco:
-      print >> w_scresf, 'KCO-', i
+      print('KCO-', i, file=w_scresf)
     for i in scresant:
-      print >> w_scresf, 'ANT-', i
+      print('ANT-', i, file=w_scresf)
     for i in scresact:
-      print >> w_scresf, 'ACT-', i
+      print('ACT-', i, file=w_scresf)
     w_scresf.close()
 
-    print "***The sidechain model contains the following residues: "
-    print scresids
+    print("***The sidechain model contains the following residues: ")
+    print(scresids)
 
     #-------------------------------------------------------------------------
     # Get the residues for building the large model and print
@@ -1698,18 +1698,18 @@ def gene_model_files(pdbfile, ionids, addres, outf, ffchoice, naamol2f, cutoff, 
     lmsresids = list(set(lmsresids)) #Delete repeat elements
     lmsresids.sort() #Sort the list
 
-    print "***The large model contains the following residues: "
-    print lmsresids
+    print("***The large model contains the following residues: ")
+    print(lmsresids)
 
     #-------------------------------------------------------------------------
     # Generate model files
     #-------------------------------------------------------------------------
 
-    print "******************************************************************"
-    print "*                                                                *"
-    print "*=======================Building models==========================*"
-    print "*                                                                *"
-    print "******************************************************************"
+    print("******************************************************************")
+    print("*                                                                *")
+    print("*=======================Building models==========================*")
+    print("*                                                                *")
+    print("******************************************************************")
 
     build_sidechain_model(mol, reslist, scresids, scresace, scresnme, scresgly,
                    scresant, scresact, scresknh, screskco, scchg, outf, sqmopt)
@@ -1730,11 +1730,11 @@ def gene_model_files(pdbfile, ionids, addres, outf, ffchoice, naamol2f, cutoff, 
     #       dis = calc_bond(mol.atoms[met].crd, mol.atoms[i].crd)
     #        cutoff = Radiusmet + Radiusi + 0.40
     #        if (dis <= cutoff) and (dis > 0.1):
-    #          print str(mol.atoms[i].resid) + '-' + \
+    #          print(str(mol.atoms[i].resid) + '-' + \
     #                mol.atoms[i].resname + \
     #                '@' + mol.atoms[i].atname + ' is in ' + str(cutoff) + \
     #                ' Angstrom of ' + str(mol.atoms[met].resid) + '-' + \
     #                mol.atoms[met].resname + '@' + \
-    #                mol.atoms[met].atname
+    #                mol.atoms[met].atname)
     #          if (mol.atoms[i].resid not in msresids):
     #            msresids.append(mol.atoms[i].resid)

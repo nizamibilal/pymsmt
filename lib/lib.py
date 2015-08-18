@@ -2,6 +2,7 @@
 This module is used for getting the parameter information from mol2 and
 parm*.dat file.
 """
+from __future__ import absolute_import, print_function
 from msmtmol.readmol2 import get_atominfo
 from pymsmtexp import *
 import os

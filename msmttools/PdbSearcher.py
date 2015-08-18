@@ -16,6 +16,7 @@ The orignal Pdbseacher software is come from:
 ** M. B. Peters, Y. Yang, B. Wang, L. Fusti-Molnar, M. N. Weaver, K. M. Merz,
    JCTC, 2010, 6, 2935-2947
 """
+from __future__ import print_function
 from msmtmol.readpdb import get_atominfo_fpdb, writepdbatm
 from msmtmol.element import Metalpdb, CoRadiiDict, resdict
 from msmtmol.mol import pdbatm
@@ -87,32 +88,32 @@ ionname = options.ionname
 if len(ionname) == 2:
     ionname = ionname[0] + ionname[1:].lower()
 
-print "The ionname you chosen is : " + ionname
+print("The ionname you chosen is : " + ionname)
 
 if options.cutoff != None:
-    print "The cutoff is: " + str(options.cutoff) + ' Angstrom.'
+    print("The cutoff is: " + str(options.cutoff) + ' Angstrom.')
 else:
-    print "Using the default method to determine the bond exists."
+    print("Using the default method to determine the bond exists.")
 
 #summary file
 sf = open(options.sumf, 'w')
-print >> sf, 'PDB_ID,', 'EXP_TECH,', 'RESOLUTION,', 'ATOM_NUMBER,', \
+print('PDB_ID,', 'EXP_TECH,', 'RESOLUTION,', 'ATOM_NUMBER,', \
              'ION_NUMBER,', 'RES_ID,', 'RES_NAME,', 'ATOM_ID,', 'ATOM_NAME,', \
-             'COORD_SPHERE,', 'GEOMETRY,','GEO_RMS'
+             'COORD_SPHERE,', 'GEOMETRY,','GEO_RMS', file=sf)
 
 #environment file
 ef = open(options.envrmtf, 'w')
-print >> ef, 'PDB,', 'ION_RESID,', 'ION_RESNAME,', 'ION_ATOM_ID,', \
+print('PDB,', 'ION_RESID,', 'ION_RESNAME,', 'ION_ATOM_ID,', \
              'ION_ATOM_NAME,', 'RESID,', 'RESNAME,', 'ATOM_ID,', 'ATOM_NAME,',\
              'DISTANCE,', 'GEOMETRY,', 'GEO_RMS,', 'COORDINATE_SPHERE,', \
-             'EXP_TECH,', 'RESOLUTION'
+             'EXP_TECH,', 'RESOLUTION', file=ef)
 
 #==============================================================================
 # Do analysis for each pdb file
 #==============================================================================
 
 for fname in pdbfnl:
-    print "Performing the " + fname + " file"
+    print("Performing the " + fname + " file")
 
     #get the metal list
     mol, atids, resids = get_atominfo_fpdb(fname)
@@ -195,7 +196,7 @@ for fname in pdbfnl:
             reslets = reslets + reslet
         nospace = ''
         reslets = nospace.join(sorted(reslets))
-        print len(mcresids), reslets
+        print(len(mcresids), reslets)
 
         #Get the geometry and geometry rms
         geo, georms = det_geo(mccrds)
@@ -206,7 +207,7 @@ for fname in pdbfnl:
 
         mcpdbfn = fname.strip('.pdb') + '_res_' + str(i) + '_MetalCenter.pdb'
         if os.path.isfile(mcpdbfn):
-            print "Overwritting the metal center pdb file: " + mcpdbfn
+            print("Overwritting the metal center pdb file: " + mcpdbfn)
             os.system("rm %s" %mcpdbfn)
 
         #print the residue which is in the cut off into the pdb file
@@ -242,26 +243,26 @@ for fname in pdbfnl:
                 if (disij >= 0.1) and (disij <= radiusij) \
                    and (elmtj != 'H'):
                     #print the environment file, for each bond in the metal site
-                    print >> ef, fname.strip('.pdb'),',', residi,',', resnamei, \
+                    print(fname.strip('.pdb'),',', residi,',', resnamei, \
                              ',', i, ',', atnamei,',', residj,',', resnamej,\
                              ',', j,',', atnamej, ',', round(disij, 3),',', geo,\
                              ',', round(georms, 3),',', reslets,',', exptyp,\
-                             ',', reso
+                             ',', reso, file=ef)
             else:
                 if (disij >= 0.1) and (disij <= options.cutoff) \
                    and (elmtj != 'H'):
                     #print the environment file, for each bond in the metal site
-                    print >> ef, fname.strip('.pdb'),',', residi,',', resnamei, \
+                    print(fname.strip('.pdb'),',', residi,',', resnamei, \
                              ',', i, ',', atnamei,',', residj,',', resnamej,\
                              ',', j,',', atnamej, ',', round(disij, 3),',', geo,\
                              ',', round(georms, 3),',', reslets,',', exptyp,\
-                             ',', reso
+                             ',', reso, file=ef)
 
         #print the summary file, for each metal site
-        print >> sf, fname.strip('.pdb'),',', exptyp,',', reso, \
+        print(fname.strip('.pdb'),',', exptyp,',', reso, \
                  ',', len(atids), ',', len(metallist),',', residi,\
                  ',', resnamei,',', i,',', atnamei,',', reslets,',', geo,\
-                 ',', round(georms, 3)
+                 ',', round(georms, 3), file=sf)
 
 sf.close()
 ef.close()

@@ -1,5 +1,5 @@
 "This module is for GAMESS"
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 import linecache
 import numpy
 from msmtmol.pt import AtomicNum
@@ -13,13 +13,13 @@ def write_gms_optf(goptf2, scchg, SpinNum, gatms, signum=3):
 
     ##GAMESS OPT file
     optf2 = open(goptf2, 'w')
-    print >> optf2, " $SYSTEM MEMDDI=400 MWORDS=200 $END"
-    print >> optf2, " $CONTRL DFTTYP=B3LYP RUNTYP=OPTIMIZE ICHARG=%d MULT=%d $END" %(scchg, SpinNum)
-    print >> optf2, " $STATPT NSTEP=1000 $END"
-    print >> optf2, " $BASIS GBASIS=N31 NGAUSS=6 NDFUNC=1 $END"
-    print >> optf2, " $DATA"
-    print >> optf2, "Cluster/6-31G"
-    print >> optf2, "C1"
+    print(" $SYSTEM MEMDDI=400 MWORDS=200 $END", file=optf2)
+    print(" $CONTRL DFTTYP=B3LYP RUNTYP=OPTIMIZE ICHARG=%d MULT=%d $END" %(scchg, SpinNum), file=optf2)
+    print(" $STATPT NSTEP=1000 $END", file=optf2)
+    print(" $BASIS GBASIS=N31 NGAUSS=6 NDFUNC=1 $END", file=optf2)
+    print(" $DATA", file=optf2)
+    print("Cluster/6-31G", file=optf2)
+    print("C1", file=optf2)
     optf2.close()
 
     for gatmi in gatms:
@@ -28,35 +28,35 @@ def write_gms_optf(goptf2, scchg, SpinNum, gatms, signum=3):
     ##Print the last line in GAMESS input file
     ##Geometry Optimization file
     optf2 = open(goptf2, 'a')
-    print >> optf2, " $END"
+    print(" $END", file=optf2)
     optf2.close()
 
 def write_gms_fcf(gfcf2, scchg, SpinNum):
 
     ##GAMESS FC file
     fcf2 = open(gfcf2, 'w')
-    print >> fcf2, " $SYSTEM MEMDDI=400 MWORDS=200 $END"
-    print >> fcf2, " $CONTRL DFTTYP=B3LYP RUNTYP=HESSIAN ICHARG=%d MULT=%d $END" %(scchg, SpinNum)
-    print >> fcf2, " $BASIS GBASIS=N31 NGAUSS=6 NDFUNC=1 $END"
-    print >> fcf2, " $DATA"
-    print >> fcf2, "Cluster/6-31G"
-    print >> fcf2, "C1"
-    print >> fcf2, " "
-    print >> fcf2, " $END"
+    print(" $SYSTEM MEMDDI=400 MWORDS=200 $END", file=fcf2)
+    print(" $CONTRL DFTTYP=B3LYP RUNTYP=HESSIAN ICHARG=%d MULT=%d $END" %(scchg, SpinNum), file=fcf2)
+    print(" $BASIS GBASIS=N31 NGAUSS=6 NDFUNC=1 $END", file=fcf2)
+    print(" $DATA", file=fcf2)
+    print("Cluster/6-31G", file=fcf2)
+    print("C1", file=fcf2)
+    print(" ", file=fcf2)
+    print(" $END", file=fcf2)
     fcf2.close()
 
 def write_gms_mkf(gmsf, lgchg, SpinNum, gatms, signum=3):
 
     #For GAMESS MK Charge file
     w_gmsf = open(gmsf, 'w')
-    print >> w_gmsf, " $SYSTEM MEMDDI=400 MWORDS=200 $END"
-    print >> w_gmsf, " $CONTRL DFTTYP=B3LYP ICHARG=%d MULT=%d $END" %(lgchg, SpinNum)
-    print >> w_gmsf, " $ELPOT IEPOT=1 WHERE=PDC $END"
-    print >> w_gmsf, " $PDC PTSEL=CONNOLLY CONSTR=NONE $END"
-    print >> w_gmsf, " $BASIS GBASIS=N31 NGAUSS=6 NDFUNC=1 $END"
-    print >> w_gmsf, " $DATA"
-    print >> w_gmsf, "Cluster/6-31G(d)"
-    print >> w_gmsf, "C1"
+    print(" $SYSTEM MEMDDI=400 MWORDS=200 $END", file=w_gmsf)
+    print(" $CONTRL DFTTYP=B3LYP ICHARG=%d MULT=%d $END" %(lgchg, SpinNum), file=w_gmsf)
+    print(" $ELPOT IEPOT=1 WHERE=PDC $END", file=w_gmsf)
+    print(" $PDC PTSEL=CONNOLLY CONSTR=NONE $END", file=w_gmsf)
+    print(" $BASIS GBASIS=N31 NGAUSS=6 NDFUNC=1 $END", file=w_gmsf)
+    print(" $DATA", file=w_gmsf)
+    print("Cluster/6-31G(d)", file=w_gmsf)
+    print("C1", file=w_gmsf)
     w_gmsf.close()
 
     #For GAMESS file
@@ -65,7 +65,7 @@ def write_gms_mkf(gmsf, lgchg, SpinNum, gatms, signum=3):
 
     #Print the end character for GAMESS input file
     w_gmsf = open(gmsf, 'a')
-    print >> w_gmsf, ' $END'
+    print(' $END', file=w_gmsf)
     w_gmsf.close()
 
 def write_gmsatm(gmsatm, fname, signum=3):
@@ -75,11 +75,11 @@ def write_gmsatm(gmsatm, fname, signum=3):
     nuchg = AtomicNum[element]
     nuchg = round(nuchg, 1)
     if signum == 3:
-        print >> wf, "%-6s  %6.1f  %8.3f %8.3f %8.3f" %(gmsatm.element, \
-                 nuchg, gmsatm.crdx, gmsatm.crdy, gmsatm.crdz)
+        print("%-6s  %6.1f  %8.3f %8.3f %8.3f" %(gmsatm.element, \
+                 nuchg, gmsatm.crdx, gmsatm.crdy, gmsatm.crdz), file=wf)
     elif signum == 4:
-        print >> wf, "%-6s  %6.1f  %9.4f %9.4f %9.4f" %(gmsatm.element, \
-                 nuchg, gmsatm.crdx, gmsatm.crdy, gmsatm.crdz)
+        print("%-6s  %6.1f  %9.4f %9.4f %9.4f" %(gmsatm.element, \
+                 nuchg, gmsatm.crdx, gmsatm.crdy, gmsatm.crdz), file=wf)
     wf.close()
 
 #------------------------------------------------------------------------------
@@ -227,7 +227,7 @@ def get_esp_from_gms(logfile, espfile):
         numps = int(line[-1])
     except:
         line = linecache.getline(logfile, bln)
-        print "CAUTION: " + line.strip('\n') + " IN THE GAMESS CALCULATION."
+        print("CAUTION: " + line.strip('\n') + " IN THE GAMESS CALCULATION.")
         bln = bln + 1
         line = linecache.getline(logfile, bln)
         line = line.strip('\n')
@@ -244,12 +244,12 @@ def get_esp_from_gms(logfile, espfile):
     linecache.clearcache()
 
     w_espf = open(espfile, 'w')
-    print >> w_espf, "%5d%5d%5d" %(len(crdl), len(espdict), 0)
+    print("%5d%5d%5d" %(len(crdl), len(espdict), 0), file=w_espf)
     for i in crdl:
-        print >> w_espf, "%16s %15.7E %15.7E %15.7E" %(' ', i[0], i[1], i[2])
+        print("%16s %15.7E %15.7E %15.7E" %(' ', i[0], i[1], i[2]), file=w_espf)
     for i in range(1, len(espdict)+1):
         val = espdict[i]
-        print >> w_espf, "%16.7E %15.7E %15.7E %15.7E" %(val[3], val[0], val[1], val[2])
+        print("%16.7E %15.7E %15.7E %15.7E" %(val[3], val[0], val[1], val[2]), file=w_espf)
     w_espf.close()
 
 

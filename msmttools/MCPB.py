@@ -43,6 +43,7 @@ The RESP fitting radii, VDW parameters and 12-6-4 parameter sets of +3 and
 #==============================================================================
 # Load the MCPB module
 #==============================================================================
+from __future__ import print_function
 from mcpb.gene_model_files import get_ms_resnames, gene_model_files
 from mcpb.resp_fitting import resp_fitting
 from mcpb.gene_pre_frcmod_file import gene_pre_frcmod_file
@@ -432,57 +433,57 @@ for line in inputf:
                               'only need one: HFE, CM, IOD or 12_6_4.')
 inputf.close()
 
-print "The input file you are using is : %s" %options.inputfile
-print ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+print("The input file you are using is : %s" %options.inputfile)
+print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 
 #Print the input variables
-print "The following is the input variable you have:"
+print("The following is the input variable you have:")
 
 try:
-    print 'The variable original_pdb is : ', orpdbf
+    print('The variable original_pdb is : ', orpdbf)
 except:
     raise pymsmtError('original_pdb needs to be provided.')
 
 try:
-    print 'The variable ion_ids is : ', ionids
+    print('The variable ion_ids is : ', ionids)
 except:
     raise pymsmtError('ion_ids needs to be provided.')
 
 try:
-    print 'The variable ion_mol2files is : ', ionmol2fs
+    print('The variable ion_mol2files is : ', ionmol2fs)
 except:
     raise pymsmtError('ion_mol2files needs to be provided.')
 
-print 'The variable additional_resids is : ', addres
-print 'The variable group_name is : ', gname
-print 'The variable cut_off is : ', cutoff
-print 'The variable chgfix_resids is : ', chgfix_resids
-print 'The variable scmodel_chg is : ', scchg
-print '             -99 means program will assign a charge automatically.'
-print 'The variable lgmodel_chg is : ', lgchg
-print '             -99 means program will assign a charge automatically.'
-print 'The variable software_version is : ', g0x
-print 'The variable sqm_opt is : ', sqmopt
-print 'The variable large_opt is : ', largeopt
-print 'The variable force_field is : ', ff_choice
-print 'The variable gaff is : ', gaff
-print 'The variable frcmodfs is : ', frcmodfs
-print 'The variable scale_factor is : ', scalef
-print '             Attention: The force constants will be scaled by '
-print '             multiplying the square of scale_factor.'
-print 'The variable bondfc_avg is : ', bondfc_avg
-print 'The variable anglefc_avg is : ', anglefc_avg
-print 'The variable naa_mol2files is : ', naamol2fs
-print 'The variable software_version is : ', g0x
-print 'The variable water_model is : ', watermodel.upper()
-print 'The variable ion_paraset is : ', paraset.upper(), "(Only for nonbonded model)"
+print('The variable additional_resids is : ', addres)
+print('The variable group_name is : ', gname)
+print('The variable cut_off is : ', cutoff)
+print('The variable chgfix_resids is : ', chgfix_resids)
+print('The variable scmodel_chg is : ', scchg)
+print('             -99 means program will assign a charge automatically.')
+print('The variable lgmodel_chg is : ', lgchg)
+print('             -99 means program will assign a charge automatically.')
+print('The variable software_version is : ', g0x)
+print('The variable sqm_opt is : ', sqmopt)
+print('The variable large_opt is : ', largeopt)
+print('The variable force_field is : ', ff_choice)
+print('The variable gaff is : ', gaff)
+print('The variable frcmodfs is : ', frcmodfs)
+print('The variable scale_factor is : ', scalef)
+print('             Attention: The force constants will be scaled by ')
+print('             multiplying the square of scale_factor.')
+print('The variable bondfc_avg is : ', bondfc_avg)
+print('The variable anglefc_avg is : ', anglefc_avg)
+print('The variable naa_mol2files is : ', naamol2fs)
+print('The variable software_version is : ', g0x)
+print('The variable water_model is : ', watermodel.upper())
+print('The variable ion_paraset is : ', paraset.upper(), "(Only for nonbonded model)")
 
 if options.step in ['4n2']:
     if ioninfo == []:
         raise pymsmtError('The variable ion_info need to be provided in step '
                           '%s.' %options.step)
 else:
-    print 'The variable ion_info is : ', ioninfo
+    print('The variable ion_info is : ', ioninfo)
 
 #==============================================================================
 # Related define

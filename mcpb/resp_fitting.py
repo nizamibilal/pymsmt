@@ -2,7 +2,7 @@
 This module was written for generating the resp fitting input file and doing
 the RESP charge fitting.
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 from msmtmol.mol import get_reslist
 from msmtmol.element import Atnum
 from msmtmol.readpdb import get_atominfo_fpdb
@@ -36,20 +36,20 @@ def print_mol2f(resid, resname1, resname2, resconter, mol, iddict1, sddict, \
 
     mol2f = open(resname2 + '.mol2', 'w')
 
-    print '***Generating the ' + resname2 + '.mol2 file...'
+    print('***Generating the ' + resname2 + '.mol2 file...')
 
     ##1. molecule information
-    print >> mol2f, "@<TRIPOS>MOLECULE"
-    print >> mol2f, resname2
-    print >> mol2f, '%5d%6d%6d%6d%6d' %(len(resconter), len(blist_each),
-                                       1, 0, 0) #atom number and bond number
-    print >> mol2f, 'SMALL'
-    print >> mol2f, 'RESP Charge'
-    print >> mol2f, ' '
-    print >> mol2f, ' '
+    print("@<TRIPOS>MOLECULE", file=mol2f)
+    print(resname2, file=mol2f)
+    print('%5d%6d%6d%6d%6d' %(len(resconter), len(blist_each),
+                                       1, 0, 0), file=mol2f) #atom number and bond number
+    print('SMALL', file=mol2f)
+    print('RESP Charge', file=mol2f)
+    print(' ', file=mol2f)
+    print(' ', file=mol2f)
 
     ##2. atom information
-    print >> mol2f, '@<TRIPOS>ATOM'
+    print('@<TRIPOS>ATOM', file=mol2f)
     for atm in resconter:
       #new atom id
       atid = mol.atoms[atm].atid
@@ -59,20 +59,20 @@ def print_mol2f(resid, resname1, resname2, resconter, mol, iddict1, sddict, \
       key = str(resid) + '-' +  resname1 + '-' + atname
       atomtype = sddict[key]
       chg = stdict[key]
-      print >> mol2f, '%7d %-4s    %10.4f%10.4f%10.4f %-4s %6d %-4s %12.6f'\
+      print('%7d %-4s    %10.4f%10.4f%10.4f %-4s %6d %-4s %12.6f'\
                       %(natid, atname, crd[0], crd[1], crd[2], atomtype,
-                       1, resname2, chg)
+                       1, resname2, chg), file=mol2f)
 
     ##3. bond information
-    print >> mol2f, '@<TRIPOS>BOND'
+    print('@<TRIPOS>BOND', file=mol2f)
     for bonds in range(0, len(blist_each)):
-      print >> mol2f, '%6d%5d%5d%2d' %(bonds+1, blist_each[bonds][0],
-                      blist_each[bonds][1], 1) #all as single bond
+      print('%6d%5d%5d%2d' %(bonds+1, blist_each[bonds][0],
+                      blist_each[bonds][1], 1), file=mol2f) #all as single bond
 
     ##4. substructure information
-    print >> mol2f, '@<TRIPOS>SUBSTRUCTURE'
-    print >> mol2f, '     1', resname2, '        1 TEMP' + \
-                    '              0 ****  ****    0 ROOT'
+    print('@<TRIPOS>SUBSTRUCTURE', file=mol2f)
+    print('     1', resname2, '        1 TEMP' + \
+                    '              0 ****  ****    0 ROOT', file=mol2f)
     mol2f.close()
 
 def get_equ_for_ang(mol, angresids, resids, iddict):
@@ -210,12 +210,12 @@ def add_restriction(frespin, libdict, mol, resids, reslist, mcresids, bnoresids,
     #3. print the 3rd part, the group restriction------------------------------
     for i in angresids:
       resname = mol.residues[i].resname
-      print >> fresp, "%5d" %len(mol.residues[i].resconter),
-      print >> fresp, "%9s" %"0.00000"
-      print >> fresp, "",
+      print("%5d" %len(mol.residues[i].resconter), end=' ', file=fresp)
+      print("%9s" %"0.00000", file=fresp)
+      print("", end=' ', file=fresp)
       for j in mol.residues[i].resconter:
-        print >> fresp, "%4d%5d" %(1, iddict[j][0]),
-      print >> fresp, "\n",
+        print("%4d%5d" %(1, iddict[j][0]), end=' ', file=fresp)
+      print("\n", end=' ', file=fresp)
 
     #4. add the 4th part, the backbone restriction-----------------------------
     if chgmod == 0:
@@ -236,16 +236,16 @@ def add_restriction(frespin, libdict, mol, resids, reslist, mcresids, bnoresids,
             atnamejs = mol.atoms[atj].atname
             if chgmod == 1:
               if atnamejs in ['CA', 'N', 'C', 'O']:
-                print >> fresp, "%5d%10.5f" %(1, chg)
-                print >> fresp, "%5d%5d" %(1, natj)
+                print("%5d%10.5f" %(1, chg), file=fresp)
+                print("%5d%5d" %(1, natj), file=fresp)
             elif chgmod == 2:
               if atnamejs in ['CA', 'H', 'HA', 'N', 'C', 'O']:
-                print >> fresp, "%5d%10.5f" %(1, chg)
-                print >> fresp, "%5d%5d" %(1, natj)
+                print("%5d%10.5f" %(1, chg), file=fresp)
+                print("%5d%5d" %(1, natj), file=fresp)
             elif chgmod == 3:
               if atnamejs in ['CA', 'H', 'HA', 'N', 'C', 'O', 'CB']:
-                print >> fresp, "%5d%10.5f" %(1, chg)
-                print >> fresp, "%5d%5d" %(1, natj)
+                print("%5d%10.5f" %(1, chg), file=fresp)
+                print("%5d%5d" %(1, natj), file=fresp)
     else:
       raise pymsmtError('Please choose chgmod among 0, 1, 2 and 3.')
 
@@ -260,11 +260,11 @@ def add_restriction(frespin, libdict, mol, resids, reslist, mcresids, bnoresids,
           chgj = libdict['C'+resname + '-' + atname][1]
         else:
           chgj = libdict[resname + '-' + atname][1]
-        print >> fresp, "%5d%10.5f" %(int(1), chgj)
-        print >> fresp, "%5d%5d" %(int(1), iddict[j][0])
+        print("%5d%10.5f" %(int(1), chgj), file=fresp)
+        print("%5d%5d" %(int(1), iddict[j][0]), file=fresp)
 
-    print >> fresp, "\n"
-    print >> fresp, "\n"
+    print("\n", file=fresp)
+    print("\n", file=fresp)
     fresp.close()
 
 def gene_resp_input_file(lgpdbf, ionids, stfpf, ffchoice, mol2fs,
@@ -334,23 +334,23 @@ def gene_resp_input_file(lgpdbf, ionids, stfpf, ffchoice, mol2fs,
     ##############RESP1.IN file###############################################
     #-------------------------------------------------------------------------
 
-    print "***Generating the 1st stage resp charge fitting input file..."
+    print("***Generating the 1st stage resp charge fitting input file...")
 
     #print the 1st part, the title
     fresp1 = open('resp1.in', 'w')
-    print >> fresp1, "Resp charges for organic molecule"
-    print >> fresp1, " "
-    print >> fresp1, " &cntrl"
-    print >> fresp1, " "
-    print >> fresp1, " nmol = 1,"
-    print >> fresp1, " ihfree = 1,"
-    print >> fresp1, " ioutopt = 1,"
-    print >> fresp1, " "
-    print >> fresp1, " &end"
-    print >> fresp1, "    1.0"
-    print >> fresp1, "Resp charges for organic molecule"
-    print >> fresp1, "%5d" %lgchg,
-    print >> fresp1, "%4d" %len(atids)
+    print("Resp charges for organic molecule", file=fresp1)
+    print(" ", file=fresp1)
+    print(" &cntrl", file=fresp1)
+    print(" ", file=fresp1)
+    print(" nmol = 1,", file=fresp1)
+    print(" ihfree = 1,", file=fresp1)
+    print(" ioutopt = 1,", file=fresp1)
+    print(" ", file=fresp1)
+    print(" &end", file=fresp1)
+    print("    1.0", file=fresp1)
+    print("Resp charges for organic molecule", file=fresp1)
+    print("%5d" %lgchg, end=' ', file=fresp1)
+    print("%4d" %len(atids), file=fresp1)
 
     #2. print the 2nd part, the free and fozen atoms---------------------------
     natids = [i for i in range(1, len(atids)+1)] #new atids
@@ -375,8 +375,8 @@ def gene_resp_input_file(lgpdbf, ionids, stfpf, ffchoice, mol2fs,
 
     for i in atids:
       #if iddict[i][2] == -99:
-      print >> fresp1, "%5d" %iddict[i][1],
-      print >> fresp1, "%4s" %'0'
+      print("%5d" %iddict[i][1], end=' ', file=fresp1)
+      print("%4s" %'0', file=fresp1)
       #else:
       #  print >> fresp1, "%5d" %iddict[i][1],
       #  print >> fresp1, "%4s" %iddict[i][2]
@@ -388,30 +388,30 @@ def gene_resp_input_file(lgpdbf, ionids, stfpf, ffchoice, mol2fs,
     #-------------------------------------------------------------------------
     ####################RESP2.IN file#########################################
     #-------------------------------------------------------------------------
-    print "***Generating the 2nd stage resp charge fitting input file..."
+    print("***Generating the 2nd stage resp charge fitting input file...")
 
     #1. print the 1st part, the title------------------------------------------
     fresp2 = open('resp2.in', 'w')
-    print >> fresp2, "Resp charges for organic molecule"
-    print >> fresp2, " "
-    print >> fresp2, " &cntrl"
-    print >> fresp2, " "
-    print >> fresp2, " nmol = 1,"
-    print >> fresp2, " ihfree = 1,"
-    print >> fresp2, " ioutopt = 1,"
-    print >> fresp2, " iqopt = 2,"
-    print >> fresp2, " qwt = 0.001,"
-    print >> fresp2, " "
-    print >> fresp2, " &end"
-    print >> fresp2, "    1.0"
-    print >> fresp2, "Resp charges for organic molecule"
-    print >> fresp2, "%5d" %lgchg,
-    print >> fresp2, "%4d" %len(atids)
+    print("Resp charges for organic molecule", file=fresp2)
+    print(" ", file=fresp2)
+    print(" &cntrl", file=fresp2)
+    print(" ", file=fresp2)
+    print(" nmol = 1,", file=fresp2)
+    print(" ihfree = 1,", file=fresp2)
+    print(" ioutopt = 1,", file=fresp2)
+    print(" iqopt = 2,", file=fresp2)
+    print(" qwt = 0.001,", file=fresp2)
+    print(" ", file=fresp2)
+    print(" &end", file=fresp2)
+    print("    1.0", file=fresp2)
+    print("Resp charges for organic molecule", file=fresp2)
+    print("%5d" %lgchg, end=' ', file=fresp2)
+    print("%4d" %len(atids), file=fresp2)
 
     #2. print the 2nd part, the free or frozen information---------------------
     for i in atids:
-      print >> fresp2, "%5d" %iddict[i][1],
-      print >> fresp2, "%4s" %iddict[i][2]
+      print("%5d" %iddict[i][1], end=' ', file=fresp2)
+      print("%4s" %iddict[i][2], file=fresp2)
     fresp2.close()
 
     add_restriction('resp2.in', libdict, mol, resids, reslist, mcresids,
@@ -420,11 +420,11 @@ def gene_resp_input_file(lgpdbf, ionids, stfpf, ffchoice, mol2fs,
 def resp_fitting(stpdbf, lgpdbf, stfpf, lgfpf, mklogf, ionids,\
            ffchoice, mol2fs, metcenres2, chgmod, fixchg_resids, g0x, lgchg):
 
-    print "******************************************************************"
-    print "*                                                                *"
-    print "*======================RESP Charge fitting=======================*"
-    print "*                                                                *"
-    print "******************************************************************"
+    print("******************************************************************")
+    print("*                                                                *")
+    print("*======================RESP Charge fitting=======================*")
+    print("*                                                                *")
+    print("******************************************************************")
 
     gene_resp_input_file(lgpdbf, ionids, stfpf, ffchoice, mol2fs,
                          chgmod, fixchg_resids, lgchg)
@@ -433,7 +433,7 @@ def resp_fitting(stpdbf, lgpdbf, stfpf, lgfpf, mklogf, ionids,\
     ####################RESP charge fitting###################################
     #-------------------------------------------------------------------------
 
-    print '***Doing the RESP charge fiting...'
+    print('***Doing the RESP charge fiting...')
 
     espf = mklogf.strip('.log') + '.esp'
 
@@ -501,36 +501,36 @@ def resp_fitting(stpdbf, lgpdbf, stfpf, lgfpf, mklogf, ionids,\
     ####################Checking Models#########################
     #-------------------------------------------------------------------------
 
-    print "=========================Checking models=========================="
-    print '***Check the large model...'
+    print("=========================Checking models==========================")
+    print('***Check the large model...')
     if len(chgs) != len(llist):
       raise pymsmtError('Error: the charges and atom numbers are mismatch '
                         'for the large model!')
     else:
-      print 'Good. The charges and atom numbers are match for the ' + \
-            'large model.'
-      print 'Good. There are ' + str(len(llist)) + ' atoms in the ' + \
-            'large model.'
+      print('Good. The charges and atom numbers are match for the ' + \
+            'large model.')
+      print('Good. There are ' + str(len(llist)) + ' atoms in the ' + \
+            'large model.')
 
-    print '***Check the standard model...'
+    print('***Check the standard model...')
     if len(stlist) != len(stdict):
       raise pymsmtError('Error: the charges and atom numbers are mismatch '
                         'for the standard model!')
     else:
-      print 'Good. The charges and atom numbers are match for the ' + \
-            'standard model.'
-      print 'Good. There are ' + str(len(stlist)) + ' atoms in the ' + \
-            'standard model.'
+      print('Good. The charges and atom numbers are match for the ' + \
+            'standard model.')
+      print('Good. There are ' + str(len(stlist)) + ' atoms in the ' + \
+            'standard model.')
 
-    print '***Check the residue names provided...'
+    print('***Check the residue names provided...')
     if len(metcenres1) != len(metcenres2):
-      print 'You gave the residue names: ', str(metcenres2)
-      print 'Database had them: ', str(metcenres1)
+      print('You gave the residue names: ', str(metcenres2))
+      print('Database had them: ', str(metcenres1))
       raise pymsmtError('Error: The number of the residue names given is '
                         'mismatch the database!')
     else:
-      print 'Good. The number of the residue names given matches ' + \
-            'the database.'
+      print('Good. The number of the residue names given matches ' + \
+            'the database.')
 
     #-------------------------------------------------------------------------
     ####################Building mol2 files for modeling######################
@@ -551,7 +551,7 @@ def resp_fitting(stpdbf, lgpdbf, stfpf, lgfpf, mklogf, ionids,\
 
     blist2 = [(i[0], i[1]) for i in blist]
 
-    print "=======================Building mol2 files========================"
+    print("=======================Building mol2 files========================")
     #for each residue, print out the mol2 file
     for i in range(0, len(resids)):
 

@@ -1,7 +1,7 @@
 """
 This is the code for reading and writting pdb files.
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 from msmtmol.mol import Atom, Residue, Molecule, get_reslist
 from msmtmol.readmol2 import get_pure_type, get_pure_num
 from msmtmol.element import ionnamel, CoRadiiDict, Metalpdb
@@ -76,7 +76,7 @@ def get_atominfo_fpdb(fname):
 def writepdb(mol, atids, fname):
 
     wf = open(fname, 'w')
-    print >> wf, 'REMARK, BUILD BY MCPB.PY'
+    print('REMARK, BUILD BY MCPB.PY', file=wf)
 
     resids = []
     for i in atids:
@@ -91,7 +91,7 @@ def writepdb(mol, atids, fname):
 
     for i in resids:
       if (i in terlist) and (i != min(resids)):
-        print >> wf, 'TER'     
+        print('TER', file=wf)     
       for j in mol.residues[i].resconter:
         atm = mol.atoms[j]
         gtype = atm.gtype
@@ -103,19 +103,19 @@ def writepdb(mol, atids, fname):
         crd = atm.crd
         resid = atm.resid
         resname = mol.residues[resid].resname
-        print >> wf, "%-6s%5d %4s %3s %1s%4d    %8.3f%8.3f%8.3f%6.2f%6.2f" \
-                 %(gtype, atid, atname, resname, 'A', resid, crd[0], crd[1], crd[2], 1.00, 0.00)
-    print >> wf, 'END'
+        print("%-6s%5d %4s %3s %1s%4d    %8.3f%8.3f%8.3f%6.2f%6.2f" \
+                 %(gtype, atid, atname, resname, 'A', resid, crd[0], crd[1], crd[2], 1.00, 0.00), file=wf)
+    print('END', file=wf)
     wf.close()
 
 def writepdbatm(pdbatm, fname):
     wf = open(fname, 'a')
     if len(pdbatm.atname) == 3:
-      print >> wf, "%-6s%5d %4s %3s %1s%4d   %8.3f%8.3f%8.3f%6.2f%6.2f" %(pdbatm.tiker, pdbatm.atid,\
+      print("%-6s%5d %4s %3s %1s%4d   %8.3f%8.3f%8.3f%6.2f%6.2f" %(pdbatm.tiker, pdbatm.atid,\
         pdbatm.atname, pdbatm.resname, pdbatm.chainid, pdbatm.resid, pdbatm.crdx, pdbatm.crdy, \
-        pdbatm.crdz, pdbatm.occp, pdbatm.tempfac)
+        pdbatm.crdz, pdbatm.occp, pdbatm.tempfac), file=wf)
     else:
-      print >> wf, "%-6s%5d %4s %3s %1s%4d   %8.3f%8.3f%8.3f%6.2f%6.2f" %(pdbatm.tiker, pdbatm.atid,\
+      print("%-6s%5d %4s %3s %1s%4d   %8.3f%8.3f%8.3f%6.2f%6.2f" %(pdbatm.tiker, pdbatm.atid,\
        pdbatm.atname.center(4), pdbatm.resname, pdbatm.chainid, pdbatm.resid, pdbatm.crdx, pdbatm.crdy, \
-       pdbatm.crdz, pdbatm.occp, pdbatm.tempfac)
+       pdbatm.crdz, pdbatm.occp, pdbatm.tempfac), file=wf)
 

@@ -12,7 +12,7 @@ the sub-matrix of the Hessian Matrix to generate the force constants.
 3) Z-matrix method, which uses the whole Hessian Matrix to generate the force
 constants.
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 from msmtmol.readpdb import get_atominfo_fpdb
 from msmtmol.getlist import get_alist, get_mc_blist
 from msmtmol.gauio import (get_crds_from_fchk, get_matrix_from_fchk,
@@ -82,10 +82,10 @@ def avg_bond_para(misbondat12, bondlen, bfconst):
     # bond length has 4 decimal places
     # bond force constant has 1 decimal place
     if (len(bondlen) == 0) or (len(bfconst) == 0):
-      print 'For bondtype: ' + misbondat12 + '. There are ' + \
-            ' 0 bond in this type: '
-      print '  Could not find bond parameters for %s, treat it as 0.' \
-            %misbondat12
+      print('For bondtype: ' + misbondat12 + '. There are ' + \
+            ' 0 bond in this type: ')
+      print('  Could not find bond parameters for %s, treat it as 0.' \
+            %misbondat12)
       avgbfc = 0.0
       avgblen = 0.0
     else:
@@ -94,17 +94,17 @@ def avg_bond_para(misbondat12, bondlen, bfconst):
       bfconst = [round(i, 1) for i in bfconst]
       avgbfc = round(average(bfconst), 1)
 
-      print 'For bondtype: ' + misbondat12 + '. There are ' + \
-             str(len(bondlen)) + ' bond(s) in this type: '
-      print '  The bond length(s) is(are): ' + str(bondlen)
-      print '  The average bond length is: ' + str(avgblen) + \
-            ' Angstrom.'
-      print '  The force constant(s) is(are): ' + str(bfconst)
-      print '  The average force constant is: ' + str(avgbfc) + \
-            ' Kcal*mol^-1*A^-2.'
+      print('For bondtype: ' + misbondat12 + '. There are ' + \
+             str(len(bondlen)) + ' bond(s) in this type: ')
+      print('  The bond length(s) is(are): ' + str(bondlen))
+      print('  The average bond length is: ' + str(avgblen) + \
+            ' Angstrom.')
+      print('  The force constant(s) is(are): ' + str(bfconst))
+      print('  The average force constant is: ' + str(avgbfc) + \
+            ' Kcal*mol^-1*A^-2.')
 
       if avgbfc < 0:
-        print '  *The average force constant is negative, treat is as 0.0.'
+        print('  *The average force constant is negative, treat is as 0.0.')
         avgbfc = 0.0
 
     bond_para = (avgbfc, avgblen)
@@ -114,10 +114,10 @@ def avg_angle_para(misangat123, angvals, afconst):
     # angle mangnitude has 2 decimal places
     # angle force constant has 2 decimal places
     if len(angvals) == 0 or len(afconst) == 0:
-      print 'For angletype: ' + misangat123 + '. There are ' + \
-            '0 angle in this type: '
-      print '  Could not find angle parameters for %s, treat it as 0.' \
-            %misangat123
+      print('For angletype: ' + misangat123 + '. There are ' + \
+            '0 angle in this type: ')
+      print('  Could not find angle parameters for %s, treat it as 0.' \
+            %misangat123)
       avgafc = 0.0
       avgangv = 0.0
     else:
@@ -126,17 +126,17 @@ def avg_angle_para(misangat123, angvals, afconst):
       afconst = [round(i, 2) for i in afconst]
       avgafc = round(average(afconst), 2)
  
-      print 'For angletype: ' + misangat123 + '. There are ' + \
-            str(len(angvals)) + ' angle(s) in this type: '
-      print '  The angle value(s) is(are): ' + str(angvals)
-      print '  The average angle value is: ' + str(avgangv) + \
-            ' Degree.'
-      print '  The force constant(s) is(are): '+ str(afconst)
-      print '  The average force constant is: ' + str(avgafc) + \
-            ' Kcal*mol^-1*Rad^-2.'
+      print('For angletype: ' + misangat123 + '. There are ' + \
+            str(len(angvals)) + ' angle(s) in this type: ')
+      print('  The angle value(s) is(are): ' + str(angvals))
+      print('  The average angle value is: ' + str(avgangv) + \
+            ' Degree.')
+      print('  The force constant(s) is(are): '+ str(afconst))
+      print('  The average force constant is: ' + str(avgafc) + \
+            ' Kcal*mol^-1*Rad^-2.')
 
       if avgafc < 0:
-        print '  *The average force constant is negative, treat is as 0.00.'
+        print('  *The average force constant is negative, treat is as 0.00.')
         avgafc = 0.00
 
     ang_para = (avgafc, avgangv)
@@ -158,20 +158,18 @@ def print_frcmod_file(pref, finf, finalparmdict, method):
           at3 = line[10:12]
           angtyp = line[4:12]
           param = finalparmdict[angtyp]
-          print >> finfrcmod, '%8s  %7.2f    %7.2f    %-s' %(angtyp,
-                                             param[0], param[1], note)
+          print('%8s  %7.2f    %7.2f    %-s' %(angtyp,param[0], param[1], note), file=finfrcmod) 
         #Bond
         else:
           at1 = line[4:6]
           at2 = line[7:9]
           bondtyp = line[4:9]
           param = finalparmdict[bondtyp]
-          print >> finfrcmod, '%5s  %5.1f   %7.4f      %-s' %(bondtyp,
-                                              param[0], param[1], note)
+          print('%5s  %5.1f   %7.4f      %-s' %(bondtyp, param[0], param[1], note), file=finfrcmod)
       elif line[0:4] == 'YES ':
-        print >> finfrcmod, line[4:]
+        print(line[4:], file=finfrcmod)
       else:
-        print >> finfrcmod, line
+        print(line, file=finfrcmod)
     prefrcmod.close()
     finfrcmod.close()
 
@@ -213,11 +211,11 @@ def fcfit_ep_angle(elmts):
 
 def gene_by_empirical_way(scpdbf, ionids, stfpf, pref, finf):
 
-    print "******************************************************************"
-    print "*                                                                *"
-    print "*===========Using the empirical way to solve the problem=========*"
-    print "*                                                                *"
-    print "******************************************************************"
+    print("******************************************************************")
+    print("*                                                                *")
+    print("*===========Using the empirical way to solve the problem=========*")
+    print("*                                                                *")
+    print("******************************************************************")
 
     #Read from sidechain pdb
     mol, atids, resids = get_atominfo_fpdb(scpdbf)
@@ -230,7 +228,7 @@ def gene_by_empirical_way(scpdbf, ionids, stfpf, pref, finf):
     finalparmdict = {}
 
     #for bond
-    print "=======================Generate the bond parameters==============="
+    print("=======================Generate the bond parameters===============")
 
     for misbond in missbondtyps:
       bondlen = []
@@ -262,7 +260,7 @@ def gene_by_empirical_way(scpdbf, ionids, stfpf, pref, finf):
       finalparmdict[misbondat12] = bond_para
 
     #for angle
-    print "=======================Generate the angle parameters=============="
+    print("=======================Generate the angle parameters==============")
 
     for misang in missangtyps:
       angvals = []
@@ -630,7 +628,7 @@ def get_imp_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, nat4, scalef):
 def gene_by_QM_fitting_sem(scpdbf, ionids, stfpf, pref, finf, chkfname,
                            logfile, g0x, scalef, bondavg, angavg):
 
-    print "==================Using the Seminario method to solve the problem."
+    print("==================Using the Seminario method to solve the problem.")
 
     mol, atids, resids = get_atominfo_fpdb(scpdbf)
     blist = get_mc_blist(mol, atids, ionids, stfpf)
@@ -658,7 +656,7 @@ def gene_by_QM_fitting_sem(scpdbf, ionids, stfpf, pref, finf, chkfname,
     finalparmdict = {}
 
     #for bond
-    print "=======================Generate the bond parameters==============="
+    print("=======================Generate the bond parameters===============")
     for misbond in missbondtyps:
       bondlen = []      
       bfconst = []
@@ -673,10 +671,10 @@ def gene_by_QM_fitting_sem(scpdbf, ionids, stfpf, pref, finf, chkfname,
 
           if bondavg == 1:
             dis, fcfinal, stdv = get_bond_fc_with_sem(crds, fcmatrix, nat1, nat2, scalef, bondavg)
-            print '### Bond force constant between ' + \
+            print('### Bond force constant between ' + \
               mol.atoms[at1].resname + str(mol.atoms[at1].resid) + '@' + mol.atoms[at1].atname + ' and ' + \
               mol.atoms[at2].resname + str(mol.atoms[at2].resid) + '@' + mol.atoms[at2].atname + ' : ' + \
-              str(round(fcfinal, 1)) + ' with StdDev ' + str(round(stdv, 1))
+              str(round(fcfinal, 1)) + ' with StdDev ' + str(round(stdv, 1)))
           elif bondavg == 0:
             dis, fcfinal = get_bond_fc_with_sem(crds, fcmatrix, nat1, nat2, scalef, bondavg)
 
@@ -690,7 +688,7 @@ def gene_by_QM_fitting_sem(scpdbf, ionids, stfpf, pref, finf, chkfname,
       finalparmdict[misbondat12] = bond_para
 
     #for angle
-    print "=======================Generate the angle parameters=============="
+    print("=======================Generate the angle parameters==============")
     for misang in missangtyps:
       angvals = []
       afconst = []
@@ -707,11 +705,11 @@ def gene_by_QM_fitting_sem(scpdbf, ionids, stfpf, pref, finf, chkfname,
 
           if angavg == 1:
             angval, fcfinal, stdv = get_ang_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, scalef, angavg)
-            print '### Angle force constant between ' + \
+            print('### Angle force constant between ' + \
               mol.atoms[at1].resname + str(mol.atoms[at1].resid) +  '@' + mol.atoms[at1].atname + ', ' + \
               mol.atoms[at2].resname + str(mol.atoms[at2].resid) +  '@' + mol.atoms[at2].atname + ' and ' + \
               mol.atoms[at3].resname + str(mol.atoms[at3].resid) +  '@' + mol.atoms[at3].atname + ' : ' + \
-              str(round(fcfinal, 2)) + ' with StdDev ' + str(round(stdv, 2))
+              str(round(fcfinal, 2)) + ' with StdDev ' + str(round(stdv, 2)))
           elif angavg == 0:
              angval, fcfinal = get_ang_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, scalef, angavg)
 
@@ -732,7 +730,7 @@ def gene_by_QM_fitting_sem(scpdbf, ionids, stfpf, pref, finf, chkfname,
 def gene_by_QM_fitting_zmatrix(scpdbf, ionids, stfpf, pref, finf, logfname,
                                scalef):
 
-    print "=============Using the Z-matrix method to generate the parameters."
+    print("=============Using the Z-matrix method to generate the parameters.")
 
     sturefs, vals, fcs = get_fc_from_log(logfname)
 
@@ -753,7 +751,7 @@ def gene_by_QM_fitting_zmatrix(scpdbf, ionids, stfpf, pref, finf, logfname,
     finalparmdict = {}
 
     #for bond
-    print "=======================Generate the bond parameters==============="
+    print("=======================Generate the bond parameters===============")
     for misbond in missbondtyps:
       bondlen = []      
       bfconst = []
@@ -779,7 +777,7 @@ def gene_by_QM_fitting_zmatrix(scpdbf, ionids, stfpf, pref, finf, logfname,
       finalparmdict[misbondat12] = bond_para
 
     #for angle
-    print "=======================Generate the angle parameters=============="
+    print("=======================Generate the angle parameters==============")
     for misang in missangtyps:
       angvals = []
       afconst = []

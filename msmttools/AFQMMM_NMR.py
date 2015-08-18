@@ -12,6 +12,7 @@ modeling:
 The Automated Fragmentation QM/MM approach:
 ** X. He, B. Wang and K. M. Merz. JPCB, 2009, 113, 10380-10388.
 """
+from __future__ import absolute_import, print_function
 from api.AmberParm import read_amber_prm
 from msmtmol.cal import calc_bond
 from msmtmol.element import Atnum, CoRadiiDict, ResChgDict, resnamel
@@ -67,18 +68,18 @@ def afqmmm_nmr(cresids, mol, atids, resids):
       infof = open('number' + str(i) + '.info', 'w') #information file
       xyzf = open('number' + str(i) + '.xyz', 'w') #xyz file
 
-      print >> xyzf, 'NNNNN'
-      print >> xyzf, 'Title'
+      print('NNNNN', file=xyzf)
+      print('Title', file=xyzf)
 
-      print >> infof, 'This molecule has ' + str(len(resids)) + ' residues.'
-      print >> infof, 'Core residue = ', i
+      print('This molecule has ' + str(len(resids)) + ' residues.', file=infof)
+      print('Core residue = ', i, file=infof)
 
-      print >> fp, '%%chk=number%d.chk' % i
-      print >> fp, '%mem=22GB'
-      print >> fp, '%nproc=8'
-      print >> fp, '#b3lyp/6-31G* charge nmr'
-      print >> fp, ' '
-      print >> fp, 'Have a nice day'
+      print('%%chk=number%d.chk' % i, file=fp)
+      print('%mem=22GB', file=fp)
+      print('%nproc=8', file=fp)
+      print('#b3lyp/6-31G* charge nmr', file=fp)
+      print(' ', file=fp)
+      print('Have a nice day', file=fp)
 
       bresids = [] #buffer region
       ccaps = [] #C terminal capped residue
@@ -150,15 +151,15 @@ def afqmmm_nmr(cresids, mol, atids, resids):
               else:
                 if mol.atoms[k].resid+1 not in bresids:
                   bresids.append(mol.atoms[k].resid+1)
-      print >> infof, 'After the distance criterion: Buffer residues =       '\
-               , sorted(bresids)
+      print('After the distance criterion: Buffer residues =       '\
+               , sorted(bresids), file=infof)
       #2. core creteria
       for j in range(i-2, i+3):
         if (j > 0) and (j <= max(resids)):
           if (j in aaresids) and (j not in bresids):
             bresids.append(j)
-      print >> infof, 'After the core criterion: Buffer residues =           '\
-               , sorted(bresids)
+      print('After the core criterion: Buffer residues =           '\
+               , sorted(bresids), file=infof)
       #3. disulfur bond creteria
       for j in bresids:
         if j<= max(resids):
@@ -171,8 +172,8 @@ def afqmmm_nmr(cresids, mol, atids, resids):
                     dis = calc_bond(mol.atoms[l].crd, mol.atoms[k].crd)
                     if (dis <= 2.5) and (mol.atoms[l].resid not in bresids):
                       bresids.append(mol.atoms[l].resid)
-      print >> infof, 'After the disulfide bond criterion: Buffer residues = '\
-               , sorted(bresids)
+      print('After the disulfide bond criterion: Buffer residues = '\
+               , sorted(bresids), file=infof)
       ####=====================================================================
       ####  For special situation
       ####=====================================================================
@@ -207,12 +208,12 @@ def afqmmm_nmr(cresids, mol, atids, resids):
       bresids = list(set(bresids) - set(ccaps))
       bresids.sort()
 
-      print >> infof, 'After the special case criterion: Buffer residues =   '\
-               , sorted(bresids)
-      print >> infof, 'After the special case criterion: N-terimal caps =    '\
-               , sorted(ncaps)
-      print >> infof, 'After the special case criterion: C-terimal caps =    '\
-               , sorted(ccaps)
+      print('After the special case criterion: Buffer residues =   '\
+               , sorted(bresids), file=infof)
+      print('After the special case criterion: N-terimal caps =    '\
+               , sorted(ncaps), file=infof)
+      print('After the special case criterion: C-terimal caps =    '\
+               , sorted(ccaps), file=infof)
       ####=====================================================================
       ####  get the charge and spin of the two structures
       ####=====================================================================
@@ -225,8 +226,8 @@ def afqmmm_nmr(cresids, mol, atids, resids):
         chgj = sum(chglist)
         totchg = totchg + float(chgj)
 
-      print >> fp, ' '
-      print >> fp, '%-5d %5s' %(int(round(totchg, 0)), 'SSSSS')
+      print(' ', file=fp)
+      print('%-5d %5s' %(int(round(totchg, 0)), 'SSSSS'), file=fp)
       ####=====================================================================
       ####  Print the core region
       ####=====================================================================
@@ -237,10 +238,10 @@ def afqmmm_nmr(cresids, mol, atids, resids):
         crdx = mol.atoms[j].crd[0]
         crdy = mol.atoms[j].crd[1]
         crdz = mol.atoms[j].crd[2]
-        print >> fp, '%2s %10.3f %10.3f %10.3f' %(element, crdx, crdy, crdz)
-        print >> xyzf, '%2s %10.3f %10.3f %10.3f' %(element, crdx, crdy, crdz)
-        print >> fpf, str(mol.atoms[j].resid) + '-' + \
-                 mol.atoms[j].resname + '-' + mol.atoms[j].atname
+        print('%2s %10.3f %10.3f %10.3f' %(element, crdx, crdy, crdz), file=fp)
+        print('%2s %10.3f %10.3f %10.3f' %(element, crdx, crdy, crdz), file=xyzf)
+        print(str(mol.atoms[j].resid) + '-' + \
+                 mol.atoms[j].resname + '-' + mol.atoms[j].atname, file=fpf)
       ####=====================================================================
       ####  Print the N-terminal cap
       ####=====================================================================
@@ -259,10 +260,10 @@ def afqmmm_nmr(cresids, mol, atids, resids):
             crdx = mol.atoms[k].crd[0]
             crdy = mol.atoms[k].crd[1]
             crdz = mol.atoms[k].crd[2]
-            print >> fp, '%2s %10.3f %10.3f %10.3f' %(element, crdx, crdy, \
-                     crdz)
-            print >> xyzf, '%2s %10.3f %10.3f %10.3f' %(element, crdx, crdy, \
-                     crdz)
+            print('%2s %10.3f %10.3f %10.3f' %(element, crdx, crdy, \
+                     crdz), file=fp)
+            print('%2s %10.3f %10.3f %10.3f' %(element, crdx, crdy, \
+                     crdz), file=xyzf)
           elif mol.atoms[k].atname == 'CA': #change to H
             hcapnum += 1
             element = 'H'
@@ -273,10 +274,10 @@ def afqmmm_nmr(cresids, mol, atids, resids):
             crdx = round(crdx, 3)
             crdy = round(crdy, 3)
             crdz = round(crdz, 3)
-            print >> fp, '%2s %10.3f %10.3f %10.3f' %(element, crdx, crdy, \
-                     crdz)
-            print >> xyzf, '%2s %10.3f %10.3f %10.3f' %(element, crdx, crdy, \
-                     crdz)
+            print('%2s %10.3f %10.3f %10.3f' %(element, crdx, crdy, \
+                     crdz), file=fp)
+            print('%2s %10.3f %10.3f %10.3f' %(element, crdx, crdy, \
+                     crdz), file=xyzf)
       ####=====================================================================
       ####  print the C-terminal cap
       ####=====================================================================
@@ -301,20 +302,20 @@ def afqmmm_nmr(cresids, mol, atids, resids):
               crdx = round(crdx, 3)
               crdy = round(crdy, 3)
               crdz = round(crdz, 3)
-              print >> fp, '%2s %10.3f %10.3f %10.3f' %(element, crdx, crdy,\
-                       crdz)
-              print >> xyzf, '%2s %10.3f %10.3f %10.3f' %(element, crdx, crdy,\
-                       crdz)
+              print('%2s %10.3f %10.3f %10.3f' %(element, crdx, crdy,\
+                       crdz), file=fp)
+              print('%2s %10.3f %10.3f %10.3f' %(element, crdx, crdy,\
+                       crdz), file=xyzf)
             else:
               batoms.append(k)
               element = mol.atoms[k].element
               crdx = mol.atoms[k].crd[0]
               crdy = mol.atoms[k].crd[1]
               crdz = mol.atoms[k].crd[2]
-              print >> fp, '%2s %10.3f %10.3f %10.3f' %(element, crdx, crdy,\
-                       crdz)
-              print >> xyzf, '%2s %10.3f %10.3f %10.3f' %(element, crdx, crdy,\
-                       crdz)
+              print('%2s %10.3f %10.3f %10.3f' %(element, crdx, crdy,\
+                       crdz), file=fp)
+              print('%2s %10.3f %10.3f %10.3f' %(element, crdx, crdy,\
+                       crdz), file=xyzf)
 
       ##for the speicial case
       if hasct == 1:
@@ -326,10 +327,10 @@ def afqmmm_nmr(cresids, mol, atids, resids):
             crdx = mol.atoms[k].crd[0]
             crdy = mol.atoms[k].crd[1]
             crdz = mol.atoms[k].crd[2]
-            print >> fp, '%2s %10.3f %10.3f %10.3f' %(element, crdx, crdy, \
-                     crdz)
-            print >> xyzf, '%2s %10.3f %10.3f %10.3f' %(element, crdx, crdy,\
-                     crdz)
+            print('%2s %10.3f %10.3f %10.3f' %(element, crdx, crdy, \
+                     crdz), file=fp)
+            print('%2s %10.3f %10.3f %10.3f' %(element, crdx, crdy,\
+                     crdz), file=xyzf)
       ####=====================================================================
       ####  print the other buffer resids
       ####=====================================================================
@@ -342,12 +343,12 @@ def afqmmm_nmr(cresids, mol, atids, resids):
             crdx = mol.atoms[k].crd[0]
             crdy = mol.atoms[k].crd[1]
             crdz = mol.atoms[k].crd[2]
-            print >> fp, '%2s %10.3f %10.3f %10.3f' %(element, crdx, crdy, \
-                     crdz)
-            print >> xyzf, '%2s %10.3f %10.3f %10.3f' %(element, crdx, crdy,\
-                     crdz)
+            print('%2s %10.3f %10.3f %10.3f' %(element, crdx, crdy, \
+                     crdz), file=fp)
+            print('%2s %10.3f %10.3f %10.3f' %(element, crdx, crdy,\
+                     crdz), file=xyzf)
 
-      print >> fp, ' '
+      print(' ', file=fp)
       ####=====================================================================
       ####  print the other parts, background charge
       ####=====================================================================
@@ -361,7 +362,7 @@ def afqmmm_nmr(cresids, mol, atids, resids):
           resname = mol.atoms[j].resname
           atname = mol.atoms[j].atname
           chg = mol.atoms[j].charge
-          print >> fp,'%10.3f %10.3f %10.3f %10.5f' %(crdx, crdy, crdz, chg)
+          print('%10.3f %10.3f %10.3f %10.5f' %(crdx, crdy, crdz, chg), file=fp)
           nums += 1
           #elif mol.atoms[j].resid == resids[-2]:
           #  crdx = mol.atoms[j].crd[0]
@@ -386,9 +387,9 @@ def afqmmm_nmr(cresids, mol, atids, resids):
         raise pymsmtError('The output atom numbers are not consistent with '
                           'former toplogy file.')
 
-      print >> fp, ' '
-      print >> fp, ' '
-      print >> fp, ' '
+      print(' ', file=fp)
+      print(' ', file=fp)
+      print(' ', file=fp)
 
       fp.close()
       fpf.close()

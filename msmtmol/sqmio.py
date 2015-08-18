@@ -1,5 +1,5 @@
 "This module for SQM"
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 import linecache
 from msmtmol.mol import gauatm
 from msmtmol.pt import AtomicNum
@@ -11,15 +11,15 @@ from msmtmol.pt import AtomicNum
 def write_sqm_optf(siopf, scchg, gatms):
 
     sqm_scf = open(siopf, 'w')
-    print >> sqm_scf, "Run semi-empirical minimization"
-    print >> sqm_scf, " &qmmm"
-    print >> sqm_scf, " qm_theory='PM6', grms_tol=0.0002,"
-    print >> sqm_scf, " tight_p_conv=1, scfconv=1.d-10, qmcharge=%d," %scchg
-    print >> sqm_scf, " /"
+    print("Run semi-empirical minimization", file=sqm_scf)
+    print(" &qmmm", file=sqm_scf)
+    print(" qm_theory='PM6', grms_tol=0.0002,", file=sqm_scf)
+    print(" tight_p_conv=1, scfconv=1.d-10, qmcharge=%d," %scchg, file=sqm_scf)
+    print(" /", file=sqm_scf)
     for gatmi in gatms:
         nuchg = int(AtomicNum[gatmi.element])
-        print >> sqm_scf, "%-2s %5s %10.4f %10.4f %10.4f" \
-        %(nuchg, gatmi.element, gatmi.crdx, gatmi.crdy, gatmi.crdz)
+        print("%-2s %5s %10.4f %10.4f %10.4f" \
+        %(nuchg, gatmi.element, gatmi.crdx, gatmi.crdy, gatmi.crdz), file=sqm_scf)
     sqm_scf.close()
 
 #------------------------------------------------------------------------------

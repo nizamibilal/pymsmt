@@ -2,7 +2,7 @@
 Module for writting a Gaussian file and read the coordinates and force
 constants from Gaussian output file.
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 import numpy
 import linecache
 from pymsmtexp import *
@@ -16,21 +16,21 @@ from msmtmol.pt import AtomicNum
 def write_gauatm(gauatm, fname, signum=3):
     wf = open(fname, 'a')
     if signum == 3:
-      print >> wf, "%-6s   %8.3f %8.3f %8.3f" %(gauatm.element, \
-                   gauatm.crdx, gauatm.crdy, gauatm.crdz)
+      print("%-6s   %8.3f %8.3f %8.3f" %(gauatm.element, \
+                   gauatm.crdx, gauatm.crdy, gauatm.crdz), file=wf)
     elif signum == 4:
-      print >> wf, "%-6s   %9.4f %9.4f %9.4f" %(gauatm.element, \
-                   gauatm.crdx, gauatm.crdy, gauatm.crdz)
+      print("%-6s   %9.4f %9.4f %9.4f" %(gauatm.element, \
+                   gauatm.crdx, gauatm.crdy, gauatm.crdz), file=wf)
     wf.close()
 
 def write_gauatm_opth(gauatm, fname, signum=3):
     wf = open(fname, 'a')
     if gauatm.element == "H":
-      print >> wf, "%-6s  0 %8.3f %8.3f %8.3f" %(gauatm.element, \
-          gauatm.crdx, gauatm.crdy, gauatm.crdz)
+      print("%-6s  0 %8.3f %8.3f %8.3f" %(gauatm.element, \
+          gauatm.crdx, gauatm.crdy, gauatm.crdz), file=wf)
     else:
-      print >> wf, "%-6s -1 %8.3f %8.3f %8.3f" %(gauatm.element, \
-          gauatm.crdx, gauatm.crdy, gauatm.crdz)
+      print("%-6s -1 %8.3f %8.3f %8.3f" %(gauatm.element, \
+          gauatm.crdx, gauatm.crdy, gauatm.crdz), file=wf)
     wf.close()
 
 def write_sdd_basis(gatms, gauf):
@@ -40,45 +40,45 @@ def write_sdd_basis(gatms, gauf):
     atnums = [AtomicNum[i] for i in atnames]
 
     w_gauf = open(gauf, 'a')
-    print >> w_gauf, " "
+    print(" ", file=w_gauf)
     for i in atnames:
       if AtomicNum[i] <= 18:
-        print >> w_gauf, i,
-    print >> w_gauf, "0"
-    print >> w_gauf, "6-31G*"
-    print >> w_gauf, "****"
+        print(i, end=' ', file=w_gauf)
+    print("0", file=w_gauf)
+    print("6-31G*", file=w_gauf)
+    print("****", file=w_gauf)
 
     for i in atnames:
       if Atomic_Num[i] >= 19:
-        print >> w_gauf, i
-    print >> w_gauf, "0"
-    print >> w_gauf, "SDD"
-    print >> w_gauf, "****"
-    print >> w_gauf, " "
+        print(i, file=w_gauf)
+    print("0", file=w_gauf)
+    print("SDD", file=w_gauf)
+    print("****", file=w_gauf)
+    print(" ", file=w_gauf)
 
     for i in atnames:
       if Atomic_Num[i] >= 19:
-        print >> w_gauf, i
-    print >> w_gauf, "0"
-    print >> w_gauf, "SDD"
-    print >> w_gauf, "****"
+        print(i, file=w_gauf)
+    print("0", file=w_gauf)
+    print("SDD", file=w_gauf)
+    print("****", file=w_gauf)
     w_gauf.close()
 
 def write_gau_optf(outf, goptf, scchg, SpinNum, gatms, signum=3):
 
     ##Geometry Optimization file
     optf = open(goptf, 'w')
-    print >> optf, "$RunGauss"
-    print >> optf, "%%Chk=%s_sidechain_opt.chk" %outf
-    print >> optf, "%Mem=3000MB"
-    print >> optf, "%NProcShared=2"
-    print >> optf, "#N B3LYP/6-31G* Geom=PrintInputOrient " + \
-                   "Integral=(Grid=UltraFine) Opt"
-    print >> optf, "SCF=XQC"
-    print >> optf, " "
-    print >> optf, "CLR"
-    print >> optf, " "
-    print >> optf, "%d  %d" %(scchg, SpinNum)
+    print("$RunGauss", file=optf)
+    print("%%Chk=%s_sidechain_opt.chk" %outf, file=optf)
+    print("%Mem=3000MB", file=optf)
+    print("%NProcShared=2", file=optf)
+    print("#N B3LYP/6-31G* Geom=PrintInputOrient " + \
+                   "Integral=(Grid=UltraFine) Opt", file=optf)
+    print("SCF=XQC", file=optf)
+    print(" ", file=optf)
+    print("CLR", file=optf)
+    print(" ", file=optf)
+    print("%d  %d" %(scchg, SpinNum), file=optf)
     optf.close()
 
     if signum == 3:
@@ -90,22 +90,22 @@ def write_gau_optf(outf, goptf, scchg, SpinNum, gatms, signum=3):
 
     ##Geometry Optimization file
     optf = open(goptf, 'a')
-    print >> optf, " "
-    print >> optf, " "
+    print(" ", file=optf)
+    print(" ", file=optf)
     optf.close()
 
 def write_gau_fcf(outf, gfcf):
 
     ##Force constant calculation file
     fcf = open(gfcf, 'w')
-    print >> fcf, "$RunGauss"
-    print >> fcf, "%%Chk=%s_sidechain_opt.chk" %outf
-    print >> fcf, "%Mem=3000MB"
-    print >> fcf, "%NProcShared=2"
-    print >> fcf, "#N B3LYP/6-31G* Freq=NoRaman Geom=AllCheckpoint Guess=Read"
-    print >> fcf, "Integral=(Grid=UltraFine) SCF=XQC IOp(7/33=1)"
-    print >> fcf, " "
-    print >> fcf, " "
+    print("$RunGauss", file=fcf)
+    print("%%Chk=%s_sidechain_opt.chk" %outf, file=fcf)
+    print("%Mem=3000MB", file=fcf)
+    print("%NProcShared=2", file=fcf)
+    print("#N B3LYP/6-31G* Freq=NoRaman Geom=AllCheckpoint Guess=Read", file=fcf)
+    print("Integral=(Grid=UltraFine) SCF=XQC IOp(7/33=1)", file=fcf)
+    print(" ", file=fcf)
+    print(" ", file=fcf)
     fcf.close()
 
 def write_gau_mkf(outf, gmkf, lgchg, SpinNum, gatms, ionnames, chargedict,
@@ -113,23 +113,23 @@ def write_gau_mkf(outf, gmkf, lgchg, SpinNum, gatms, ionnames, chargedict,
 
     ##MK RESP input file
     mkf = open(gmkf, 'w')
-    print >> mkf, "$RunGauss"
-    print >> mkf, "%%Chk=%s_large_mk.chk" %outf
-    print >> mkf, "%Mem=3000MB"
-    print >> mkf, "%NProcShared=2"
+    print("$RunGauss", file=mkf)
+    print("%%Chk=%s_large_mk.chk" %outf, file=mkf)
+    print("%Mem=3000MB", file=mkf)
+    print("%NProcShared=2", file=mkf)
 
     if largeopt == 0:
-      print >> mkf, "#N B3LYP/6-31G* Integral=(Grid=UltraFine) " + \
-                    "Pop(MK,ReadRadii) SCF=XQC"
+      print("#N B3LYP/6-31G* Integral=(Grid=UltraFine) " + \
+                    "Pop(MK,ReadRadii) SCF=XQC", file=mkf)
     elif largeopt in [1, 2]:
-      print >> mkf, "#N B3LYP/6-31G* Integral=(Grid=UltraFine) Opt " + \
-                    "Pop(MK,ReadRadii) SCF=XQC"
+      print("#N B3LYP/6-31G* Integral=(Grid=UltraFine) Opt " + \
+                    "Pop(MK,ReadRadii) SCF=XQC", file=mkf)
 
-    print >> mkf, "IOp(6/33=2)"
-    print >> mkf, " "
-    print >> mkf, "CLR"
-    print >> mkf, " "
-    print >> mkf, "%d  %d" %(lgchg, SpinNum)
+    print("IOp(6/33=2)", file=mkf)
+    print(" ", file=mkf)
+    print("CLR", file=mkf)
+    print(" ", file=mkf)
+    print("%d  %d" %(lgchg, SpinNum), file=mkf)
     mkf.close()
 
     #For Gaussian file
@@ -150,15 +150,15 @@ def write_gau_mkf(outf, gmkf, lgchg, SpinNum, gatms, ionnames, chargedict,
 
     ##print the ion radius for resp charge fitting in MK RESP input file
     mkf = open(gmkf, 'a')
-    print >> mkf, " "
+    print(" ", file=mkf)
 
     for i in ionnames:
       chg = str(int(chargedict[i]))
       if len(i) > 1:
         i = i[0] + i[1:].lower()
       vdwradius = IonLJParaDict[i + chg][0]
-      print >> mkf, i, vdwradius
-    print >> mkf, " "
+      print(i, vdwradius, file=mkf)
+    print(" ", file=mkf)
 
     if largeopt in [1, 2]:
       for i in ionnames:
@@ -166,12 +166,12 @@ def write_gau_mkf(outf, gmkf, lgchg, SpinNum, gatms, ionnames, chargedict,
         if len(i) > 1:
           i = i[0] + i[1:].lower()
         vdwradius = IonLJParaDict[i + chg][0]
-        print >> mkf, i, vdwradius
-      print >> mkf, " "
-      print >> mkf, " "
+        print(i, vdwradius, file=mkf)
+      print(" ", file=mkf)
+      print(" ", file=mkf)
 
     if largeopt == 0:
-      print >> mkf, " "
+      print(" ", file=mkf)
 
     mkf.close()
 
@@ -449,14 +449,14 @@ def get_esp_from_gau(logfile, espfile):
     #----------------Check and print-----------------------
     if (len(crdl1) == len(espl1)) and (len(crdl2) == len(espl2)):
         w_espf = open(espfile, 'w')
-        print >> w_espf, "%5d%5d%5d" %(len(crdl1), len(crdl2), 0)
+        print("%5d%5d%5d" %(len(crdl1), len(crdl2), 0), file=w_espf)
         for i in range(0, len(crdl1)):
             crd = crdl1[i]
-            print >> w_espf, "%16s %15.7E %15.7E %15.7E" %(' ', crd[0], crd[1], crd[2])
+            print("%16s %15.7E %15.7E %15.7E" %(' ', crd[0], crd[1], crd[2]), file=w_espf)
         for i in range(0, len(crdl2)):
             crd = crdl2[i]
             esp = espl2[i]
-            print >> w_espf, "%16.7E %15.7E %15.7E %15.7E" %(esp, crd[0], crd[1], crd[2])
+            print("%16.7E %15.7E %15.7E %15.7E" %(esp, crd[0], crd[1], crd[2]), file=w_espf)
         w_espf.close()
     else:
         raise pymsmtError("The length of coordinates and ESP charges are different!")
