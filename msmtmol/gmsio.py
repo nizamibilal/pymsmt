@@ -1,5 +1,5 @@
 "This module is for GAMESS"
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, print_function, division
 import linecache
 import numpy
 from msmtmol.pt import AtomicNum
@@ -133,7 +133,9 @@ def get_matrix_from_gms(logfile, msize):
 
     fcmatrix = numpy.array([[float(0) for x in range(msize)] for x in range(msize)])
 
-    for i in range(0, msize/6): #To see how many cycles need
+    cycles = int(round(msize/6, 0))
+
+    for i in range(0, cycles): #To see how many cycles need
         for j in range(0, msize-i*6): #How many lines in the cycle
             line = linecache.getline(logfile, bln)
             line = line.strip('\n')
@@ -148,7 +150,7 @@ def get_matrix_from_gms(logfile, msize):
             line = linecache.getline(logfile, bln)
             line = line.strip('\n')
             for k in range(0, 3): #There are 6 values in one line
-                fcmatrix[j + msize/6 * 6][k + msize/6 * 6] = float(line[20+9*k:29+9*k])
+                fcmatrix[j + cycles * 6][k + cycles * 6] = float(line[20+9*k:29+9*k])
             bln = bln + 1
 
     linecache.clearcache()

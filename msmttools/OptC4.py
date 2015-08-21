@@ -14,7 +14,7 @@ modeling:
 The 12-6-4 LJ-type potential:
 ** P. Li, K. M. Merz, JCTC, 2014, 10, 289-297
 """
-from __future__ import division
+from __future__ import division, print_function
 
 # OpenMM Imports
 import simtk.openmm as mm  #about force field
@@ -43,7 +43,7 @@ def get_typ_dict(typinds, typs):
 
     typdict = {}
     for i in range(0, len(typinds)):
-      if typinds[i] not in typdict.keys():
+      if typinds[i] not in list(typdict.keys()):
         typdict[typinds[i]] = [typs[i]]
       elif typs[i] in typdict[typinds[i]]:
         continue
@@ -55,7 +55,7 @@ def get_rmsd(initparas):
 
     global idxs
 
-    print initparas
+    print(initparas)
 
     #Modify the C4 terms in the prmtop file
     for i in range(0, len(idxs)):
@@ -70,7 +70,7 @@ def get_rmsd(initparas):
     Ambermol = AmberParm('OptC4.top', options.cfile)
 
     # Create the OpenMM system
-    print 'Creating OpenMM System'
+    print('Creating OpenMM System')
     if options.simupha == 'gas':
       system = Ambermol.createSystem(nonbondedMethod=app.NoCutoff)
     elif options.simupha == 'liquid':
@@ -89,7 +89,7 @@ def get_rmsd(initparas):
     if options.platf == 'ref':
        platform = mm.Platform.getPlatformByName('Reference')
        sim = app.Simulation(Ambermol.topology, system, integrator, platform)
-    if options.platf == 'cpu':
+    elif options.platf == 'cpu':
        platform = mm.Platform.getPlatformByName('CPU')
        sim = app.Simulation(Ambermol.topology, system, integrator, platform)
     elif options.platf == 'cuda':
@@ -111,13 +111,14 @@ def get_rmsd(initparas):
     sim.reporters.append(restrt)
 
     # Minimize the energy
-    print 'Minimizing energy'
+    print('Minimizing energy ' + str(options.maxsteps) + ' steps.')
     sim.minimizeEnergy(maxIterations=options.maxsteps)
 
     # Overwrite the final file
     state = sim.context.getState(getPositions=True, enforcePeriodicBox=True)
     restrt.report(sim, state)
 
+    print('Calculate the RMSD')
     # Perform the RMSD calcualtion, using ptraj in AmberTools
     os.system("cpptraj -p OptC4.top -i OptC4_ptraj.in > OptC4_ptraj.out")
 
@@ -129,7 +130,7 @@ def get_rmsd(initparas):
       ln += 1
     ptrajof.close()
 
-    print 'RMSD is: ', rmsd
+    print('RMSD is: ', rmsd)
     return rmsd
 
 #-----------------------------------------------------------------------------#
@@ -170,7 +171,7 @@ parser.add_option("--method", dest="minm", type='string', \
                        "http://docs.scipy.org/doc/scipy/reference/optimize.htm"
                        " for more information if interested.")
 parser.add_option("--platform", dest="platf", type='string', \
-                  help="Platform used. The options are: reference, cpu, gpu "
+                  help="Platform used. The options are: reference, cpu, cuda "
                        "or opencl. [Default: cpu] Here we use the OpenMM "
                        "software to perform the structure minimization. "
                        "Please check OpenMM user guide for more information "
@@ -312,10 +313,10 @@ for i in range(0, len(maskns)-1):
 maskslet += maskns[-1]
 
 ptrajif = open('OptC4_ptraj.in', 'w')
-print >> ptrajif, 'trajin %s' %options.cfile
-print >> ptrajif, 'trajin %s' %options.rfile
-print >> ptrajif, 'rms %s first out OptC4_rmsd.txt' %maskslet
-print >> ptrajif, 'go'
+print('trajin %s' %options.cfile, file=ptrajif)
+print('trajin %s' %options.rfile, file=ptrajif)
+print('rms %s first out OptC4_rmsd.txt' %maskslet, file=ptrajif)
+print('go', file=ptrajif)
 ptrajif.close()
 
 #Detect the C4 terms which relates to the metal center complex
@@ -339,16 +340,18 @@ initparas = [c4terms[i] for i in idxs]
 #Doing optimization of the parameters, initial was the normal C4 term
 xopt = fmin(get_rmsd, initparas, epsilon=options.stepsize)
 
-print xopt
+print("Final parameters...")
 
-print "The final RMSD is: "
+print(xopt)
+
+print("The final RMSD is: ")
 frmsd = get_rmsd(xopt)
 
 for i in range(0, len(idxs)):
-  print 'The optimal value of atomtypes ' + str(iddict[idxs[i]]) + \
-        ' is ' + str(xopt[i])
+  print('The optimal value of atomtypes ' + str(iddict[idxs[i]]) + \
+        ' is ' + str(xopt[i]))
 
-print 'The following is the dictionary of the atom types: '
-print mettypdict
-print mctypdict
+print('The following is the dictionary of the atom types: ')
+print(mettypdict)
+print(mctypdict)
 

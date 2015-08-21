@@ -57,8 +57,8 @@ reschg = {'ALA': 0, 'ARG': 1, 'ASH': 0, 'ASN': 0, 'ASP': -1, 'CYM': -1,
           'LYN': 0, 'LYS': 1, 'MET': 0, 'PHE': 0, 'PRO': 0,  'SER':  0,
           'THR': 0, 'TRP': 0, 'TYR': 0, 'VAL': 0}
 
-reschgnt = dict([('N' + k, v+1) for k, v in reschg.iteritems()])
-reschgct = dict([('C' + k, v-1) for k, v in reschg.iteritems()])
+reschgnt = dict([('N' + k, v+1) for k, v in list(reschg.items())])
+reschgct = dict([('C' + k, v-1) for k, v in list(reschg.items())])
 
 ResChgDict = reschg
 ResChgDict.update(reschgnt)
@@ -414,6 +414,6 @@ IonIODparal = list(set(IonLJparal) - \
 #-----------------------------------------------------------------------------
 Atnum = AtomicNum
 
-AtnumRev = dict([ (v, k) for k, v in Atnum.iteritems()])
+AtnumRev = dict([ (v, k) for k, v in list(Atnum.items())])
 
 bdld = {'CH': 1.090, 'NH': 1.010}

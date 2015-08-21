@@ -88,33 +88,33 @@ class Parms:
         self.mass.update(Parms2.mass)
 
         #Bond
-        for i in Parms2.bond.keys():
-          if (i in self.bond.keys()) or (i[::-1] in self.bond.keys()):
+        for i in list(Parms2.bond.keys()):
+          if (i in list(self.bond.keys())) or (i[::-1] in list(self.bond.keys())):
             self.bond[i] = Parms2.bond[i]
           else:
             self.bond[i] = Parms2.bond[i]
 
         #Angle
-        for i in Parms2.ang.keys():
-          if (i in self.ang.keys()) or (i[::-1] in self.ang.keys()):
+        for i in list(Parms2.ang.keys()):
+          if (i in list(self.ang.keys())) or (i[::-1] in list(self.ang.keys())):
             self.ang[i] = Parms2.ang[i]
           else:
             self.ang[i] = Parms2.ang[i]
 
         #Dih
-        for i in Parms2.dih.keys():
-          if (i in self.dih.keys()) or (i[::-1] in self.dih.keys()):
+        for i in list(Parms2.dih.keys()):
+          if (i in list(self.dih.keys())) or (i[::-1] in list(self.dih.keys())):
             self.dih[i] = Parms2.dih[i]
           else:
             self.dih[i] = Parms2.dih[i]
 
         #Imp
-        for i in Parms2.imp.keys():
-          if (i in self.imp.keys()) or ((i[0], i[3], i[2], i[1]) in self.imp.keys()) \
-            or ((i[1], i[0], i[2], i[3]) in self.imp.keys()) \
-            or ((i[1], i[3], i[2], i[0]) in self.imp.keys()) \
-            or ((i[3], i[0], i[2], i[1]) in self.imp.keys()) \
-            or ((i[3], i[1], i[2], i[0]) in self.imp.keys()):
+        for i in list(Parms2.imp.keys()):
+          if (i in list(self.imp.keys())) or ((i[0], i[3], i[2], i[1]) in list(self.imp.keys())) \
+            or ((i[1], i[0], i[2], i[3]) in list(self.imp.keys())) \
+            or ((i[1], i[3], i[2], i[0]) in list(self.imp.keys())) \
+            or ((i[3], i[0], i[2], i[1]) in list(self.imp.keys())) \
+            or ((i[3], i[1], i[2], i[0]) in list(self.imp.keys())):
             self.imp[i] = Parms2.imp[i]
           else:
             self.imp[i] = Parms2.imp[i]
@@ -163,12 +163,12 @@ def readdih(dihparms, line):
         pero = line[43:52].strip('\n')
         annot = line[52:].strip('\n')
         dihparm = [nvnp, pero, annot]
-        if dihtyp in dihparms.keys():
+        if dihtyp in list(dihparms.keys()):
           has_pero = dihparms[dihtyp][1::3]
           has_pero = [abs(int(i.strip().strip('.'))) for i in has_pero]
           if abs(int(dihparm[1].strip().strip('.'))) not in has_pero:
             dihparm = dihparms[dihtyp] + dihparm
-        elif dihtyp[::-1] in dihparms.keys():
+        elif dihtyp[::-1] in list(dihparms.keys()):
           has_pero = dihparms[dihtyp[::-1]][1::3]
           has_pero = [abs(int(i.strip().strip('.'))) for i in has_pero]
           if abs(int(dihparm[1].strip().strip('.'))) not in has_pero:
@@ -188,12 +188,12 @@ def readgaffdih(dihparms, line):
         pero = line[43:52].strip('\n')
         annot = line[52:].strip('\n')
         dihparm = [nvnp, pero, annot]
-        if dihtyp in dihparms.keys():
+        if dihtyp in list(dihparms.keys()):
           has_pero = dihparms[dihtyp][1::3]
           has_pero = [abs(int(i.strip().strip('0').strip('-').strip('.'))) for i in has_pero]
           if abs(int(dihparm[1].strip().strip('0').strip('-').strip('.'))) not in has_pero:
             dihparm = dihparms[dihtyp] + dihparm
-        elif dihtyp[::-1] in dihparms.keys():
+        elif dihtyp[::-1] in list(dihparms.keys()):
           has_pero = dihparms[dihtyp[::-1]][1::3]
           has_pero = [abs(int(i.strip().strip('0').strip('-').strip('.'))) for i in has_pero]
           if abs(int(dihparm[1].strip().strip('0').strip('-').strip('.'))) not in has_pero:
@@ -261,7 +261,7 @@ def read_frcmod_file(frcmodf):
     impparms = {}
     nbparms = {}
 
-    for i in lndict.keys():
+    for i in list(lndict.keys()):
       if i == "MASS":
         for j in range(lndict[i][0],lndict[i][1]):
           line = linecache.getline(frcmodf, j)
@@ -325,7 +325,7 @@ def get_parm_dict(ffchoice, gaff, frcmodfs):
     eqdict = {}
     nbparms = {}
 
-    for i in lndict.keys():
+    for i in list(lndict.keys()):
       if i == "MASS":
         for j in range(lndict[i][0],lndict[i][1]):
           line = linecache.getline(parmf, j)
@@ -358,7 +358,7 @@ def get_parm_dict(ffchoice, gaff, frcmodfs):
     linecache.clearcache()
 
     #Deal with the equil atoms
-    for i in eqdict.keys():
+    for i in list(eqdict.keys()):
       for j in eqdict[i]:
         if len(i) == 1:
           nbparms[j] = nbparms[i + ' ']
@@ -406,7 +406,7 @@ def get_parm_dict(ffchoice, gaff, frcmodfs):
       impparms2 = {}
       nbparms2 = {}
 
-      for i in lndict2.keys():
+      for i in list(lndict2.keys()):
         if i == "MASS":
           for j in range(lndict2[i][0], lndict2[i][1]):
             line = linecache.getline(parmf2, j)

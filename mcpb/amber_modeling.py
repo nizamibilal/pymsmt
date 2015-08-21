@@ -228,7 +228,7 @@ def gene_leaprc(gname, orpdbf, fipdbf, stpdbf, stfpf, ionids,\
     if model in [1, 2]:
       if atomdefs.keys() != []:
         print('addAtomTypes {', file=lp)
-        for i in atomdefs.keys():
+        for i in sorted(list(atomdefs.keys())):
           print('        { "%s"  "%s" "sp3" }' %(i, atomdefs[i]), file=lp)
         print('}', file=lp)
 

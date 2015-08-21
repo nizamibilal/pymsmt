@@ -37,7 +37,7 @@ def get_atominfo_fpdb(fname):
       atomtype = line[76:78].strip(" ")
       charge = line[78:80]
 
-      if (resname, atname) in Metalpdb.keys():
+      if (resname, atname) in list(Metalpdb.keys()):
         element = Metalpdb[(resname, atname)]
       else:
         element = atname[0]
@@ -46,7 +46,7 @@ def get_atominfo_fpdb(fname):
 
       if resid not in resids:
         resids.append(resid)
-      if resid not in resnamedict.keys():
+      if resid not in list(resnamedict.keys()):
         resnamedict[resid] = resname
 
   fp.close()

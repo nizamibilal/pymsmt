@@ -9,8 +9,8 @@ def read_amber_prm(pfile, cfile):
   prmtop = AmberParm(pfile)
   crds = read_rstf(cfile)
 
-  atids = range(1, len(prmtop.parm_data['ATOM_NAME'])+1)
-  resids = range(1, len(prmtop.parm_data['RESIDUE_LABEL'])+1)
+  atids = list(range(1, len(prmtop.parm_data['ATOM_NAME'])+1))
+  resids = list(range(1, len(prmtop.parm_data['RESIDUE_LABEL'])+1))
 
   if len(prmtop.parm_data['ATOM_NAME']) != len(crds):
     raise ReadError('The toplogy and coordinates file are not \
@@ -24,11 +24,11 @@ def read_amber_prm(pfile, cfile):
     resname = prmtop.parm_data['RESIDUE_LABEL'][i]
 
     if i < len(prmtop.parm_data['RESIDUE_LABEL'])-1:
-      resconter = range(prmtop.parm_data['RESIDUE_POINTER'][i], \
-                   prmtop.parm_data['RESIDUE_POINTER'][i+1])
+      resconter = list(range(prmtop.parm_data['RESIDUE_POINTER'][i], \
+                   prmtop.parm_data['RESIDUE_POINTER'][i+1]))
     else:
-      resconter = range(prmtop.parm_data['RESIDUE_POINTER'][i], \
-                   len(prmtop.parm_data['ATOM_NAME'])+1)
+      resconter = list(range(prmtop.parm_data['RESIDUE_POINTER'][i], \
+                   len(prmtop.parm_data['ATOM_NAME'])+1))
 
     residues[resid] = Residue(resid, resname, resconter)
 

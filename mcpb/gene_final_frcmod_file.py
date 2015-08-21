@@ -50,7 +50,7 @@ def get_attypdict(stfpf, atids):
     fpinfo.close()
 
     for i in atids:
-      if i not in attypdict.keys():
+      if i not in list(attypdict.keys()):
         #print 'atomid %d Not find in standard fingerprint file.' %i
         attypdict[i] = '**'
 

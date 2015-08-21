@@ -452,8 +452,8 @@ elif options.water == 3:
 elif options.water >= 4:
   raise pymsmtError('bad choice of the -w options')
 
-atids = mol.atoms.keys()
-resids = mol.residues.keys()
+atids = sorted(list(mol.atoms.keys()))
+resids = sorted(list(mol.residues.keys()))
 mask = AmberMask(prmtop, options.mask)
 
 cresids = []

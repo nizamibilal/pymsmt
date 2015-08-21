@@ -142,7 +142,7 @@ for fname in pdbfnl:
     for i in atids:
         resname = mol.residues[mol.atoms[i].resid].resname
         atname = mol.atoms[i].atname
-        if (resname, atname) in Metalpdb.keys():
+        if (resname, atname) in list(Metalpdb.keys()):
             if Metalpdb[(resname, atname)] == ionname:
                 metallist.append(i)
 
@@ -189,7 +189,7 @@ for fname in pdbfnl:
         reslets = ''
         for j in mcresids:
             resname = mol.residues[j].resname
-            if resname in resdict.keys():
+            if resname in list(resdict.keys()):
                 reslet = resdict[resname]
             else:
                 reslet = 'X'

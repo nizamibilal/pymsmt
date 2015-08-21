@@ -50,9 +50,9 @@ class Molecule:
       Atoms = {}
       Residues = {}
 
-      natids = self.atoms.keys()
+      natids = list(self.atoms.keys())
       natids.sort()
-      nresids = self.residues.keys()
+      nresids = list(self.residues.keys())
       nresids.sort()
 
       #renumber the atoms

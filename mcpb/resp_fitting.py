@@ -215,7 +215,7 @@ def add_restriction(frespin, libdict, mol, resids, reslist, mcresids, bnoresids,
       print("", end=' ', file=fresp)
       for j in mol.residues[i].resconter:
         print("%4d%5d" %(1, iddict[j][0]), end=' ', file=fresp)
-      print("\n", end=' ', file=fresp)
+      print("", file=fresp)
 
     #4. add the 4th part, the backbone restriction-----------------------------
     if chgmod == 0:
@@ -493,7 +493,7 @@ def resp_fitting(stpdbf, lgpdbf, stfpf, lgfpf, mklogf, ionids,\
       ldict[llist[i]] = chgs[i]
 
     stdict = {} #get the charge of the standard model
-    for i in ldict.keys():
+    for i in list(ldict.keys()):
       if i in stlist:
         stdict[i] = ldict[i]
 

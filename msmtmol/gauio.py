@@ -2,7 +2,7 @@
 Module for writting a Gaussian file and read the coordinates and force
 constants from Gaussian output file.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, print_function, division
 import numpy
 import linecache
 from pymsmtexp import *
@@ -223,6 +223,7 @@ def get_matrix_from_fchk(fname, msize):
     crds = []
 
     elenums = msize * (msize + 1)/2
+    elenums = int(round(elenums, 0))
 
     fp = open(fname, 'r')
     i = 1
