@@ -133,7 +133,7 @@ def get_matrix_from_gms(logfile, msize):
 
     fcmatrix = numpy.array([[float(0) for x in range(msize)] for x in range(msize)])
 
-    cycles = int(round(msize/6, 0))
+    cycles = msize//6
 
     for i in range(0, cycles): #To see how many cycles need
         for j in range(0, msize-i*6): #How many lines in the cycle
