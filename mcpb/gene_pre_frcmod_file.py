@@ -309,7 +309,7 @@ def gene_pre_frcmod_file(ionids, naamol2f, stpdbf, stfpf, scresf, prefcdf,
       if 'X ' not in keyv: #For types don't contain X
         valv = dihparamsdict[keyv]
         keyv = keyv[0] + '-' + keyv[1] + '-' + keyv[2] + '-' + keyv[3]
-        terms = int(round(len(valv)/3, 0))
+        terms = len(valv)//3
         for i in range(0, terms):
           temp = i * 3
           print('YES', keyv, valv[temp] + valv[temp+1] + \
@@ -319,7 +319,7 @@ def gene_pre_frcmod_file(ionids, naamol2f, stpdbf, stfpf, scresf, prefcdf,
       if 'X ' in keyv:     #For types contain X
         valv = dihparamsdict[keyv]
         keyv = keyv[0] + '-' + keyv[1] + '-' + keyv[2] + '-' + keyv[3]
-        terms = int(round(len(valv)/3, 0))
+        terms = len(valv)//3
         for i in range(0, terms):
           temp = i * 3
           print('YES', keyv, valv[temp] + valv[temp+1] + \

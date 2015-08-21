@@ -222,8 +222,8 @@ def get_matrix_from_fchk(fname, msize):
 
     crds = []
 
-    elenums = msize * (msize + 1)/2
-    elenums = int(round(elenums, 0))
+    elenums = msize * (msize + 1)
+    elenums = elenums//2
 
     fp = open(fname, 'r')
     i = 1
@@ -354,14 +354,14 @@ def get_fc_from_log(logfname):
     numl = []
 
     if (maxnum%5 != 0):
-      for i in range(0, int(maxnum/5)+1):
+      for i in range(0, int(maxnum//5)+1):
         gap = maxnum - len(numl) + 1
         for j in range(0, 5):
           if len(numl) < maxnum:
             numl.append(blnum1 + j)
         blnum1 = blnum1 + gap
     else:
-      for i in range(0, int(maxnum/5)):
+      for i in range(0, int(maxnum//5)):
         gap = maxnum - len(numl) + 1
         for j in range(0, 5):
           if len(numl) < maxnum:
