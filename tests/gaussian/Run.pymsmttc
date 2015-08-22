@@ -42,11 +42,11 @@ diffnum=`cat diff.result | wc -l`
 
 if [ $diffnum -eq 0 ]
 then
-   echo "GAUSSIAN-MCPBPY TEST PASSED."
-   exit 0
+    echo "GAUSSIAN-MCPBPY TEST PASSED."
+    exit 0
 else
-   echo "GAUSSIAN-MCPBPY TEST DON'T PASS, PLEASE CHECK THE diff.result FILE IN tests/gaussian/ DIRECTORY FOR DETAILS."
-   exit 1
+    echo "GAUSSIAN-MCPBPY TEST DON'T PASS, PLEASE CHECK THE diff.result FILE IN tests/gaussian/ DIRECTORY FOR DETAILS."
+    exit 1
 fi
 
 

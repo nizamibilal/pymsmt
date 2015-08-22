@@ -1,10 +1,10 @@
 source leaprc.ff14SB
 source leaprc.gaff
 addAtomTypes {
-        { "Y1"  "S" "sp3" }
-        { "Y3"  "S" "sp3" }
-        { "Y2"  "S" "sp3" }
         { "M1"  "Zn" "sp3" }
+        { "Y1"  "S" "sp3" }
+        { "Y2"  "S" "sp3" }
+        { "Y3"  "S" "sp3" }
         { "Y4"  "S" "sp3" }
 }
 loadamberparams frcmod.ions1lsm_hfe_tip3p
