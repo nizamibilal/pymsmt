@@ -8,13 +8,13 @@ from msmtmol.pt import AtomicNum
 #------------------------------Write SQM input file----------------------------
 #------------------------------------------------------------------------------
 
-def write_sqm_optf(siopf, scchg, gatms):
+def write_sqm_optf(siopf, smchg, gatms):
 
     sqm_scf = open(siopf, 'w')
     print("Run semi-empirical minimization", file=sqm_scf)
     print(" &qmmm", file=sqm_scf)
     print(" qm_theory='PM6', grms_tol=0.0002,", file=sqm_scf)
-    print(" tight_p_conv=1, scfconv=1.d-10, qmcharge=%d," %scchg, file=sqm_scf)
+    print(" tight_p_conv=1, scfconv=1.d-10, qmcharge=%d," %smchg, file=sqm_scf)
     print(" /", file=sqm_scf)
     for gatmi in gatms:
         nuchg = int(AtomicNum[gatmi.element])

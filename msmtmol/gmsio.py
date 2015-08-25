@@ -9,12 +9,12 @@ from msmtmol.constants import B_TO_A
 #--------------------------Write GAMESS input file-----------------------------
 #------------------------------------------------------------------------------
 
-def write_gms_optf(goptf2, scchg, SpinNum, gatms, signum=3):
+def write_gms_optf(goptf2, smchg, SpinNum, gatms, signum=3):
 
     ##GAMESS OPT file
     optf2 = open(goptf2, 'w')
     print(" $SYSTEM MEMDDI=400 MWORDS=200 $END", file=optf2)
-    print(" $CONTRL DFTTYP=B3LYP RUNTYP=OPTIMIZE ICHARG=%d MULT=%d $END" %(scchg, SpinNum), file=optf2)
+    print(" $CONTRL DFTTYP=B3LYP RUNTYP=OPTIMIZE ICHARG=%d MULT=%d $END" %(smchg, SpinNum), file=optf2)
     print(" $STATPT NSTEP=1000 $END", file=optf2)
     print(" $BASIS GBASIS=N31 NGAUSS=6 NDFUNC=1 $END", file=optf2)
     print(" $DATA", file=optf2)
@@ -31,12 +31,12 @@ def write_gms_optf(goptf2, scchg, SpinNum, gatms, signum=3):
     print(" $END", file=optf2)
     optf2.close()
 
-def write_gms_fcf(gfcf2, scchg, SpinNum):
+def write_gms_fcf(gfcf2, smchg, SpinNum):
 
     ##GAMESS FC file
     fcf2 = open(gfcf2, 'w')
     print(" $SYSTEM MEMDDI=400 MWORDS=200 $END", file=fcf2)
-    print(" $CONTRL DFTTYP=B3LYP RUNTYP=HESSIAN ICHARG=%d MULT=%d $END" %(scchg, SpinNum), file=fcf2)
+    print(" $CONTRL DFTTYP=B3LYP RUNTYP=HESSIAN ICHARG=%d MULT=%d $END" %(smchg, SpinNum), file=fcf2)
     print(" $BASIS GBASIS=N31 NGAUSS=6 NDFUNC=1 $END", file=fcf2)
     print(" $DATA", file=fcf2)
     print("Cluster/6-31G", file=fcf2)

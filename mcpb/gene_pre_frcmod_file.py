@@ -16,7 +16,7 @@ def addspace(atomtype):
 
     #--------------------------------------------------------------------------
 
-def gene_pre_frcmod_file(ionids, naamol2f, stpdbf, stfpf, scresf, prefcdf,
+def gene_pre_frcmod_file(ionids, naamol2f, stpdbf, stfpf, smresf, prefcdf,
                          ffchoice, gaff, frcmodfs, watermodel):
 
     print("******************************************************************")
@@ -152,15 +152,15 @@ def gene_pre_frcmod_file(ionids, naamol2f, stpdbf, stfpf, scresf, prefcdf,
     #--------------------------------------------------------------------------
     coparas = []
 
-    r_scresf = open(scresf, 'r')
-    for line in r_scresf:
+    r_smresf = open(smresf, 'r')
+    for line in r_smresf:
       line = line.strip('\n')
       line = line.split('-')
       resid = int(line[1])
       if ('GLY' in line) or ('KCO' in line) or ('ACE' in line):
         if resid+1 not in resids:
           coparas.append(resid)
-    r_scresf.close()
+    r_smresf.close()
 
     angparamsdict1 = {} #For metal ions
     angparamsdict2 = {} #For the others

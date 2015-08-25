@@ -94,7 +94,7 @@ sqmopt = 0
 largeopt = 0
 watermodel = 'tip3p'
 paraset = 'cm'
-scchg = -99
+smchg = -99
 lgchg = -99
 scalef = 1.000
 bondfc_avg = 0
@@ -213,19 +213,19 @@ for line in inputf:
             warnings.warn('No chgfix_resids parameter provided. '
                           'Default value %d will be used.'
                           %chgfix_resids, pymsmtWarning)
-    #scchg
-    elif line[0].lower() == 'scmodel_chg':
+    #smchg
+    elif line[0].lower() == 'smmodel_chg':
         if len(line) == 2:
             try:
-                scchg = int(line[1])
+                smchg = int(line[1])
             except:
                 raise pymsmtError('Please provide an int number for the '
-                                  'scmodel_chg parameter.')
+                                  'smmodel_chg parameter.')
         elif len(line) == 1:
-            warnings.warn('No scmodel_chg parameter provided, program '
+            warnings.warn('No smmodel_chg parameter provided, program '
                           'will assign a charge automatically.', pymsmtWarning)
         else:
-            raise pymsmtError('More than one scmodel_chg values are provided, '
+            raise pymsmtError('More than one smmodel_chg values are provided, '
                               'need one.')
     #lgchg
     elif line[0].lower() == 'lgmodel_chg':
@@ -296,7 +296,7 @@ for line in inputf:
                 if sqmopt not in [0, 1, 2, 3]:
                     raise pymsmtError('sqm_opt varible needs to be 0, 1, 2 or '
                                       '3, 0 means not using, 1 means only do '
-                                      'optimization for sidechain model. 2 '
+                                      'optimization for small model. 2 '
                                       'means only do optimization for large '
                                       'model. 3 means do optimization for '
                                       'both models.')
@@ -458,7 +458,7 @@ print('The variable additional_resids is : ', addres)
 print('The variable group_name is : ', gname)
 print('The variable cut_off is : ', cutoff)
 print('The variable chgfix_resids is : ', chgfix_resids)
-print('The variable scmodel_chg is : ', scchg)
+print('The variable smmodel_chg is : ', smchg)
 print('             -99 means program will assign a charge automatically.')
 print('The variable lgmodel_chg is : ', lgchg)
 print('             -99 means program will assign a charge automatically.')
@@ -499,8 +499,7 @@ for i in mcresname0:
 premol2fs = ionmol2fs + naamol2fs
 
 ##pdb files
-scpdbf = gname + '_sidechain.pdb'
-scpdbf2 = gname + '_sqm.pdb'
+smpdbf = gname + '_small.pdb'
 stpdbf = gname + '_standard.pdb'
 lgpdbf = gname + '_large.pdb'
 fipdbf = gname + '_mcpbpy.pdb'
@@ -510,25 +509,25 @@ stfpf = gname + '_standard.fingerprint'
 lgfpf = gname + '_large.fingerprint'
 
 ##residue information file
-scresf = gname + '_sidechain.res'
+smresf = gname + '_small.res'
 
 ##frcmod files
-prefcdf = gname + '_pre.frcmod'
-finfcdf = gname + '.frcmod'
+prefcdf = gname + '_mcpbpy_pre.frcmod'
+finfcdf = gname + '_mcpbpy.frcmod'
 
 ##log file
 if options.logfile is not None:
   fclogf = options.logfile
   mklogf = options.logfile
 else:
-  fclogf = gname + '_sidechain_fc.log'
+  fclogf = gname + '_small_fc.log'
   mklogf = gname + '_large_mk.log'
 
 ##checkpoint file
 if options.fchkfile is not None:
   fcfchkf = options.fchkfile
 else:
-  fcfchkf = gname + '_sidechain_opt.fchk'
+  fcfchkf = gname + '_small_opt.fchk'
 
 ##tleap input file
 ileapf = gname + '_tleap.in'
@@ -537,23 +536,24 @@ ileapf = gname + '_tleap.in'
 # Step 1 General_modeling
 #==============================================================================
 #1. Generate the modeling files:
-#Pdb files for sidechain, standard and large model
-#Gaussian input files for sidechain, large model
+#Pdb files for small, standard and large model
+#Gaussian input files for small, large model
 #Fingerprint files for standard and large model
 #Three options:
-#1n) Don't rename any of the atom types in the sidechain fingerprint file
+#1n) Don't rename any of the atom types in the fingerprint file of standard
+#    model
 #1m) Just rename the metal ion to the AMBER ion atom type style
 #1a) Default. Automatically rename the atom type of the atoms in the metal
 #    complex.
 if (options.step == '1n'):
     gene_model_files(orpdbf, ionids, addres, gname, ff_choice, premol2fs,
-                   cutoff, watermodel, 0, largeopt, sqmopt, scchg, lgchg)
+                   cutoff, watermodel, 0, largeopt, sqmopt, smchg, lgchg)
 elif (options.step == '1m'):
     gene_model_files(orpdbf, ionids, addres, gname, ff_choice, premol2fs,
-                   cutoff, watermodel, 1, largeopt, sqmopt, scchg, lgchg)
+                   cutoff, watermodel, 1, largeopt, sqmopt, smchg, lgchg)
 elif (options.step in ['1', '1a']): #Default
     gene_model_files(orpdbf, ionids, addres, gname, ff_choice, premol2fs,
-                   cutoff, watermodel, 2, largeopt, sqmopt, scchg, lgchg)
+                   cutoff, watermodel, 2, largeopt, sqmopt, smchg, lgchg)
 #==============================================================================
 # Step 2 Frcmod file generation
 #==============================================================================
@@ -565,15 +565,15 @@ elif (options.step in ['1', '1a']): #Default
 #2s) Default. Seminario method developed by Seminario in 1990s
 #2z) Z-matrix method
 elif (options.step in ['2', '2s', '2e', '2z']):
-    gene_pre_frcmod_file(ionids, premol2fs, stpdbf, stfpf, scresf, prefcdf,
+    gene_pre_frcmod_file(ionids, premol2fs, stpdbf, stfpf, smresf, prefcdf,
                          ff_choice, gaff, frcmodfs, watermodel)
     if options.step == '2e':
-        gene_by_empirical_way(scpdbf, ionids, stfpf, prefcdf, finfcdf)
+        gene_by_empirical_way(smpdbf, ionids, stfpf, prefcdf, finfcdf)
     elif (options.step in ['2', '2s']): #Default
-        gene_by_QM_fitting_sem(scpdbf, ionids, stfpf, prefcdf, finfcdf,
+        gene_by_QM_fitting_sem(smpdbf, ionids, stfpf, prefcdf, finfcdf,
                       fcfchkf, fclogf, g0x, scalef, bondfc_avg, anglefc_avg)
     elif (options.step == '2z'):
-        gene_by_QM_fitting_zmatrix(scpdbf, ionids, stfpf, prefcdf, finfcdf,
+        gene_by_QM_fitting_zmatrix(smpdbf, ionids, stfpf, prefcdf, finfcdf,
                                fclogf, scalef)
 #==============================================================================
 # Step 3 Doing the RESP charge fitting and generate the mol2 files

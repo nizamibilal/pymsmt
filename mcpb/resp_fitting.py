@@ -453,8 +453,8 @@ def resp_fitting(stpdbf, lgpdbf, stfpf, lgfpf, mklogf, ionids,\
 
     #------------Atom type----------
     sddict = {} #get the atom type information from standard model
-    scf = open(stfpf, 'r')
-    for line in scf:
+    r_stfpf = open(stfpf, 'r')
+    for line in r_stfpf:
       if line[0:4] != "LINK":
         line = line.strip('\n')
         line = line.split(' ')
@@ -462,7 +462,7 @@ def resp_fitting(stpdbf, lgpdbf, stfpf, lgfpf, mklogf, ionids,\
         if len(line[-1]) == 1:
           line[-1] = line[-1] + ' '
         sddict[line[0]] = line[-1]
-    scf.close()
+    r_stfpf.close()
 
     #------------Charge-------------
     chgs = read_resp_file('resp2.chg')

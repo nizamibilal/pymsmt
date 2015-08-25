@@ -209,7 +209,7 @@ def fcfit_ep_angle(elmts):
     elif set(elmts[0:2]) == set(['Zn', 'O']) or set(elmts[1:3]) == set(['Zn', 'O']):
       return 50.00
 
-def gene_by_empirical_way(scpdbf, ionids, stfpf, pref, finf):
+def gene_by_empirical_way(smpdbf, ionids, stfpf, pref, finf):
 
     print("******************************************************************")
     print("*                                                                *")
@@ -217,8 +217,8 @@ def gene_by_empirical_way(scpdbf, ionids, stfpf, pref, finf):
     print("*                                                                *")
     print("******************************************************************")
 
-    #Read from sidechain pdb
-    mol, atids, resids = get_atominfo_fpdb(scpdbf)
+    #Read from small pdb
+    mol, atids, resids = get_atominfo_fpdb(smpdbf)
     blist = get_mc_blist(mol, atids, ionids, stfpf)
     alist = get_alist(mol, blist)
 
@@ -625,12 +625,12 @@ def get_imp_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, nat4, scalef):
 
     return fcfinal1, fcfinal
 
-def gene_by_QM_fitting_sem(scpdbf, ionids, stfpf, pref, finf, chkfname,
+def gene_by_QM_fitting_sem(smpdbf, ionids, stfpf, pref, finf, chkfname,
                            logfile, g0x, scalef, bondavg, angavg):
 
     print("==================Using the Seminario method to solve the problem.")
 
-    mol, atids, resids = get_atominfo_fpdb(scpdbf)
+    mol, atids, resids = get_atominfo_fpdb(smpdbf)
     blist = get_mc_blist(mol, atids, ionids, stfpf)
     alist = get_alist(mol, blist)   
 
@@ -727,7 +727,7 @@ def gene_by_QM_fitting_sem(scpdbf, ionids, stfpf, pref, finf, chkfname,
 #-----------------------------------------------------------------------------
 ##Z-matrix method: obtain the force constant from the entire Hessian matrix
 #-----------------------------------------------------------------------------
-def gene_by_QM_fitting_zmatrix(scpdbf, ionids, stfpf, pref, finf, logfname,
+def gene_by_QM_fitting_zmatrix(smpdbf, ionids, stfpf, pref, finf, logfname,
                                scalef):
 
     print("=============Using the Z-matrix method to generate the parameters.")
@@ -735,7 +735,7 @@ def gene_by_QM_fitting_zmatrix(scpdbf, ionids, stfpf, pref, finf, logfname,
     sturefs, vals, fcs = get_fc_from_log(logfname)
 
     #pdb file
-    mol, atids, resids = get_atominfo_fpdb(scpdbf)
+    mol, atids, resids = get_atominfo_fpdb(smpdbf)
     blist = get_mc_blist(mol, atids, ionids, stfpf)
     alist = get_alist(mol, blist)   
 

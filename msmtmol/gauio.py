@@ -64,12 +64,12 @@ def write_sdd_basis(gatms, gauf):
     print("****", file=w_gauf)
     w_gauf.close()
 
-def write_gau_optf(outf, goptf, scchg, SpinNum, gatms, signum=3):
+def write_gau_optf(outf, goptf, smchg, SpinNum, gatms, signum=3):
 
     ##Geometry Optimization file
     optf = open(goptf, 'w')
     print("$RunGauss", file=optf)
-    print("%%Chk=%s_sidechain_opt.chk" %outf, file=optf)
+    print("%%Chk=%s_small_opt.chk" %outf, file=optf)
     print("%Mem=3000MB", file=optf)
     print("%NProcShared=2", file=optf)
     print("#N B3LYP/6-31G* Geom=PrintInputOrient " + \
@@ -78,7 +78,7 @@ def write_gau_optf(outf, goptf, scchg, SpinNum, gatms, signum=3):
     print(" ", file=optf)
     print("CLR", file=optf)
     print(" ", file=optf)
-    print("%d  %d" %(scchg, SpinNum), file=optf)
+    print("%d  %d" %(smchg, SpinNum), file=optf)
     optf.close()
 
     if signum == 3:
@@ -99,7 +99,7 @@ def write_gau_fcf(outf, gfcf):
     ##Force constant calculation file
     fcf = open(gfcf, 'w')
     print("$RunGauss", file=fcf)
-    print("%%Chk=%s_sidechain_opt.chk" %outf, file=fcf)
+    print("%%Chk=%s_small_opt.chk" %outf, file=fcf)
     print("%Mem=3000MB", file=fcf)
     print("%NProcShared=2", file=fcf)
     print("#N B3LYP/6-31G* Freq=NoRaman Geom=AllCheckpoint Guess=Read", file=fcf)
