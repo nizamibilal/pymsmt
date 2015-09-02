@@ -21,12 +21,13 @@ import simtk.openmm as mm  #about force field
 import simtk.openmm.app as app #about algorithm
 
 # ParmEd imports
-from parmed.unit import unit as u
-from parmed.amber import AmberParm, AmberMask
-from parmed.openmm import StateDataReporter, NetCDFReporter, RestartReporter
+from chemistry import unit as u
+from chemistry.amber import AmberParm, AmberMask
+from chemistry.openmm import StateDataReporter, NetCDFReporter, RestartReporter
 
 # pyMSMT Imports
-from msmtmol.cal import calc_bond
+from msmtmol.getlist import get_blist, get_all_list
+from msmtmol.cal import calc_bond, calc_angle, calc_dih
 from msmtmol.rstfile import read_rstf
 from msmtmol.element import Atnum, CoRadiiDict
 from api.AmberParm import read_amber_prm
@@ -55,10 +56,7 @@ def get_typ_dict(typinds, typs):
 
 def get_rmsd(initparas):
 
-    global idxs, mcresids2, disatompairs
-
-    print(mcresids2)
-    print(initparas)
+    global idxs, mcresids2, atompairs
 
     #Modify the C4 terms in the prmtop file
     for i in range(0, len(idxs)):
@@ -136,21 +134,44 @@ def get_rmsd(initparas):
     state = sim.context.getState(getPositions=True, enforcePeriodicBox=True)
     restrt.report(sim, state)
 
-    dis_aft_min = []
+    val_aft_min = []
     crds_aft_min = read_rstf(options.rfile)
-    for i in disatompairs:
-        crd1 = crds_aft_min[i[0]-1]
-        crd2 = crds_aft_min[i[1]-1]
-        bond = calc_bond(crd1, crd2)
-        dis_aft_min.append(bond)
+    for i in atompairs:
+        if len(i) == 2:
+            crd1 = crds_aft_min[i[0]-1]
+            crd2 = crds_aft_min[i[1]-1]
+            bond = calc_bond(crd1, crd2)
+            val_aft_min.append(('bond', bond))
+        elif len(i) == 3:
+            crd1 = crds_aft_min[i[0]-1]
+            crd2 = crds_aft_min[i[1]-1]
+            crd3 = crds_aft_min[i[2]-1]
+            angle = calc_angle(crd1, crd2, crd3)
+            val_aft_min.append(('angle', angle))
+        elif len(i) == 4:
+            crd1 = crds_aft_min[i[0]-1]
+            crd2 = crds_aft_min[i[1]-1]
+            crd3 = crds_aft_min[i[2]-1]
+            crd4 = crds_aft_min[i[3]-1]
+            dih = calc_dih(crd1, crd2, crd3, crd4)
+            val_aft_min.append(('dih', dih))
 
-    disdiff = [abs(dis_bf_min[i] - dis_aft_min[i]) for i in range(0, len(disatompairs))]
+    valdiffs = []
+    for i in range(0, len(atompairs)):
+        if val_bf_min[i][0] == 'bond':
+            valdiff = abs(val_aft_min[i][1] - val_bf_min[i][1]) * 1.0 / 100.0
+        elif val_bf_min[i][0] == 'angle':
+            valdiff = abs(val_aft_min[i][1] - val_bf_min[i][1]) * 1.0 / 2.0
+        elif val_bf_min[i][0] == 'dih':
+            valdiff = abs(val_aft_min[i][1] - val_bf_min[i][1])
+            if (360.0 - valdiff < valdiff):
+                valdiff = 360.0 - valdiff
+        valdiffs.append(valdiff)
 
-    print(disdiff)
-    disdiff = numpy.sum(disdiff)       
+    fnldiff = numpy.sum(valdiffs)
+    print(fnldiff)
 
-    print(disdiff)
-    return disdiff
+    return fnldiff
 
     #print('Calculate the RMSD')
     # Perform the RMSD calcualtion, using ptraj in AmberTools
@@ -242,10 +263,17 @@ elif options.minm == 'cobyla':
     from scipy.optimize import fmin_cobyla as fmin
 elif options.minm == 'slsqp':
     from scipy.optimize import fmin_slsqp as fmin
+elif options.minm == 'simple':
+    from scipy.optimize import minimize as fmin
 
 #Get the metal center information from prmtop and coordinate files
 prmtop, mol, atids, resids = read_amber_prm(options.pfile, options.cfile)
 mask = AmberMask(prmtop, options.ion_mask)
+
+blist = get_blist(mol, atids)
+all_list = get_all_list(mol, blist, atids, 8.0)
+alist = all_list.anglist
+dlist = all_list.dihlist
 
 #Get the metal ion ids
 metids = []       #Atom IDs
@@ -261,7 +289,7 @@ for i in mask.Selected():
 
 smcids = [] #Metal site ligating atom IDs
 mcresids = []  #Metal Site Residue IDs
-disatompairs = [] #Distance pair
+atompairs = [] #Distance pair
 for i in metids:
     crdi = mol.atoms[i].crd
     atmi = mol.atoms[i].element
@@ -275,9 +303,25 @@ for i in metids:
             radiusij = radiusi + radiusj
             if (dis <= radiusij + 0.4) and (dis >= 0.1) and (atmj != 'H'):
                 smcids.append(j)
-                disatompairs.append((i, j))
+                atompairs.append((i, j))
                 if mol.atoms[j].resid not in mcresids:
                     mcresids.append(mol.atoms[j].resid)
+
+for i in alist:
+    if len(i) != 3:
+        raise ValueError('More than 3 atoms in one angle! ' + i)
+    j = [k-1 for k in i]
+    atnums = [prmtop.parm_data['ATOMIC_NUMBER'][l] for l in j]
+    if (list(set(metids) & set(i)) != []) and (1 not in atnums):
+        atompairs.append(i)
+
+for i in dlist:
+    if len(i) != 4:
+        raise ValueError('More than 4 atoms in one dihedral! ' + i)
+    j = [k-1 for k in i]
+    atnums = [prmtop.parm_data['ATOMIC_NUMBER'][l] for l in j]
+    if (list(set(metids) & set(i)) != []) and (1 not in atnums):
+        atompairs.append(i)
 
 #Add metal ion IDs to the Metal Site Residue IDs
 mcresids2 = mcresids
@@ -285,6 +329,8 @@ for i in metids:
     mcresids2.append(mol.atoms[i].resid)
 mcresids2 = list(set(mcresids2))
 mcresids2.sort()
+
+print('Residues in the metal site: ', mcresids2)
 
 mcids = []  #Metal site atom IDs
 if options.model == 1: #Small model
@@ -296,16 +342,30 @@ elif options.model == 2: #Big model
                 mcids.append(j)
 
 #Calculate the distances between metal ion and ligating atoms
-dis_bf_min = []
+val_bf_min = []
 crds_bf_min = read_rstf(options.cfile)
-for i in disatompairs:
-    crd1 = crds_bf_min[i[0]-1]
-    crd2 = crds_bf_min[i[1]-1]
-    bond = calc_bond(crd1, crd2)
-    dis_bf_min.append(bond)
+for i in atompairs:
+    if len(i) == 2:
+        crd1 = crds_bf_min[i[0]-1]
+        crd2 = crds_bf_min[i[1]-1]
+        bond = calc_bond(crd1, crd2)
+        val_bf_min.append(('bond', bond))
+    elif len(i) == 3:
+        crd1 = crds_bf_min[i[0]-1]
+        crd2 = crds_bf_min[i[1]-1]
+        crd3 = crds_bf_min[i[2]-1]
+        angle = calc_angle(crd1, crd2, crd3)
+        val_bf_min.append(('angle', angle))
+    elif len(i) == 4:
+        crd1 = crds_bf_min[i[0]-1]
+        crd2 = crds_bf_min[i[1]-1]
+        crd3 = crds_bf_min[i[2]-1]
+        crd4 = crds_bf_min[i[3]-1]
+        dih = calc_dih(crd1, crd2, crd3, crd4)
+        val_bf_min.append(('dih', dih))
 
-print("Distance before minimization...")
-print(dis_bf_min)
+print("Bond, angle and dihedral before minimization...")
+print(val_bf_min)
 
 #-----------------------------------------------------------------------------#
 #Get the Amber mask of the metal center complex and print it into ptraj.in file
@@ -318,8 +378,9 @@ for i in smcids:
     maskns.append(maskn)
 
 w_parmedf = open('OptC4_parmed1.in', 'w')
-for i in maskns:
-    print("addLJType " + ':' + i, file=w_parmedf)
+for i in range(0, len(maskns)):
+    print("change AMBER_ATOM_TYPE :%s M%d" %(maskns[i], i+1), file=w_parmedf)
+    print("addLJType " + ':' + maskns[i], file=w_parmedf)
 print("outparm addij_%s" %options.pfile, file=w_parmedf)
 print("quit", file=w_parmedf)
 w_parmedf.close()
@@ -327,7 +388,7 @@ w_parmedf.close()
 os.system("parmed.py -O -i OptC4_parmed1.in -p %s -c %s" %(options.pfile, options.cfile))
 
 w_parmedf = open('OptC4_parmed2.in', 'w')
-print("add12_6_4 " + options.ion_mask, file=w_parmedf)
+print("add12_6_4 " + options.ion_mask + " polfile lj_1264_pol.dat1", file=w_parmedf)
 print("outparm %s.c4" %options.pfile, file=w_parmedf)
 print("quit", file=w_parmedf)
 w_parmedf.close()
@@ -391,13 +452,14 @@ mctypinds.sort()
 
 #Detect the C4 terms which relates to the metal center complex
 ntyps = prmtop.pointers['NTYPES']
+
 idxs = [] #Index of C4 terms which needs to modify
 iddict = {} #Dictionary of idx corresponding to ATOM_TYPE_INDEX pair
 for i in mettypinds:
     j = i - 1
     for k in mctypinds:
         l = k - 1
-        if k < i:
+        if j < l:
             idx = prmtop.parm_data['NONBONDED_PARM_INDEX'][ntyps*j+l] - 1
         else:
             idx = prmtop.parm_data['NONBONDED_PARM_INDEX'][ntyps*l+j] - 1
@@ -407,17 +469,19 @@ for i in mettypinds:
 idxs.sort()
 initparas = [c4terms[i] for i in idxs]
 
+print('Initial C4 parameters are : ', initparas)
+
 #Doing optimization of the parameters, initial was the normal C4 term
 xopt = fmin(get_rmsd, initparas, epsilon=options.stepsize)
 
 print("Final parameters...")
 print(xopt)
 
-print("The final RMSD is: ")
+print("The final Score is: ")
 frmsd = get_rmsd(xopt)
 
 for i in range(0, len(idxs)):
-    print('The optimal value of atomtypes ' + str(iddict[idxs[i]]) + \
-          ' is ' + str(xopt[i]))
+    print('The optimal value of atomtypes ' + str(mettypdict[iddict[idxs[i]][0]]) + \
+          + str(mctypdict[iddict[idxs[i]][1]]) + ' is ' + str(xopt[i]))
 
 
