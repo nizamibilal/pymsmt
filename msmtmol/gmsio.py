@@ -23,7 +23,7 @@ def write_gms_optf(goptf2, smchg, SpinNum, gatms, signum=3):
     optf2.close()
 
     for gatmi in gatms:
-      write_gmsatm(gatmi, goptf2, signum)
+        write_gmsatm(gatmi, goptf2, signum)
 
     ##Print the last line in GAMESS input file
     ##Geometry Optimization file
@@ -61,7 +61,7 @@ def write_gms_mkf(gmsf, lgchg, SpinNum, gatms, signum=3):
 
     #For GAMESS file
     for gatmi in gatms:
-      write_gmsatm(gatmi, gmsf, signum)
+        write_gmsatm(gatmi, gmsf, signum)
 
     #Print the end character for GAMESS input file
     w_gmsf = open(gmsf, 'a')
@@ -253,5 +253,3 @@ def get_esp_from_gms(logfile, espfile):
         val = espdict[i]
         print("%16.7E %15.7E %15.7E %15.7E" %(val[3], val[0], val[1], val[2]), file=w_espf)
     w_espf.close()
-
-

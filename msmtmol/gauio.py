@@ -16,21 +16,21 @@ from msmtmol.pt import AtomicNum
 def write_gauatm(gauatm, fname, signum=3):
     wf = open(fname, 'a')
     if signum == 3:
-      print("%-6s   %8.3f %8.3f %8.3f" %(gauatm.element, \
-                   gauatm.crdx, gauatm.crdy, gauatm.crdz), file=wf)
+        print("%-6s   %8.3f %8.3f %8.3f" %(gauatm.element, \
+                     gauatm.crdx, gauatm.crdy, gauatm.crdz), file=wf)
     elif signum == 4:
-      print("%-6s   %9.4f %9.4f %9.4f" %(gauatm.element, \
-                   gauatm.crdx, gauatm.crdy, gauatm.crdz), file=wf)
+        print("%-6s   %9.4f %9.4f %9.4f" %(gauatm.element, \
+                     gauatm.crdx, gauatm.crdy, gauatm.crdz), file=wf)
     wf.close()
 
 def write_gauatm_opth(gauatm, fname, signum=3):
     wf = open(fname, 'a')
     if gauatm.element == "H":
-      print("%-6s  0 %8.3f %8.3f %8.3f" %(gauatm.element, \
-          gauatm.crdx, gauatm.crdy, gauatm.crdz), file=wf)
+        print("%-6s  0 %8.3f %8.3f %8.3f" %(gauatm.element, \
+            gauatm.crdx, gauatm.crdy, gauatm.crdz), file=wf)
     else:
-      print("%-6s -1 %8.3f %8.3f %8.3f" %(gauatm.element, \
-          gauatm.crdx, gauatm.crdy, gauatm.crdz), file=wf)
+        print("%-6s -1 %8.3f %8.3f %8.3f" %(gauatm.element, \
+            gauatm.crdx, gauatm.crdy, gauatm.crdz), file=wf)
     wf.close()
 
 def write_sdd_basis(gatms, gauf):
@@ -42,23 +42,23 @@ def write_sdd_basis(gatms, gauf):
     w_gauf = open(gauf, 'a')
     print(" ", file=w_gauf)
     for i in atnames:
-      if AtomicNum[i] <= 18:
-        print(i, end=' ', file=w_gauf)
+        if AtomicNum[i] <= 18:
+            print(i, end=' ', file=w_gauf)
     print("0", file=w_gauf)
     print("6-31G*", file=w_gauf)
     print("****", file=w_gauf)
 
     for i in atnames:
-      if Atomic_Num[i] >= 19:
-        print(i, file=w_gauf)
+        if Atomic_Num[i] >= 19:
+            print(i, file=w_gauf)
     print("0", file=w_gauf)
     print("SDD", file=w_gauf)
     print("****", file=w_gauf)
     print(" ", file=w_gauf)
 
     for i in atnames:
-      if Atomic_Num[i] >= 19:
-        print(i, file=w_gauf)
+        if Atomic_Num[i] >= 19:
+            print(i, file=w_gauf)
     print("0", file=w_gauf)
     print("SDD", file=w_gauf)
     print("****", file=w_gauf)
@@ -82,11 +82,11 @@ def write_gau_optf(outf, goptf, smchg, SpinNum, gatms, signum=3):
     optf.close()
 
     if signum == 3:
-      for gatmi in gatms:
-        write_gauatm(gatmi, goptf)
+        for gatmi in gatms:
+            write_gauatm(gatmi, goptf)
     elif signum == 4:
-      for gatmi in gatms:
-        write_gauatm(gatmi, goptf, 4)
+        for gatmi in gatms:
+            write_gauatm(gatmi, goptf, 4)
 
     ##Geometry Optimization file
     optf = open(goptf, 'a')
@@ -119,11 +119,11 @@ def write_gau_mkf(outf, gmkf, lgchg, SpinNum, gatms, ionnames, chargedict,
     print("%NProcShared=2", file=mkf)
 
     if largeopt == 0:
-      print("#N B3LYP/6-31G* Integral=(Grid=UltraFine) " + \
-                    "Pop(MK,ReadRadii) SCF=XQC", file=mkf)
+        print("#N B3LYP/6-31G* Integral=(Grid=UltraFine) " + \
+                      "Pop(MK,ReadRadii) SCF=XQC", file=mkf)
     elif largeopt in [1, 2]:
-      print("#N B3LYP/6-31G* Integral=(Grid=UltraFine) Opt " + \
-                    "Pop(MK,ReadRadii) SCF=XQC", file=mkf)
+        print("#N B3LYP/6-31G* Integral=(Grid=UltraFine) Opt " + \
+                      "Pop(MK,ReadRadii) SCF=XQC", file=mkf)
 
     print("IOp(6/33=2)", file=mkf)
     print(" ", file=mkf)
@@ -134,44 +134,44 @@ def write_gau_mkf(outf, gmkf, lgchg, SpinNum, gatms, ionnames, chargedict,
 
     #For Gaussian file
     if signum == 3:
-      if largeopt in [0, 2]:
-        for gatmi in gatms:
-          write_gauatm(gatmi, gmkf)
-      elif largeopt == 1:
-        for gatmi in gatms:
-          write_gauatm_opth(gatmi, gmkf)
+        if largeopt in [0, 2]:
+            for gatmi in gatms:
+                write_gauatm(gatmi, gmkf)
+        elif largeopt == 1:
+            for gatmi in gatms:
+                write_gauatm_opth(gatmi, gmkf)
     elif signum == 4:
-      if largeopt in [0, 2]:
-        for gatmi in gatms:
-          write_gauatm(gatmi, gmkf, signum)
-      elif largeopt == 1:
-        for gatmi in gatms:
-          write_gauatm_opth(gatmi, gmkf, signum)
+        if largeopt in [0, 2]:
+            for gatmi in gatms:
+                write_gauatm(gatmi, gmkf, signum)
+        elif largeopt == 1:
+            for gatmi in gatms:
+                write_gauatm_opth(gatmi, gmkf, signum)
 
     ##print the ion radius for resp charge fitting in MK RESP input file
     mkf = open(gmkf, 'a')
     print(" ", file=mkf)
 
     for i in ionnames:
-      chg = str(int(chargedict[i]))
-      if len(i) > 1:
-        i = i[0] + i[1:].lower()
-      vdwradius = IonLJParaDict[i + chg][0]
-      print(i, vdwradius, file=mkf)
+        chg = str(int(chargedict[i]))
+        if len(i) > 1:
+            i = i[0] + i[1:].lower()
+        vdwradius = IonLJParaDict[i + chg][0]
+        print(i, vdwradius, file=mkf)
     print(" ", file=mkf)
 
     if largeopt in [1, 2]:
-      for i in ionnames:
-        chg = str(int(chargedict[i]))
-        if len(i) > 1:
-          i = i[0] + i[1:].lower()
-        vdwradius = IonLJParaDict[i + chg][0]
-        print(i, vdwradius, file=mkf)
-      print(" ", file=mkf)
-      print(" ", file=mkf)
+        for i in ionnames:
+            chg = str(int(chargedict[i]))
+            if len(i) > 1:
+                i = i[0] + i[1:].lower()
+            vdwradius = IonLJParaDict[i + chg][0]
+            print(i, vdwradius, file=mkf)
+        print(" ", file=mkf)
+        print(" ", file=mkf)
 
     if largeopt == 0:
-      print(" ", file=mkf)
+        print(" ", file=mkf)
 
     mkf.close()
 
@@ -188,32 +188,32 @@ def get_crds_from_fchk(fname, atnums):
     fp = open(fname, 'r')
     i = 1
     for line in fp:
-      if 'Current cartesian coordinates' in line:
-        beginl = i + 1
-        line = line.strip('\n')
-        line = line.split()
-        crdnums2 = int(line[-1])
-      i = i + 1
+        if 'Current cartesian coordinates' in line:
+            beginl = i + 1
+            line = line.strip('\n')
+            line = line.split()
+            crdnums2 = int(line[-1])
+        i = i + 1
     fp.close()
 
     if crdnums == crdnums2:
-      pass
+        pass
     else:
-       raise pymsmtError('The coordinates number in fchk file are not consistent '
-                        'with the atom number.')
+        raise pymsmtError('The coordinates number in fchk file are not consistent '
+                         'with the atom number.')
 
     if crdnums%5 == 0:
-      endl = crdnums//5 + beginl - 1
+        endl = crdnums//5 + beginl - 1
     else:
-      endl = crdnums//5 + beginl
+        endl = crdnums//5 + beginl
 
     for i in range(beginl, endl+1):
-      line = linecache.getline(fname, i)
-      line = line.strip('\n')
-      crd = line.split()
-      for j in crd:
-        if j != ' ':
-          crds.append(float(j))
+        line = linecache.getline(fname, i)
+        line = line.strip('\n')
+        crd = line.split()
+        for j in crd:
+            if j != ' ':
+                crds.append(float(j))
 
     linecache.clearcache()
     return crds
@@ -228,41 +228,41 @@ def get_matrix_from_fchk(fname, msize):
     fp = open(fname, 'r')
     i = 1
     for line in fp:
-      if 'Cartesian Force Constants' in line:
-        beginl = i + 1
-        line = line.strip('\n')
-        line = line.split()
-        elenums2 = int(line[-1])
-      i = i + 1
+        if 'Cartesian Force Constants' in line:
+            beginl = i + 1
+            line = line.strip('\n')
+            line = line.split()
+            elenums2 = int(line[-1])
+        i = i + 1
     fp.close()
 
     if elenums == elenums2:
-      pass
+        pass
     else:
-      raise pymsmtError('The atom number is not consistent with the'
-                       'matrix size in fchk file.')
+        raise pymsmtError('The atom number is not consistent with the'
+                         'matrix size in fchk file.')
 
     if elenums%5 == 0:
-      endl = beginl + elenums//5 - 1
+        endl = beginl + elenums//5 - 1
     else:
-      endl = beginl + elenums//5
+        endl = beginl + elenums//5
 
     fcmatrix = numpy.array([[float(0) for x in range(msize)] for x in range(msize)])
 
     for i in range(beginl, endl+1):
-      line = linecache.getline(fname, i)
-      line = line.strip('\n')
-      crd = line.split()
-      for j in crd:
-        if j != ' ':
-          crds.append(float(j))
+        line = linecache.getline(fname, i)
+        line = line.strip('\n')
+        crd = line.split()
+        for j in crd:
+            if j != ' ':
+                crds.append(float(j))
 
     i = 0
     for j in range(0, msize):
-      for k in range(0, j+1):
-        fcmatrix[j][k] = crds[i]
-        fcmatrix[k][j] = crds[i]
-        i = i + 1
+        for k in range(0, j+1):
+            fcmatrix[j][k] = crds[i]
+            fcmatrix[k][j] = crds[i]
+            i = i + 1
 
     linecache.clearcache()
     return fcmatrix
@@ -272,37 +272,37 @@ def get_crds_from_log(logfname, g0x):
     #Log file uses angs. as unit
 
     if g0x == 'g03':
-      fp = open(logfname)
-      ln = 1
-      for line in fp:
-        if 'Redundant internal coordinates' in line:
-          bln = ln + 3
-        elif 'Recover connectivity data from disk' in line:
-          eln = ln - 1
-        ln = ln + 1
-      fp.close()
+        fp = open(logfname)
+        ln = 1
+        for line in fp:
+            if 'Redundant internal coordinates' in line:
+                bln = ln + 3
+            elif 'Recover connectivity data from disk' in line:
+                eln = ln - 1
+            ln = ln + 1
+        fp.close()
     elif g0x == 'g09':
-      fp = open(logfname)
-      ln = 1
-      for line in fp:
-        if 'Redundant internal coordinates' in line:
-          bln = ln + 1
-        elif 'Recover connectivity data from disk' in line:
-          eln = ln - 1
-        ln = ln + 1
-      fp.close()
+        fp = open(logfname)
+        ln = 1
+        for line in fp:
+            if 'Redundant internal coordinates' in line:
+                bln = ln + 1
+            elif 'Recover connectivity data from disk' in line:
+                eln = ln - 1
+            ln = ln + 1
+        fp.close()
 
     crds = []
     ln = 1
     fp1 = open(logfname)
     for line in fp1:
-      if (ln >= bln) and (ln <= eln):
-        line = line.strip('\n')
-        line = line.split(',')
-        line = line[-3:]
-        line = [float(i) for i in line]
-        crds += line
-      ln = ln + 1
+        if (ln >= bln) and (ln <= eln):
+            line = line.strip('\n')
+            line = line.split(',')
+            line = line[-3:]
+            line = [float(i) for i in line]
+            crds += line
+        ln = ln + 1
     fp1.close()
 
     return crds
@@ -318,23 +318,23 @@ def get_fc_from_log(logfname):
     ##Get the values for each bond, angle and dihedral
     fp = open(logfname, 'r')
     for line in fp:
-      if stringle in line:
-        line = line.strip('\n')
-        line = line.strip('!')
-        line = line.lstrip(' !') 
-        line = line.split()
-        val = float(line[2])
-        vals.append(val)
-        typ = line[0][0]
+        if stringle in line:
+            line = line.strip('\n')
+            line = line.strip('!')
+            line = line.lstrip(' !')
+            line = line.split()
+            val = float(line[2])
+            vals.append(val)
+            typ = line[0][0]
 
-        line[1] = line[1].lstrip(typ)
-        line[1] = line[1].lstrip('L')
-        line[1] = line[1].lstrip('(')
-        line[1] = line[1].rstrip(')')
+            line[1] = line[1].lstrip(typ)
+            line[1] = line[1].lstrip('L')
+            line[1] = line[1].lstrip('(')
+            line[1] = line[1].rstrip(')')
 
-        ats = line[1].split(',')
-        ats = [int(i) for i in ats]
-        sturefs.append(tuple(ats))
+            ats = line[1].split(',')
+            ats = [int(i) for i in ats]
+            sturefs.append(tuple(ats))
     fp.close()
 
     maxnum = len(sturefs)
@@ -343,9 +343,9 @@ def get_fc_from_log(logfname):
     fp = open(logfname, 'r')
     lnum = 1
     for line in fp:
-      if stringfc in line:
-        blnum = lnum + 2
-      lnum = lnum + 1
+        if stringfc in line:
+            blnum = lnum + 2
+        lnum = lnum + 1
     fp.close()
 
     blnum1 = blnum
@@ -354,31 +354,31 @@ def get_fc_from_log(logfname):
     numl = []
 
     if (maxnum%5 != 0):
-      for i in range(0, int(maxnum//5)+1):
-        gap = maxnum - len(numl) + 1
-        for j in range(0, 5):
-          if len(numl) < maxnum:
-            numl.append(blnum1 + j)
-        blnum1 = blnum1 + gap
+        for i in range(0, int(maxnum//5)+1):
+            gap = maxnum - len(numl) + 1
+            for j in range(0, 5):
+                if len(numl) < maxnum:
+                    numl.append(blnum1 + j)
+            blnum1 = blnum1 + gap
     else:
-      for i in range(0, int(maxnum//5)):
-        gap = maxnum - len(numl) + 1
-        for j in range(0, 5):
-          if len(numl) < maxnum:
-            numl.append(blnum1 + j)
-        blnum1 = blnum1 + gap
+        for i in range(0, int(maxnum//5)):
+            gap = maxnum - len(numl) + 1
+            for j in range(0, 5):
+                if len(numl) < maxnum:
+                    numl.append(blnum1 + j)
+            blnum1 = blnum1 + gap
 
     fcs = []
     fp = open(logfname, 'r')
     lnum = 1
     for line in fp:
-      if lnum in numl:
-        line = line.strip('\n')
-        line = line.split()
-        numv = len(line)
-        fc = float(line[-1].replace('D', 'e'))
-        fcs.append(fc)
-      lnum = lnum + 1
+        if lnum in numl:
+            line = line.strip('\n')
+            line = line.split()
+            numv = len(line)
+            fc = float(line[-1].replace('D', 'e'))
+            fcs.append(fc)
+        lnum = lnum + 1
     fp.close()
 
     ##Return three lists: identifications, values, force constants
@@ -461,4 +461,3 @@ def get_esp_from_gau(logfile, espfile):
         w_espf.close()
     else:
         raise pymsmtError("The length of coordinates and ESP charges are different!")
-

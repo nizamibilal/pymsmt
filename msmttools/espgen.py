@@ -30,4 +30,3 @@ elif options.softversion == 'gms':
     get_esp_from_gms(options.inputfile, options.outputfile)
 
 quit()
-

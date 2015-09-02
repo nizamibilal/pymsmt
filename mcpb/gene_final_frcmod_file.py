@@ -37,22 +37,22 @@ def get_attypdict(stfpf, atids):
     attypdict = {}
     fpinfo = open(stfpf, 'r')
     for line in fpinfo:
-      if line[0:4] != "LINK":
-        line = line.strip('\n')
-        line = line.split(' ')
-        line = [i for i in line if i != '']
-        if len(line[-1]) == 1:
-          line[-1] = line[-1] + ' '
-        longatname = line[0].split('-')
-        atname = longatname[-1]
-        if (int(line[1]) in atids):
-          attypdict[int(line[1])] = line[-1]
+        if line[0:4] != "LINK":
+            line = line.strip('\n')
+            line = line.split(' ')
+            line = [i for i in line if i != '']
+            if len(line[-1]) == 1:
+                line[-1] = line[-1] + ' '
+            longatname = line[0].split('-')
+            atname = longatname[-1]
+            if (int(line[1]) in atids):
+                attypdict[int(line[1])] = line[-1]
     fpinfo.close()
 
     for i in atids:
-      if i not in list(attypdict.keys()):
-        #print 'atomid %d Not find in standard fingerprint file.' %i
-        attypdict[i] = '**'
+        if i not in list(attypdict.keys()):
+            #print 'atomid %d Not find in standard fingerprint file.' %i
+            attypdict[i] = '**'
 
     return attypdict
 
@@ -64,17 +64,17 @@ def get_misstyps(pref):
 
     prefrcmod = open(pref, 'r')
     for line in prefrcmod:
-      line = line.strip('\n')
-      if line[0:4] == 'NON ':
-        if (line[6:7] == '-') and (line[9:10] == '-'):
-          at1 = line[4:6]
-          at2 = line[7:9]
-          at3 = line[10:12]
-          missangtyps.append((at1, at2, at3))
-        else:
-          at1 = line[4:6]
-          at2 = line[7:9]
-          missbondtyps.append((at1, at2))
+        line = line.strip('\n')
+        if line[0:4] == 'NON ':
+            if (line[6:7] == '-') and (line[9:10] == '-'):
+                at1 = line[4:6]
+                at2 = line[7:9]
+                at3 = line[10:12]
+                missangtyps.append((at1, at2, at3))
+            else:
+                at1 = line[4:6]
+                at2 = line[7:9]
+                missbondtyps.append((at1, at2))
     prefrcmod.close()
     return missbondtyps, missangtyps
 
@@ -82,30 +82,30 @@ def avg_bond_para(misbondat12, bondlen, bfconst):
     # bond length has 4 decimal places
     # bond force constant has 1 decimal place
     if (len(bondlen) == 0) or (len(bfconst) == 0):
-      print('For bondtype: ' + misbondat12 + '. There are ' + \
-            ' 0 bond in this type: ')
-      print('  Could not find bond parameters for %s, treat it as 0.' \
-            %misbondat12)
-      avgbfc = 0.0
-      avgblen = 0.0
-    else:
-      bondlen = [round(i, 4) for i in bondlen]
-      avgblen = round(average(bondlen), 4)
-      bfconst = [round(i, 1) for i in bfconst]
-      avgbfc = round(average(bfconst), 1)
-
-      print('For bondtype: ' + misbondat12 + '. There are ' + \
-             str(len(bondlen)) + ' bond(s) in this type: ')
-      print('  The bond length(s) is(are): ' + str(bondlen))
-      print('  The average bond length is: ' + str(avgblen) + \
-            ' Angstrom.')
-      print('  The force constant(s) is(are): ' + str(bfconst))
-      print('  The average force constant is: ' + str(avgbfc) + \
-            ' Kcal*mol^-1*A^-2.')
-
-      if avgbfc < 0:
-        print('  *The average force constant is negative, treat is as 0.0.')
+        print('For bondtype: ' + misbondat12 + '. There are ' + \
+              ' 0 bond in this type: ')
+        print('  Could not find bond parameters for %s, treat it as 0.' \
+              %misbondat12)
         avgbfc = 0.0
+        avgblen = 0.0
+    else:
+        bondlen = [round(i, 4) for i in bondlen]
+        avgblen = round(average(bondlen), 4)
+        bfconst = [round(i, 1) for i in bfconst]
+        avgbfc = round(average(bfconst), 1)
+
+        print('For bondtype: ' + misbondat12 + '. There are ' + \
+               str(len(bondlen)) + ' bond(s) in this type: ')
+        print('  The bond length(s) is(are): ' + str(bondlen))
+        print('  The average bond length is: ' + str(avgblen) + \
+              ' Angstrom.')
+        print('  The force constant(s) is(are): ' + str(bfconst))
+        print('  The average force constant is: ' + str(avgbfc) + \
+              ' Kcal*mol^-1*A^-2.')
+
+        if avgbfc < 0:
+            print('  *The average force constant is negative, treat is as 0.0.')
+            avgbfc = 0.0
 
     bond_para = (avgbfc, avgblen)
     return bond_para
@@ -114,30 +114,30 @@ def avg_angle_para(misangat123, angvals, afconst):
     # angle mangnitude has 2 decimal places
     # angle force constant has 2 decimal places
     if len(angvals) == 0 or len(afconst) == 0:
-      print('For angletype: ' + misangat123 + '. There are ' + \
-            '0 angle in this type: ')
-      print('  Could not find angle parameters for %s, treat it as 0.' \
-            %misangat123)
-      avgafc = 0.0
-      avgangv = 0.0
+        print('For angletype: ' + misangat123 + '. There are ' + \
+              '0 angle in this type: ')
+        print('  Could not find angle parameters for %s, treat it as 0.' \
+              %misangat123)
+        avgafc = 0.0
+        avgangv = 0.0
     else:
-      angvals = [round(i, 2) for i in angvals]
-      avgangv = round(average(angvals), 2)
-      afconst = [round(i, 2) for i in afconst]
-      avgafc = round(average(afconst), 2)
- 
-      print('For angletype: ' + misangat123 + '. There are ' + \
-            str(len(angvals)) + ' angle(s) in this type: ')
-      print('  The angle value(s) is(are): ' + str(angvals))
-      print('  The average angle value is: ' + str(avgangv) + \
-            ' Degree.')
-      print('  The force constant(s) is(are): '+ str(afconst))
-      print('  The average force constant is: ' + str(avgafc) + \
-            ' Kcal*mol^-1*Rad^-2.')
+        angvals = [round(i, 2) for i in angvals]
+        avgangv = round(average(angvals), 2)
+        afconst = [round(i, 2) for i in afconst]
+        avgafc = round(average(afconst), 2)
 
-      if avgafc < 0:
-        print('  *The average force constant is negative, treat is as 0.00.')
-        avgafc = 0.00
+        print('For angletype: ' + misangat123 + '. There are ' + \
+              str(len(angvals)) + ' angle(s) in this type: ')
+        print('  The angle value(s) is(are): ' + str(angvals))
+        print('  The average angle value is: ' + str(avgangv) + \
+              ' Degree.')
+        print('  The force constant(s) is(are): '+ str(afconst))
+        print('  The average force constant is: ' + str(avgafc) + \
+              ' Kcal*mol^-1*Rad^-2.')
+
+        if avgafc < 0:
+            print('  *The average force constant is negative, treat is as 0.00.')
+            avgafc = 0.00
 
     ang_para = (avgafc, avgangv)
     return ang_para
@@ -149,27 +149,27 @@ def print_frcmod_file(pref, finf, finalparmdict, method):
     prefrcmod = open(pref, 'r')
     note = 'Created by ' + method + ' method using MCPB.py'
     for line in prefrcmod:
-      line = line.strip('\n')
-      if line[0:4] == 'NON ':
-        #Angle
-        if (line[6:7] == '-') and (line[9:10] == '-'):
-          at1 = line[4:6]
-          at2 = line[7:9]
-          at3 = line[10:12]
-          angtyp = line[4:12]
-          param = finalparmdict[angtyp]
-          print('%8s  %7.2f    %7.2f    %-s' %(angtyp,param[0], param[1], note), file=finfrcmod) 
-        #Bond
+        line = line.strip('\n')
+        if line[0:4] == 'NON ':
+            #Angle
+            if (line[6:7] == '-') and (line[9:10] == '-'):
+                at1 = line[4:6]
+                at2 = line[7:9]
+                at3 = line[10:12]
+                angtyp = line[4:12]
+                param = finalparmdict[angtyp]
+                print('%8s  %7.2f    %7.2f    %-s' %(angtyp,param[0], param[1], note), file=finfrcmod)
+            #Bond
+            else:
+                at1 = line[4:6]
+                at2 = line[7:9]
+                bondtyp = line[4:9]
+                param = finalparmdict[bondtyp]
+                print('%5s  %5.1f   %7.4f      %-s' %(bondtyp, param[0], param[1], note), file=finfrcmod)
+        elif line[0:4] == 'YES ':
+            print(line[4:], file=finfrcmod)
         else:
-          at1 = line[4:6]
-          at2 = line[7:9]
-          bondtyp = line[4:9]
-          param = finalparmdict[bondtyp]
-          print('%5s  %5.1f   %7.4f      %-s' %(bondtyp, param[0], param[1], note), file=finfrcmod)
-      elif line[0:4] == 'YES ':
-        print(line[4:], file=finfrcmod)
-      else:
-        print(line, file=finfrcmod)
+            print(line, file=finfrcmod)
     prefrcmod.close()
     finfrcmod.close()
 
@@ -182,32 +182,32 @@ def fcfit_ep_bond(dis, elmts):
     """
 
     if 'Zn' in elmts:
-      if set(elmts) == set(['Zn', 'N']):
-        fc = getfc('Zn-N.txt', dis)
-      elif set(elmts) == set(['Zn', 'O']):
-        fc = getfc('Zn-O.txt', dis)
-      elif set(elmts) == set(['Zn', 'S']):
-        fc = getfc('Zn-S.txt', dis)
-      else:
-        raise pymsmtError('Error: Could not deal with the atoms out of '
-                          'N, O and S.')
+        if set(elmts) == set(['Zn', 'N']):
+            fc = getfc('Zn-N.txt', dis)
+        elif set(elmts) == set(['Zn', 'O']):
+            fc = getfc('Zn-O.txt', dis)
+        elif set(elmts) == set(['Zn', 'S']):
+            fc = getfc('Zn-S.txt', dis)
+        else:
+            raise pymsmtError('Error: Could not deal with the atoms out of '
+                              'N, O and S.')
     else:
-      raise pymsmtError('Error: Not support metal ion other than Znic in '
-                        'current version, more metal ions will be supported '
-                        'in future version.')
+        raise pymsmtError('Error: Not support metal ion other than Znic in '
+                          'current version, more metal ions will be supported '
+                          'in future version.')
     fc = round(fc, 1)
     return fc
 
 def fcfit_ep_angle(elmts):
     #if metal is in the center
     if elmts[1] in ionnamel:
-      return 35.00
+        return 35.00
     elif set(elmts[0:2]) == set(['Zn', 'S']) or set(elmts[1:3]) == set(['Zn', 'S']):
-      return 70.00
+        return 70.00
     elif set(elmts[0:2]) == set(['Zn', 'N']) or set(elmts[1:3]) == set(['Zn', 'N']):
-      return 50.00
+        return 50.00
     elif set(elmts[0:2]) == set(['Zn', 'O']) or set(elmts[1:3]) == set(['Zn', 'O']):
-      return 50.00
+        return 50.00
 
 def gene_by_empirical_way(smpdbf, ionids, stfpf, pref, finf):
 
@@ -231,63 +231,63 @@ def gene_by_empirical_way(smpdbf, ionids, stfpf, pref, finf):
     print("=======================Generate the bond parameters===============")
 
     for misbond in missbondtyps:
-      bondlen = []
-      bfconst = []
-      for bond in blist:
-        at1 = bond[0]
-        at2 = bond[1]
-        bondtyp = (attypdict[at1], attypdict[at2])
-        if bondtyp == misbond or bondtyp[::-1] == misbond:
-          crd1 = mol.atoms[at1].crd
-          crd2 = mol.atoms[at2].crd
-          dis = calc_bond(crd1, crd2)
-          dis = round(dis, 4)
-          bondlen.append(dis)
+        bondlen = []
+        bfconst = []
+        for bond in blist:
+            at1 = bond[0]
+            at2 = bond[1]
+            bondtyp = (attypdict[at1], attypdict[at2])
+            if bondtyp == misbond or bondtyp[::-1] == misbond:
+                crd1 = mol.atoms[at1].crd
+                crd2 = mol.atoms[at2].crd
+                dis = calc_bond(crd1, crd2)
+                dis = round(dis, 4)
+                bondlen.append(dis)
 
-          #get the atom number
-          elmt1 = mol.atoms[at1].element
-          elmt2 = mol.atoms[at2].element
-          elmts = [elmt1, elmt2]
-          elmts = sorted(elmts)
+                #get the atom number
+                elmt1 = mol.atoms[at1].element
+                elmt2 = mol.atoms[at2].element
+                elmts = [elmt1, elmt2]
+                elmts = sorted(elmts)
 
-          fcfinal = fcfit_ep_bond(dis, elmts)
-          bfconst.append(fcfinal)
+                fcfinal = fcfit_ep_bond(dis, elmts)
+                bfconst.append(fcfinal)
 
-      #Get average bond parameters
-      misbondat12 = misbond[0] + '-' + misbond[1]
-      bond_para = avg_bond_para(misbondat12, bondlen, bfconst)
-      #get the force constant
-      finalparmdict[misbondat12] = bond_para
+        #Get average bond parameters
+        misbondat12 = misbond[0] + '-' + misbond[1]
+        bond_para = avg_bond_para(misbondat12, bondlen, bfconst)
+        #get the force constant
+        finalparmdict[misbondat12] = bond_para
 
     #for angle
     print("=======================Generate the angle parameters==============")
 
     for misang in missangtyps:
-      angvals = []
-      afconst = []
-      for ang in alist:
-        at1 = ang[0]
-        at2 = ang[1]
-        at3 = ang[2]
-        angtyp = (attypdict[at1], attypdict[at2], attypdict[at3])
-        if angtyp == misang or angtyp[::-1] == misang:
-          crd1 = mol.atoms[at1].crd
-          crd2 = mol.atoms[at2].crd
-          crd3 = mol.atoms[at3].crd
-          angval = calc_angle(crd1, crd2, crd3)
-          angvals.append(angval)
+        angvals = []
+        afconst = []
+        for ang in alist:
+            at1 = ang[0]
+            at2 = ang[1]
+            at3 = ang[2]
+            angtyp = (attypdict[at1], attypdict[at2], attypdict[at3])
+            if angtyp == misang or angtyp[::-1] == misang:
+                crd1 = mol.atoms[at1].crd
+                crd2 = mol.atoms[at2].crd
+                crd3 = mol.atoms[at3].crd
+                angval = calc_angle(crd1, crd2, crd3)
+                angvals.append(angval)
 
-          elmt1 = mol.atoms[at1].element
-          elmt2 = mol.atoms[at2].element
-          elmt3 = mol.atoms[at3].element
-          elmts = [elmt1, elmt2, elmt3]
-          fcfinal = fcfit_ep_angle(elmts)
-          afconst.append(fcfinal)
+                elmt1 = mol.atoms[at1].element
+                elmt2 = mol.atoms[at2].element
+                elmt3 = mol.atoms[at3].element
+                elmts = [elmt1, elmt2, elmt3]
+                fcfinal = fcfit_ep_angle(elmts)
+                afconst.append(fcfinal)
 
-      #Get average angle parameters
-      misangat123 = misang[0] + '-' + misang[1] + '-' + misang[2]
-      ang_para = avg_angle_para(misangat123, angvals, afconst)
-      finalparmdict[misangat123] = ang_para
+        #Get average angle parameters
+        misangat123 = misang[0] + '-' + misang[1] + '-' + misang[2]
+        ang_para = avg_angle_para(misangat123, angvals, afconst)
+        finalparmdict[misangat123] = ang_para
 
     #Print out the final frcmod file
     print_frcmod_file(pref, finf, finalparmdict, 'empirical')
@@ -310,46 +310,46 @@ def get_bond_fc_with_sem(crds, fcmatrix, nat1, nat2, scalef, bondavg):
     vec12 = array(crd2) - array(crd1) #vec12 is vec2 - vec1
     vec12 = [i/(disbohr) for i in vec12]
     vec12 = array(vec12)
- 
+
     #bond force constant matrix, size 3 * 3
     bfcmatrix = array([[float(0) for x in range(3)] for x in range(3)])
-   
+
     #1. First way to chose the matrix-----------------
     for i in range(0, 3):
-      for j in range(0, 3):
-        bfcmatrix[i][j] = -fcmatrix[3*(nat1-1)+i][3*(nat2-1)+j]
+        for j in range(0, 3):
+            bfcmatrix[i][j] = -fcmatrix[3*(nat1-1)+i][3*(nat2-1)+j]
     eigval, eigvector = eig(bfcmatrix)
     fc = 0.0
     for i in range(0, 3):
-      ev = eigvector[:,i]
-      fc = fc + eigval[i] * abs(dot(ev, vec12))
+        ev = eigvector[:,i]
+        fc = fc + eigval[i] * abs(dot(ev, vec12))
     fcfinal1 = fc * HB2_TO_KCAL_MOL_A2 * 0.5
 
     if bondavg == 1:
-      #2. Second way to chose the matrix-----------------
-      for i in range(0, 3):
-        for j in range(0, 3):
-          bfcmatrix[i][j] = -fcmatrix[3*(nat2-1)+i][3*(nat1-1)+j]
-      eigval, eigvector = eig(bfcmatrix)
-      fc = 0.0
-      for i in range(0, 3):
-        ev = eigvector[:,i]
-        fc = fc + eigval[i] * abs(dot(ev, vec12))
-      fcfinal2 = fc * HB2_TO_KCAL_MOL_A2 * 0.5
+        #2. Second way to chose the matrix-----------------
+        for i in range(0, 3):
+            for j in range(0, 3):
+                bfcmatrix[i][j] = -fcmatrix[3*(nat2-1)+i][3*(nat1-1)+j]
+        eigval, eigvector = eig(bfcmatrix)
+        fc = 0.0
+        for i in range(0, 3):
+            ev = eigvector[:,i]
+            fc = fc + eigval[i] * abs(dot(ev, vec12))
+        fcfinal2 = fc * HB2_TO_KCAL_MOL_A2 * 0.5
 
-      #Hatree/(Bohr^2) to kcal/(mol*angstrom^2)
-      #Times 0.5 factor since AMBER use k(r-r0)^2 but not 1/2*k*(r-r0)^2
+        #Hatree/(Bohr^2) to kcal/(mol*angstrom^2)
+        #Times 0.5 factor since AMBER use k(r-r0)^2 but not 1/2*k*(r-r0)^2
 
-      fcfinal = average([fcfinal1, fcfinal2])
-      stdv = std([fcfinal1, fcfinal2])
-      fcfinal = fcfinal * scalef * scalef
-      stdv = stdv * scalef * scalef
-      return dis, fcfinal, stdv
+        fcfinal = average([fcfinal1, fcfinal2])
+        stdv = std([fcfinal1, fcfinal2])
+        fcfinal = fcfinal * scalef * scalef
+        stdv = stdv * scalef * scalef
+        return dis, fcfinal, stdv
 
     elif bondavg == 0:
 
-      fcfinal = fcfinal1 * scalef * scalef
-      return dis, fcfinal
+        fcfinal = fcfinal1 * scalef * scalef
+        return dis, fcfinal
 
 def get_ang_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, scalef, angavg):
 
@@ -381,97 +381,97 @@ def get_ang_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, scalef, angavg):
 
     #1. First way to chose the matrix----------------------------------
     for i in range(0, 3):
-      for j in range(0, 3):
-        afcmatrix12[i][j] = -fcmatrix[3*(nat1-1)+i][3*(nat2-1)+j]
+        for j in range(0, 3):
+            afcmatrix12[i][j] = -fcmatrix[3*(nat1-1)+i][3*(nat2-1)+j]
     for i in range(0, 3):
-      for j in range(0, 3):
-        afcmatrix32[i][j] = -fcmatrix[3*(nat3-1)+i][3*(nat2-1)+j]
+        for j in range(0, 3):
+            afcmatrix32[i][j] = -fcmatrix[3*(nat3-1)+i][3*(nat2-1)+j]
     eigval12, eigvector12 = eig(afcmatrix12)
     eigval32, eigvector32 = eig(afcmatrix32)
     contri12 = 0.0
     contri32 = 0.0
     for i in range(0, 3):
-      ev12 = eigvector12[:,i]
-      ev32 = eigvector32[:,i]
-      contri12 = contri12 + eigval12[i] * abs(dot(vecPA, ev12))
-      contri32 = contri32 + eigval32[i] * abs(dot(vecPC, ev32))
+        ev12 = eigvector12[:,i]
+        ev32 = eigvector32[:,i]
+        contri12 = contri12 + eigval12[i] * abs(dot(vecPA, ev12))
+        contri32 = contri32 + eigval32[i] * abs(dot(vecPC, ev32))
     contri12 = 1.0 / (contri12 * dis12 * dis12)
     contri32 = 1.0 / (contri32 * dis32 * dis32)
     fcfinal1 = (1.0 / (contri12 + contri32)) * H_TO_KCAL_MOL * 0.5
 
     if angavg == 1:
-      #2. Second way to chose the matrix----------------------------------
-      for i in range(0, 3):
-        for j in range(0, 3):
-          afcmatrix12[i][j] = -fcmatrix[3*(nat2-1)+i][3*(nat1-1)+j]
-      for i in range(0, 3):
-        for j in range(0, 3):
-          afcmatrix32[i][j] = -fcmatrix[3*(nat3-1)+i][3*(nat2-1)+j]
-      eigval12, eigvector12 = eig(afcmatrix12)
-      eigval32, eigvector32 = eig(afcmatrix32)
-      contri12 = 0.0
-      contri32 = 0.0
-      for i in range(0, 3):
-        ev12 = eigvector12[:,i]
-        ev32 = eigvector32[:,i]
-        contri12 = contri12 + eigval12[i] * abs(dot(vecPA, ev12))
-        contri32 = contri32 + eigval32[i] * abs(dot(vecPC, ev32))
-      contri12 = 1.0 / (contri12 * dis12 * dis12)
-      contri32 = 1.0 / (contri32 * dis32 * dis32)
-      fcfinal2 = (1.0 / (contri12 + contri32)) * H_TO_KCAL_MOL * 0.5
- 
-      #Hatree to kcal/mol
-      #Times 0.5 factor since AMBER use k(r-r0)^2 but not 1/2*k*(r-r0)^2
- 
-      #3. Third way to chose the matrix----------------------------------
-      for i in range(0, 3):
-        for j in range(0, 3):
-          afcmatrix12[i][j] = -fcmatrix[3*(nat1-1)+i][3*(nat2-1)+j]
-      for i in range(0, 3):
-        for j in range(0, 3):
-          afcmatrix32[i][j] = -fcmatrix[3*(nat2-1)+i][3*(nat3-1)+j]
-      eigval12, eigvector12 = eig(afcmatrix12)
-      eigval32, eigvector32 = eig(afcmatrix32)
-      contri12 = 0.0
-      contri32 = 0.0
-      for i in range(0, 3):
-        ev12 = eigvector12[:,i]
-        ev32 = eigvector32[:,i]
-        contri12 = contri12 + eigval12[i] * abs(dot(vecPA, ev12))
-        contri32 = contri32 + eigval32[i] * abs(dot(vecPC, ev32))
-      contri12 = 1.0 / (contri12 * dis12 * dis12)
-      contri32 = 1.0 / (contri32 * dis32 * dis32)
-      fcfinal3 = (1.0 / (contri12 + contri32)) * H_TO_KCAL_MOL * 0.5
+        #2. Second way to chose the matrix----------------------------------
+        for i in range(0, 3):
+            for j in range(0, 3):
+                afcmatrix12[i][j] = -fcmatrix[3*(nat2-1)+i][3*(nat1-1)+j]
+        for i in range(0, 3):
+            for j in range(0, 3):
+                afcmatrix32[i][j] = -fcmatrix[3*(nat3-1)+i][3*(nat2-1)+j]
+        eigval12, eigvector12 = eig(afcmatrix12)
+        eigval32, eigvector32 = eig(afcmatrix32)
+        contri12 = 0.0
+        contri32 = 0.0
+        for i in range(0, 3):
+            ev12 = eigvector12[:,i]
+            ev32 = eigvector32[:,i]
+            contri12 = contri12 + eigval12[i] * abs(dot(vecPA, ev12))
+            contri32 = contri32 + eigval32[i] * abs(dot(vecPC, ev32))
+        contri12 = 1.0 / (contri12 * dis12 * dis12)
+        contri32 = 1.0 / (contri32 * dis32 * dis32)
+        fcfinal2 = (1.0 / (contri12 + contri32)) * H_TO_KCAL_MOL * 0.5
 
-      #4. Fourth way to chose the matrix----------------------------------
-      for i in range(0, 3):
-        for j in range(0, 3):
-          afcmatrix12[i][j] = -fcmatrix[3*(nat2-1)+i][3*(nat1-1)+j]
-      for i in range(0, 3):
-        for j in range(0, 3):
-          afcmatrix32[i][j] = -fcmatrix[3*(nat2-1)+i][3*(nat3-1)+j]
-      eigval12, eigvector12 = eig(afcmatrix12)
-      eigval32, eigvector32 = eig(afcmatrix32)
-      contri12 = 0.0
-      contri32 = 0.0
-      for i in range(0, 3):
-        ev12 = eigvector12[:,i]
-        ev32 = eigvector32[:,i]
-        contri12 = contri12 + eigval12[i] * abs(dot(vecPA, ev12))
-        contri32 = contri32 + eigval32[i] * abs(dot(vecPC, ev32))
-      contri12 = 1.0 / (contri12 * dis12 * dis12)
-      contri32 = 1.0 / (contri32 * dis32 * dis32)
-      fcfinal4 = (1.0 / (contri12 + contri32)) * H_TO_KCAL_MOL * 0.5
- 
-      fcfinal = average([fcfinal1, fcfinal2, fcfinal3, fcfinal4])
-      stdv = std([fcfinal1, fcfinal2, fcfinal3, fcfinal4])
-      fcfinal = fcfinal * scalef * scalef
-      stdv = stdv * scalef * scalef
-      return angval, fcfinal, stdv
+        #Hatree to kcal/mol
+        #Times 0.5 factor since AMBER use k(r-r0)^2 but not 1/2*k*(r-r0)^2
+
+        #3. Third way to chose the matrix----------------------------------
+        for i in range(0, 3):
+            for j in range(0, 3):
+                afcmatrix12[i][j] = -fcmatrix[3*(nat1-1)+i][3*(nat2-1)+j]
+        for i in range(0, 3):
+            for j in range(0, 3):
+                afcmatrix32[i][j] = -fcmatrix[3*(nat2-1)+i][3*(nat3-1)+j]
+        eigval12, eigvector12 = eig(afcmatrix12)
+        eigval32, eigvector32 = eig(afcmatrix32)
+        contri12 = 0.0
+        contri32 = 0.0
+        for i in range(0, 3):
+            ev12 = eigvector12[:,i]
+            ev32 = eigvector32[:,i]
+            contri12 = contri12 + eigval12[i] * abs(dot(vecPA, ev12))
+            contri32 = contri32 + eigval32[i] * abs(dot(vecPC, ev32))
+        contri12 = 1.0 / (contri12 * dis12 * dis12)
+        contri32 = 1.0 / (contri32 * dis32 * dis32)
+        fcfinal3 = (1.0 / (contri12 + contri32)) * H_TO_KCAL_MOL * 0.5
+
+        #4. Fourth way to chose the matrix----------------------------------
+        for i in range(0, 3):
+            for j in range(0, 3):
+                afcmatrix12[i][j] = -fcmatrix[3*(nat2-1)+i][3*(nat1-1)+j]
+        for i in range(0, 3):
+            for j in range(0, 3):
+                afcmatrix32[i][j] = -fcmatrix[3*(nat2-1)+i][3*(nat3-1)+j]
+        eigval12, eigvector12 = eig(afcmatrix12)
+        eigval32, eigvector32 = eig(afcmatrix32)
+        contri12 = 0.0
+        contri32 = 0.0
+        for i in range(0, 3):
+            ev12 = eigvector12[:,i]
+            ev32 = eigvector32[:,i]
+            contri12 = contri12 + eigval12[i] * abs(dot(vecPA, ev12))
+            contri32 = contri32 + eigval32[i] * abs(dot(vecPC, ev32))
+        contri12 = 1.0 / (contri12 * dis12 * dis12)
+        contri32 = 1.0 / (contri32 * dis32 * dis32)
+        fcfinal4 = (1.0 / (contri12 + contri32)) * H_TO_KCAL_MOL * 0.5
+
+        fcfinal = average([fcfinal1, fcfinal2, fcfinal3, fcfinal4])
+        stdv = std([fcfinal1, fcfinal2, fcfinal3, fcfinal4])
+        fcfinal = fcfinal * scalef * scalef
+        stdv = stdv * scalef * scalef
+        return angval, fcfinal, stdv
 
     elif angavg == 0:
-      fcfinal = fcfinal1 * scalef * scalef
-      return angval, fcfinal
+        fcfinal = fcfinal1 * scalef * scalef
+        return angval, fcfinal
 
 def get_dih_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, nat4, n1, n2, scalef):
 
@@ -511,21 +511,21 @@ def get_dih_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, nat4, n1, n2, scalef):
     afcmatrix12 = array([[float(0) for x in range(3)] for x in range(3)])
     afcmatrix43 = array([[float(0) for x in range(3)] for x in range(3)])
     for i in range(0, 3):
-      for j in range(0, 3):
-        afcmatrix12[i][j] = -fcmatrix[3*(nat1-1)+i][3*(nat2-1)+j]
+        for j in range(0, 3):
+            afcmatrix12[i][j] = -fcmatrix[3*(nat1-1)+i][3*(nat2-1)+j]
     for i in range(0, 3):
-      for j in range(0, 3):
-        afcmatrix43[i][j] = -fcmatrix[3*(nat4-1)+i][3*(nat3-1)+j]
+        for j in range(0, 3):
+            afcmatrix43[i][j] = -fcmatrix[3*(nat4-1)+i][3*(nat3-1)+j]
     eigval12, eigvector12 = eig(afcmatrix12)
     eigval43, eigvector43 = eig(afcmatrix43)
 
     contri12 = 0.0
     contri34 = 0.0
     for i in range(0, 3):
-      ev12 = eigvector12[:,i]
-      ev43 = eigvector43[:,i]
-      contri12 = contri12 + eigval12[i] * abs(dot(vecUNABC, ev12))
-      contri34 = contri34 + eigval43[i] * abs(dot(vecUNBCD, ev43))
+        ev12 = eigvector12[:,i]
+        ev43 = eigvector43[:,i]
+        contri12 = contri12 + eigval12[i] * abs(dot(vecUNABC, ev12))
+        contri34 = contri34 + eigval43[i] * abs(dot(vecUNBCD, ev43))
 
     contri12 = contri12 * (norm(cross(vec12, vec23)) ** 2)
     contri34 = contri34 * (norm(cross(vec23, vec34)) ** 2)
@@ -576,14 +576,14 @@ def get_imp_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, nat4, scalef):
     afcmatrix13 = array([[float(0) for x in range(3)] for x in range(3)])
     afcmatrix14 = array([[float(0) for x in range(3)] for x in range(3)])
     for i in range(0, 3):
-      for j in range(0, 3):
-        afcmatrix12[i][j] = -fcmatrix[3*(nat1-1)+i][3*(nat2-1)+j]
+        for j in range(0, 3):
+            afcmatrix12[i][j] = -fcmatrix[3*(nat1-1)+i][3*(nat2-1)+j]
     for i in range(0, 3):
-      for j in range(0, 3):
-        afcmatrix13[i][j] = -fcmatrix[3*(nat1-1)+i][3*(nat3-1)+j]
+        for j in range(0, 3):
+            afcmatrix13[i][j] = -fcmatrix[3*(nat1-1)+i][3*(nat3-1)+j]
     for i in range(0, 3):
-      for j in range(0, 3):
-        afcmatrix14[i][j] = -fcmatrix[3*(nat1-1)+i][3*(nat4-1)+j]
+        for j in range(0, 3):
+            afcmatrix14[i][j] = -fcmatrix[3*(nat1-1)+i][3*(nat4-1)+j]
 
     eigval12, eigvector12 = eig(afcmatrix12)
     eigval13, eigvector13 = eig(afcmatrix13)
@@ -592,12 +592,12 @@ def get_imp_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, nat4, scalef):
     contri13 = 0.0
     contri14 = 0.0
     for i in range(0, 3):
-      ev12 = eigvector12[:,i]
-      ev13 = eigvector13[:,i]
-      ev14 = eigvector14[:,i]
-      contri12 = contri12 + eigval12[i] * abs(dot(vecUN, ev12))
-      contri13 = contri13 + eigval13[i] * abs(dot(vecUN, ev13))
-      contri14 = contri14 + eigval14[i] * abs(dot(vecUN, ev14))
+        ev12 = eigvector12[:,i]
+        ev13 = eigvector13[:,i]
+        ev14 = eigvector14[:,i]
+        contri12 = contri12 + eigval12[i] * abs(dot(vecUN, ev12))
+        contri13 = contri13 + eigval13[i] * abs(dot(vecUN, ev13))
+        contri14 = contri14 + eigval14[i] * abs(dot(vecUN, ev14))
 
     kAN = (contri12 + contri13 + contri14) * H_TO_KCAL_MOL * 0.5
 
@@ -632,23 +632,23 @@ def gene_by_QM_fitting_sem(smpdbf, ionids, stfpf, pref, finf, chkfname,
 
     mol, atids, resids = get_atominfo_fpdb(smpdbf)
     blist = get_mc_blist(mol, atids, ionids, stfpf)
-    alist = get_alist(mol, blist)   
+    alist = get_alist(mol, blist)
 
     #crds after optimization
     if g0x in ['g03', 'g09']:
-      crds = get_crds_from_fchk(chkfname, len(atids))
+        crds = get_crds_from_fchk(chkfname, len(atids))
     elif g0x == 'gms':
-      crds = get_crds_from_gms(logfile)
+        crds = get_crds_from_gms(logfile)
 
     #Whole Hessian Matrix
     if g0x in ['g03', 'g09']:
-      fcmatrix = get_matrix_from_fchk(chkfname, 3*len(atids))
+        fcmatrix = get_matrix_from_fchk(chkfname, 3*len(atids))
     elif g0x == 'gms':
-      fcmatrix = get_matrix_from_gms(logfile, 3*len(atids))
+        fcmatrix = get_matrix_from_gms(logfile, 3*len(atids))
 
     natids = {}
     for i in range(0, len(atids)):
-      natids[atids[i]] = i + 1
+        natids[atids[i]] = i + 1
 
     attypdict = get_attypdict(stfpf, atids)
     missbondtyps, missangtyps = get_misstyps(pref)
@@ -658,68 +658,68 @@ def gene_by_QM_fitting_sem(smpdbf, ionids, stfpf, pref, finf, chkfname,
     #for bond
     print("=======================Generate the bond parameters===============")
     for misbond in missbondtyps:
-      bondlen = []      
-      bfconst = []
-      for bond in blist:
-        at1 = bond[0]
-        at2 = bond[1]
-        bondtyp = (attypdict[at1], attypdict[at2])
-        "The unit in fchk file is a.u. so the distance is in Bohr."
-        if bondtyp == misbond or bondtyp[::-1] == misbond:
-          nat1 = natids[at1]
-          nat2 = natids[at2]
+        bondlen = []
+        bfconst = []
+        for bond in blist:
+            at1 = bond[0]
+            at2 = bond[1]
+            bondtyp = (attypdict[at1], attypdict[at2])
+            "The unit in fchk file is a.u. so the distance is in Bohr."
+            if bondtyp == misbond or bondtyp[::-1] == misbond:
+                nat1 = natids[at1]
+                nat2 = natids[at2]
 
-          if bondavg == 1:
-            dis, fcfinal, stdv = get_bond_fc_with_sem(crds, fcmatrix, nat1, nat2, scalef, bondavg)
-            print('### Bond force constant between ' + \
-              mol.atoms[at1].resname + str(mol.atoms[at1].resid) + '@' + mol.atoms[at1].atname + ' and ' + \
-              mol.atoms[at2].resname + str(mol.atoms[at2].resid) + '@' + mol.atoms[at2].atname + ' : ' + \
-              str(round(fcfinal, 1)) + ' with StdDev ' + str(round(stdv, 1)))
-          elif bondavg == 0:
-            dis, fcfinal = get_bond_fc_with_sem(crds, fcmatrix, nat1, nat2, scalef, bondavg)
+                if bondavg == 1:
+                    dis, fcfinal, stdv = get_bond_fc_with_sem(crds, fcmatrix, nat1, nat2, scalef, bondavg)
+                    print('### Bond force constant between ' + \
+                      mol.atoms[at1].resname + str(mol.atoms[at1].resid) + '@' + mol.atoms[at1].atname + ' and ' + \
+                      mol.atoms[at2].resname + str(mol.atoms[at2].resid) + '@' + mol.atoms[at2].atname + ' : ' + \
+                      str(round(fcfinal, 1)) + ' with StdDev ' + str(round(stdv, 1)))
+                elif bondavg == 0:
+                    dis, fcfinal = get_bond_fc_with_sem(crds, fcmatrix, nat1, nat2, scalef, bondavg)
 
-          bondlen.append(dis)
-          bfconst.append(fcfinal)
+                bondlen.append(dis)
+                bfconst.append(fcfinal)
 
-      #Get average bond parameters
-      misbondat12 = misbond[0] + '-' + misbond[1]
-      bond_para = avg_bond_para(misbondat12, bondlen, bfconst)
-      #get the force constant
-      finalparmdict[misbondat12] = bond_para
+        #Get average bond parameters
+        misbondat12 = misbond[0] + '-' + misbond[1]
+        bond_para = avg_bond_para(misbondat12, bondlen, bfconst)
+        #get the force constant
+        finalparmdict[misbondat12] = bond_para
 
     #for angle
     print("=======================Generate the angle parameters==============")
     for misang in missangtyps:
-      angvals = []
-      afconst = []
-      for ang in alist:
-        at1 = ang[0]
-        at2 = ang[1]
-        at3 = ang[2]
-        angtyp = (attypdict[at1], attypdict[at2], attypdict[at3])
+        angvals = []
+        afconst = []
+        for ang in alist:
+            at1 = ang[0]
+            at2 = ang[1]
+            at3 = ang[2]
+            angtyp = (attypdict[at1], attypdict[at2], attypdict[at3])
 
-        if angtyp == misang or angtyp[::-1] == misang:
-          nat1 = natids[at1]
-          nat2 = natids[at2]
-          nat3 = natids[at3]
+            if angtyp == misang or angtyp[::-1] == misang:
+                nat1 = natids[at1]
+                nat2 = natids[at2]
+                nat3 = natids[at3]
 
-          if angavg == 1:
-            angval, fcfinal, stdv = get_ang_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, scalef, angavg)
-            print('### Angle force constant between ' + \
-              mol.atoms[at1].resname + str(mol.atoms[at1].resid) +  '@' + mol.atoms[at1].atname + ', ' + \
-              mol.atoms[at2].resname + str(mol.atoms[at2].resid) +  '@' + mol.atoms[at2].atname + ' and ' + \
-              mol.atoms[at3].resname + str(mol.atoms[at3].resid) +  '@' + mol.atoms[at3].atname + ' : ' + \
-              str(round(fcfinal, 2)) + ' with StdDev ' + str(round(stdv, 2)))
-          elif angavg == 0:
-             angval, fcfinal = get_ang_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, scalef, angavg)
+                if angavg == 1:
+                    angval, fcfinal, stdv = get_ang_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, scalef, angavg)
+                    print('### Angle force constant between ' + \
+                      mol.atoms[at1].resname + str(mol.atoms[at1].resid) +  '@' + mol.atoms[at1].atname + ', ' + \
+                      mol.atoms[at2].resname + str(mol.atoms[at2].resid) +  '@' + mol.atoms[at2].atname + ' and ' + \
+                      mol.atoms[at3].resname + str(mol.atoms[at3].resid) +  '@' + mol.atoms[at3].atname + ' : ' + \
+                      str(round(fcfinal, 2)) + ' with StdDev ' + str(round(stdv, 2)))
+                elif angavg == 0:
+                    angval, fcfinal = get_ang_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, scalef, angavg)
 
-          angvals.append(angval)
-          afconst.append(fcfinal)
+                angvals.append(angval)
+                afconst.append(fcfinal)
 
-      #Get average angle parameters
-      misangat123 = misang[0] + '-' + misang[1] + '-' + misang[2]
-      ang_para = avg_angle_para(misangat123, angvals, afconst)
-      finalparmdict[misangat123] = ang_para
+        #Get average angle parameters
+        misangat123 = misang[0] + '-' + misang[1] + '-' + misang[2]
+        ang_para = avg_angle_para(misangat123, angvals, afconst)
+        finalparmdict[misangat123] = ang_para
 
     #Print out the final frcmod file
     print_frcmod_file(pref, finf, finalparmdict, 'Seminario')
@@ -737,12 +737,12 @@ def gene_by_QM_fitting_zmatrix(smpdbf, ionids, stfpf, pref, finf, logfname,
     #pdb file
     mol, atids, resids = get_atominfo_fpdb(smpdbf)
     blist = get_mc_blist(mol, atids, ionids, stfpf)
-    alist = get_alist(mol, blist)   
+    alist = get_alist(mol, blist)
 
     #reverse new id dict
     rvnatids = {}
     for i in range(0, len(atids)):
-      rvnatids[i+1] = atids[i]
+        rvnatids[i+1] = atids[i]
 
     attypdict = get_attypdict(stfpf, atids)
     missbondtyps, missangtyps = get_misstyps(pref)
@@ -753,54 +753,53 @@ def gene_by_QM_fitting_zmatrix(smpdbf, ionids, stfpf, pref, finf, logfname,
     #for bond
     print("=======================Generate the bond parameters===============")
     for misbond in missbondtyps:
-      bondlen = []      
-      bfconst = []
-      for i in range(0, len(sturefs)):
-        if len(sturefs[i]) == 2:
-          at1 = sturefs[i][0]
-          at2 = sturefs[i][1]
-          bondtyp = (attypdict[rvnatids[at1]], attypdict[rvnatids[at2]])
-          "The unit in log file is Angs."
-          if bondtyp == misbond or bondtyp[::-1] == misbond:
-            dis = vals[i]
-            fcfinal = fcs[i] * HB2_TO_KCAL_MOL_A2 * 0.5
-            fcfinal = fcfinal * scalef * scalef
-            #Hatree/(Bohr^2) to kcal/(mol*angstrom^2)
-            #Times 0.5 factor since AMBER use k(r-r0)^2 but not 1/2*k*(r-r0)^2
-            bondlen.append(dis)
-            bfconst.append(fcfinal)
+        bondlen = []
+        bfconst = []
+        for i in range(0, len(sturefs)):
+            if len(sturefs[i]) == 2:
+                at1 = sturefs[i][0]
+                at2 = sturefs[i][1]
+                bondtyp = (attypdict[rvnatids[at1]], attypdict[rvnatids[at2]])
+                "The unit in log file is Angs."
+                if bondtyp == misbond or bondtyp[::-1] == misbond:
+                    dis = vals[i]
+                    fcfinal = fcs[i] * HB2_TO_KCAL_MOL_A2 * 0.5
+                    fcfinal = fcfinal * scalef * scalef
+                    #Hatree/(Bohr^2) to kcal/(mol*angstrom^2)
+                    #Times 0.5 factor since AMBER use k(r-r0)^2 but not 1/2*k*(r-r0)^2
+                    bondlen.append(dis)
+                    bfconst.append(fcfinal)
 
-      #Get average bond parameters
-      misbondat12 = misbond[0] + '-' + misbond[1]
-      bond_para = avg_bond_para(misbondat12, bondlen, bfconst)
-      #get the force constant
-      finalparmdict[misbondat12] = bond_para
+        #Get average bond parameters
+        misbondat12 = misbond[0] + '-' + misbond[1]
+        bond_para = avg_bond_para(misbondat12, bondlen, bfconst)
+        #get the force constant
+        finalparmdict[misbondat12] = bond_para
 
     #for angle
     print("=======================Generate the angle parameters==============")
     for misang in missangtyps:
-      angvals = []
-      afconst = []
-      for i in range(0, len(sturefs)):
-        if len(sturefs[i]) == 3:
-          at1 = sturefs[i][0]
-          at2 = sturefs[i][1]
-          at3 = sturefs[i][2]
-          angtyp = (attypdict[rvnatids[at1]], attypdict[rvnatids[at2]], attypdict[rvnatids[at3]])
-          if angtyp == misang or angtyp[::-1] == misang:
-            angval = vals[i]
-            fcfinal = fcs[i] * H_TO_KCAL_MOL * 0.5
-            fcfinal = fcfinal * scalef * scalef
-            #Hatree to kcal/mol
-            #Times 0.5 factor since AMBER use k(r-r0)^2 but not 1/2*k*(r-r0)^2
-            angvals.append(angval)
-            afconst.append(fcfinal)
+        angvals = []
+        afconst = []
+        for i in range(0, len(sturefs)):
+            if len(sturefs[i]) == 3:
+                at1 = sturefs[i][0]
+                at2 = sturefs[i][1]
+                at3 = sturefs[i][2]
+                angtyp = (attypdict[rvnatids[at1]], attypdict[rvnatids[at2]], attypdict[rvnatids[at3]])
+                if angtyp == misang or angtyp[::-1] == misang:
+                    angval = vals[i]
+                    fcfinal = fcs[i] * H_TO_KCAL_MOL * 0.5
+                    fcfinal = fcfinal * scalef * scalef
+                    #Hatree to kcal/mol
+                    #Times 0.5 factor since AMBER use k(r-r0)^2 but not 1/2*k*(r-r0)^2
+                    angvals.append(angval)
+                    afconst.append(fcfinal)
 
-      #Get average angle parameters
-      misangat123 = misang[0] + '-' + misang[1] + '-' + misang[2]
-      ang_para = avg_angle_para(misangat123, angvals, afconst)
-      finalparmdict[misangat123] = ang_para
+        #Get average angle parameters
+        misangat123 = misang[0] + '-' + misang[1] + '-' + misang[2]
+        ang_para = avg_angle_para(misangat123, angvals, afconst)
+        finalparmdict[misangat123] = ang_para
 
     #Print out the final frcmod file
     print_frcmod_file(pref, finf, finalparmdict, 'Z-matrix')
-

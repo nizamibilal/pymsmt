@@ -19,5 +19,3 @@ class pymsmtWarning(Warning, pymsmtError):
 class BadResidueNumError(pymsmtError):
     """Bad Resdiue Number"""
     pass
-
-

@@ -11,7 +11,7 @@ import os
 
 def addspace(atomtype):
     if len(atomtype) == 1:
-      atomtype = atomtype + ' '
+        atomtype = atomtype + ' '
     return atomtype
 
     #--------------------------------------------------------------------------
@@ -24,14 +24,14 @@ def gene_pre_frcmod_file(ionids, naamol2f, stpdbf, stfpf, smresf, prefcdf,
     print("*===================Generate the Initial frcmod file=============*")
     print("*                                                                *")
     print("******************************************************************")
- 
+
     libdict = {}
     chargedict = {}
 
     for mol2f in naamol2f:
-      libdict1, chargedict1 = get_lib_dict(mol2f)
-      libdict.update(libdict1)
-      chargedict.update(chargedict1)
+        libdict1, chargedict1 = get_lib_dict(mol2f)
+        libdict.update(libdict1)
+        chargedict.update(chargedict1)
 
     #get the parameter dicts
     Params = get_parm_dict(ffchoice, gaff, frcmodfs)
@@ -66,25 +66,25 @@ def gene_pre_frcmod_file(ionids, naamol2f, stpdbf, stfpf, smresf, prefcdf,
     #get the information for the three from finger print
     fp = open(stfpf, 'r')
     for line in fp:
-      if line[0:4] != "LINK":
-        atinfo, atid, attyp1st, symbol, attyp2nd = line.split()
-        atid = int(atid)
-        attyp1st = addspace(attyp1st)
-        attyp2nd = addspace(attyp2nd)
-        attypdict[atid] = (attyp1st, attyp2nd)
-        if attyp1st != attyp2nd:
-          atidtrans.append(atid)
+        if line[0:4] != "LINK":
+            atinfo, atid, attyp1st, symbol, attyp2nd = line.split()
+            atid = int(atid)
+            attyp1st = addspace(attyp1st)
+            attyp2nd = addspace(attyp2nd)
+            attypdict[atid] = (attyp1st, attyp2nd)
+            if attyp1st != attyp2nd:
+                atidtrans.append(atid)
     fp.close()
 
     print("Atoms which has changed the atom types:", atidtrans)
 
     for atid in atidtrans:
-      resid = mol.atoms[atid].resid
-      resname = mol.residues[resid].resname
-      attyp1 = attypdict[atid][0]
-      attyp2 = attypdict[atid][1]
-      print(str(resid) + '-' + resname + '@' + str(atid) + '-' + \
-            mol.atoms[atid].atname + ' : ' + attyp1, '-->', attyp2)
+        resid = mol.atoms[atid].resid
+        resname = mol.residues[resid].resname
+        attyp1 = attypdict[atid][0]
+        attyp2 = attypdict[atid][1]
+        print(str(resid) + '-' + resname + '@' + str(atid) + '-' + \
+              mol.atoms[atid].atname + ' : ' + attyp1, '-->', attyp2)
 
     #-------------------------------------------------------------------------
 
@@ -100,20 +100,20 @@ def gene_pre_frcmod_file(ionids, naamol2f, stpdbf, stfpf, smresf, prefcdf,
 
     #for metal ions
     for i in ionids:
-      attyp = attypdict[i][1]
-      atname = mol.atoms[i].atname
-      if len(atname) > 1:
-        atname = atname[0] + atname[1:].lower()
-      massi = Mass[atname]
-      print('YES', attyp + ' '  + str(round(massi, 2))  + \
-            '                              ' + atname + ' ion', file=fmf)
+        attyp = attypdict[i][1]
+        atname = mol.atoms[i].atname
+        if len(atname) > 1:
+            atname = atname[0] + atname[1:].lower()
+        massi = Mass[atname]
+        print('YES', attyp + ' '  + str(round(massi, 2))  + \
+              '                              ' + atname + ' ion', file=fmf)
 
     #for ligating atoms
     for atid in atidtrans:
-      if atid not in ionids: #not include metal ion
-        atyp1 = attypdict[atid][0]
-        atyp2 = attypdict[atid][1]
-        print('YES', atyp2 + massparms[atyp1], file=fmf)
+        if atid not in ionids: #not include metal ion
+            atyp1 = attypdict[atid][0]
+            atyp2 = attypdict[atid][1]
+            print('YES', atyp2 + massparms[atyp1], file=fmf)
 
     #--------------------------------------------------------------------------
     bondparamsdict1 = {} #For metal ions
@@ -124,42 +124,42 @@ def gene_pre_frcmod_file(ionids, naamol2f, stpdbf, stfpf, smresf, prefcdf,
 
     #for bond
     for bonds in all_list.bondlist:
-      i = bonds[0]
-      j = bonds[1]
-      if list(set(ionids) & set(bonds)) != []:
-        #The bonds which related to the ions
-        bondtyp2 = (attypdict[i][1], attypdict[j][1])
-        if (bondtyp2 not in list(bondparamsdict1.keys())) and (bondtyp2[::-1] \
-            not in list(bondparamsdict1.keys())):
-          bondparamsdict1[bondtyp2] = ' '
-      elif list(set(atidtrans) & set(bonds)) != []:
-        #The bonds related to the atoms which changed their atom types
-        bondtyp1 = (attypdict[i][0], attypdict[j][0])
-        bondtyp2 = (attypdict[i][1], attypdict[j][1])
-        if (bondtyp2 not in list(bondparamsdict2.keys())) and (bondtyp2[::-1] \
-            not in list(bondparamsdict2.keys())):
-          if bondtyp1 in list(bondparms.keys()):
-            bondparamsdict2[bondtyp2] = bondparms[bondtyp1]
-          elif bondtyp1[::-1] in list(bondparms.keys()):
-            bondparamsdict2[bondtyp2] = bondparms[bondtyp1[::-1]]
+        i = bonds[0]
+        j = bonds[1]
+        if list(set(ionids) & set(bonds)) != []:
+            #The bonds which related to the ions
+            bondtyp2 = (attypdict[i][1], attypdict[j][1])
+            if (bondtyp2 not in list(bondparamsdict1.keys())) and (bondtyp2[::-1] \
+                not in list(bondparamsdict1.keys())):
+                bondparamsdict1[bondtyp2] = ' '
+        elif list(set(atidtrans) & set(bonds)) != []:
+            #The bonds related to the atoms which changed their atom types
+            bondtyp1 = (attypdict[i][0], attypdict[j][0])
+            bondtyp2 = (attypdict[i][1], attypdict[j][1])
+            if (bondtyp2 not in list(bondparamsdict2.keys())) and (bondtyp2[::-1] \
+                not in list(bondparamsdict2.keys())):
+                if bondtyp1 in list(bondparms.keys()):
+                    bondparamsdict2[bondtyp2] = bondparms[bondtyp1]
+                elif bondtyp1[::-1] in list(bondparms.keys()):
+                    bondparamsdict2[bondtyp2] = bondparms[bondtyp1[::-1]]
 
     for i in sorted(list(bondparamsdict1.keys())):
-      print('NON', i[0] + '-' + i[1] + bondparamsdict1[i], file=fmf)
+        print('NON', i[0] + '-' + i[1] + bondparamsdict1[i], file=fmf)
 
     for i in sorted(list(bondparamsdict2.keys())):
-      print('YES', i[0] + '-' + i[1] + bondparamsdict2[i], file=fmf)
+        print('YES', i[0] + '-' + i[1] + bondparamsdict2[i], file=fmf)
 
     #--------------------------------------------------------------------------
     coparas = []
 
     r_smresf = open(smresf, 'r')
     for line in r_smresf:
-      line = line.strip('\n')
-      line = line.split('-')
-      resid = int(line[1])
-      if ('GLY' in line) or ('KCO' in line) or ('ACE' in line):
-        if resid+1 not in resids:
-          coparas.append(resid)
+        line = line.strip('\n')
+        line = line.split('-')
+        resid = int(line[1])
+        if ('GLY' in line) or ('KCO' in line) or ('ACE' in line):
+            if resid+1 not in resids:
+                coparas.append(resid)
     r_smresf.close()
 
     angparamsdict1 = {} #For metal ions
@@ -168,234 +168,234 @@ def gene_pre_frcmod_file(ionids, naamol2f, stpdbf, stfpf, smresf, prefcdf,
     print('ANGL', file=fmf)
     #for angle
     for angs in all_list.anglist:
-      i = angs[0]
-      j = angs[1]
-      k = angs[2]
-      if list(set(ionids) & set(angs)) != []:
-        #The angles which related to the ions
-        angtyp2 = (attypdict[i][1], attypdict[j][1], attypdict[k][1])
-        if (angtyp2 not in list(angparamsdict1.keys())) and (angtyp2[::-1] \
-            not in list(angparamsdict1.keys())):
-          angparamsdict1[angtyp2] = ' '
-        #print >> fmf, 'NON', attypdict[i][1] + '-' + attypdict[j][1] + \
-        #'-' + attypdict[k][1]
-      elif list(set(atidtrans) & set(angs)) != []:
-        #The angles related to the atoms
-        #which changed their atom types
-        angtyp1 = (attypdict[i][0], attypdict[j][0], attypdict[k][0])
-        angtyp2 = (attypdict[i][1], attypdict[j][1], attypdict[k][1])
-        if (angtyp2 not in list(angparamsdict2.keys())) and (angtyp2[::-1] \
-            not in list(angparamsdict2.keys())):
-          if angtyp1 in list(angparms.keys()):
-            angparamsdict2[angtyp2] = angparms[angtyp1]
-          elif angtyp1[::-1] in list(angparms.keys()):
-            angparamsdict2[angtyp2] = angparms[angtyp1[::-1]]
+        i = angs[0]
+        j = angs[1]
+        k = angs[2]
+        if list(set(ionids) & set(angs)) != []:
+            #The angles which related to the ions
+            angtyp2 = (attypdict[i][1], attypdict[j][1], attypdict[k][1])
+            if (angtyp2 not in list(angparamsdict1.keys())) and (angtyp2[::-1] \
+                not in list(angparamsdict1.keys())):
+                angparamsdict1[angtyp2] = ' '
+            #print >> fmf, 'NON', attypdict[i][1] + '-' + attypdict[j][1] + \
+            #'-' + attypdict[k][1]
+        elif list(set(atidtrans) & set(angs)) != []:
+            #The angles related to the atoms
+            #which changed their atom types
+            angtyp1 = (attypdict[i][0], attypdict[j][0], attypdict[k][0])
+            angtyp2 = (attypdict[i][1], attypdict[j][1], attypdict[k][1])
+            if (angtyp2 not in list(angparamsdict2.keys())) and (angtyp2[::-1] \
+                not in list(angparamsdict2.keys())):
+                if angtyp1 in list(angparms.keys()):
+                    angparamsdict2[angtyp2] = angparms[angtyp1]
+                elif angtyp1[::-1] in list(angparms.keys()):
+                    angparamsdict2[angtyp2] = angparms[angtyp1[::-1]]
 
     #Add for a specific situation
     for i in coparas:
-      for atid in atidtrans:
-        if mol.atoms[atid].atname == 'O' and mol.atoms[atid].resid == i:
-          angtyp1 = (attypdict[atid][0], 'C ', 'N ')
-          angtyp2 = (attypdict[atid][1], 'C ', 'N ')
-          if (angtyp2 not in list(angparamsdict2.keys())) and (angtyp2[::-1] \
-              not in list(angparamsdict2.keys())):
-            if angtyp1 in list(angparms.keys()):
-              angparamsdict2[angtyp2] = angparms[angtyp1]
-            elif angtyp1[::-1] in list(angparms.keys()):
-              angparamsdict2[angtyp2] = angparms[angtyp1[::-1]]
+        for atid in atidtrans:
+            if mol.atoms[atid].atname == 'O' and mol.atoms[atid].resid == i:
+                angtyp1 = (attypdict[atid][0], 'C ', 'N ')
+                angtyp2 = (attypdict[atid][1], 'C ', 'N ')
+                if (angtyp2 not in list(angparamsdict2.keys())) and (angtyp2[::-1] \
+                    not in list(angparamsdict2.keys())):
+                    if angtyp1 in list(angparms.keys()):
+                        angparamsdict2[angtyp2] = angparms[angtyp1]
+                    elif angtyp1[::-1] in list(angparms.keys()):
+                        angparamsdict2[angtyp2] = angparms[angtyp1[::-1]]
 
     for i in sorted(list(angparamsdict1.keys())):
-      print('NON', i[0] + '-' + i[1] + '-' + i[2] + angparamsdict1[i], file=fmf)
+        print('NON', i[0] + '-' + i[1] + '-' + i[2] + angparamsdict1[i], file=fmf)
     for i in sorted(list(angparamsdict2.keys())):
-      print('YES', i[0] + '-' + i[1] + '-' + i[2] + angparamsdict2[i], file=fmf)
+        print('YES', i[0] + '-' + i[1] + '-' + i[2] + angparamsdict2[i], file=fmf)
 
     #--------------------------------------------------------------------------
     dihparamsdict = {}
 
     #for dihedral
     for dihs in all_list.dihlist:
-      i = dihs[0]
-      j = dihs[1]
-      k = dihs[2]
-      l = dihs[3]
-      if list(set(ionids) & set(dihs)) != []:
-        #The dihedral related to the metal ions
-        dihtyp1 = (attypdict[i][0], attypdict[j][0], attypdict[k][0], \
-                   attypdict[l][0])
-        dihtyp1n = (attypdict[i][1], attypdict[j][1], attypdict[k][1], \
-                    attypdict[l][1])
-        if (dihtyp1 not in list(dihparamsdict.keys())) and (dihtyp1[::-1] \
-           not in list(dihparamsdict.keys())):
-          dihparamsdict[dihtyp1n] = ['   3    0.00          0.0   ', \
-                                     '          3.   ', ' ']
-      elif list(set(atidtrans) & set(dihs)) != []:
-        if list(set(atidtrans) & set(dihs[0::3])) == []:
-        #Neither the 1st and 4th atom change atom types
-        #There is 2nd or 3rd or both changed atom type(s)
-          dihtyp1 = (attypdict[i][0], attypdict[j][0], attypdict[k][0], \
-                     attypdict[l][0])
-          dihtyp1n = (attypdict[i][1], attypdict[j][1], attypdict[k][1], \
-                      attypdict[l][1])
-          dihtyp2 = ('X ', attypdict[j][0], attypdict[k][0], 'X ')
-          dihtyp2n = ('X ', attypdict[j][1], attypdict[k][1], 'X ')
+        i = dihs[0]
+        j = dihs[1]
+        k = dihs[2]
+        l = dihs[3]
+        if list(set(ionids) & set(dihs)) != []:
+            #The dihedral related to the metal ions
+            dihtyp1 = (attypdict[i][0], attypdict[j][0], attypdict[k][0], \
+                       attypdict[l][0])
+            dihtyp1n = (attypdict[i][1], attypdict[j][1], attypdict[k][1], \
+                        attypdict[l][1])
+            if (dihtyp1 not in list(dihparamsdict.keys())) and (dihtyp1[::-1] \
+               not in list(dihparamsdict.keys())):
+                dihparamsdict[dihtyp1n] = ['   3    0.00          0.0   ', \
+                                           '          3.   ', ' ']
+        elif list(set(atidtrans) & set(dihs)) != []:
+            if list(set(atidtrans) & set(dihs[0::3])) == []:
+            #Neither the 1st and 4th atom change atom types
+            #There is 2nd or 3rd or both changed atom type(s)
+                dihtyp1 = (attypdict[i][0], attypdict[j][0], attypdict[k][0], \
+                           attypdict[l][0])
+                dihtyp1n = (attypdict[i][1], attypdict[j][1], attypdict[k][1], \
+                            attypdict[l][1])
+                dihtyp2 = ('X ', attypdict[j][0], attypdict[k][0], 'X ')
+                dihtyp2n = ('X ', attypdict[j][1], attypdict[k][1], 'X ')
 
-          if dihtyp1 in list(dihparms.keys()):
-            if (dihtyp1n not in list(dihparamsdict.keys())) and (dihtyp1n[::-1] \
-                not in list(dihparamsdict.keys())):
-              dihparamsdict[dihtyp1n] = dihparms[dihtyp1]
-          elif dihtyp1[::-1] in list(dihparms.keys()):
-            if (dihtyp1n not in list(dihparamsdict.keys())) and (dihtyp1n[::-1] \
-                not in list(dihparamsdict.keys())):
-              dihparamsdict[dihtyp1n] = dihparms[dihtyp1[::-1]]
-          elif dihtyp2 in list(dihparms.keys()):
-            if (dihtyp2n not in list(dihparamsdict.keys())) and (dihtyp2n[::-1] \
-                not in list(dihparamsdict.keys())):
-              dihparamsdict[dihtyp2n] = dihparms[dihtyp2]
-          elif dihtyp2[::-1] in list(dihparms.keys()):
-            if (dihtyp2n not in list(dihparamsdict.keys())) and (dihtyp2n[::-1] \
-                not in list(dihparamsdict.keys())):
-              dihparamsdict[dihtyp2n] = dihparms[dihtyp2[::-1]]
-          else:
-            if (dihtyp1n not in list(dihparamsdict.keys())) and (dihtyp1n[::-1] \
-                not in list(dihparamsdict.keys())):
-              dihparamsdict[dihtyp1n] = ['   3    0.00          0.0   ', \
-                                         '          3.   ', ' ']
-        else:
-        #There is 1st or 4th atoms or both changed the atom type(s)
-          dihtyp1 = (attypdict[i][0], attypdict[j][0], attypdict[k][0], \
-                     attypdict[l][0])
-          dihtyp1n = (attypdict[i][1], attypdict[j][1], attypdict[k][1], \
-                      attypdict[l][1])
-          dihtyp2 = ('X ', attypdict[j][1], attypdict[k][1], 'X ')
+                if dihtyp1 in list(dihparms.keys()):
+                    if (dihtyp1n not in list(dihparamsdict.keys())) and (dihtyp1n[::-1] \
+                        not in list(dihparamsdict.keys())):
+                        dihparamsdict[dihtyp1n] = dihparms[dihtyp1]
+                elif dihtyp1[::-1] in list(dihparms.keys()):
+                    if (dihtyp1n not in list(dihparamsdict.keys())) and (dihtyp1n[::-1] \
+                        not in list(dihparamsdict.keys())):
+                        dihparamsdict[dihtyp1n] = dihparms[dihtyp1[::-1]]
+                elif dihtyp2 in list(dihparms.keys()):
+                    if (dihtyp2n not in list(dihparamsdict.keys())) and (dihtyp2n[::-1] \
+                        not in list(dihparamsdict.keys())):
+                        dihparamsdict[dihtyp2n] = dihparms[dihtyp2]
+                elif dihtyp2[::-1] in list(dihparms.keys()):
+                    if (dihtyp2n not in list(dihparamsdict.keys())) and (dihtyp2n[::-1] \
+                        not in list(dihparamsdict.keys())):
+                        dihparamsdict[dihtyp2n] = dihparms[dihtyp2[::-1]]
+                else:
+                    if (dihtyp1n not in list(dihparamsdict.keys())) and (dihtyp1n[::-1] \
+                        not in list(dihparamsdict.keys())):
+                        dihparamsdict[dihtyp1n] = ['   3    0.00          0.0   ', \
+                                                   '          3.   ', ' ']
+            else:
+            #There is 1st or 4th atoms or both changed the atom type(s)
+                dihtyp1 = (attypdict[i][0], attypdict[j][0], attypdict[k][0], \
+                           attypdict[l][0])
+                dihtyp1n = (attypdict[i][1], attypdict[j][1], attypdict[k][1], \
+                            attypdict[l][1])
+                dihtyp2 = ('X ', attypdict[j][1], attypdict[k][1], 'X ')
 
-          if dihtyp1 in list(dihparms.keys()):
-            if (dihtyp1n not in list(dihparamsdict.keys())) and (dihtyp1n[::-1] \
-                not in list(dihparamsdict.keys())):
-              dihparamsdict[dihtyp1n] = dihparms[dihtyp1]
-          elif dihtyp1[::-1] in list(dihparms.keys()):
-            if (dihtyp1n not in list(dihparamsdict.keys())) and (dihtyp1n[::-1] \
-                not in list(dihparamsdict.keys())):
-              dihparamsdict[dihtyp1n] = dihparms[dihtyp1[::-1]]
-          else:
-            if (dihtyp2 in list(dihparms.keys())) or (dihtyp2[::-1] \
-                in list(dihparms.keys())):
-              continue
-            elif (dihtyp1n not in list(dihparamsdict.keys())) and (dihtyp1n[::-1] \
-                  not in list(dihparamsdict.keys())):
-              dihparamsdict[dihtyp1n] = ['   3    0.00          0.0   ', \
-                                         '          3.   ', ' ']
+                if dihtyp1 in list(dihparms.keys()):
+                    if (dihtyp1n not in list(dihparamsdict.keys())) and (dihtyp1n[::-1] \
+                        not in list(dihparamsdict.keys())):
+                        dihparamsdict[dihtyp1n] = dihparms[dihtyp1]
+                elif dihtyp1[::-1] in list(dihparms.keys()):
+                    if (dihtyp1n not in list(dihparamsdict.keys())) and (dihtyp1n[::-1] \
+                        not in list(dihparamsdict.keys())):
+                        dihparamsdict[dihtyp1n] = dihparms[dihtyp1[::-1]]
+                else:
+                    if (dihtyp2 in list(dihparms.keys())) or (dihtyp2[::-1] \
+                        in list(dihparms.keys())):
+                        continue
+                    elif (dihtyp1n not in list(dihparamsdict.keys())) and (dihtyp1n[::-1] \
+                          not in list(dihparamsdict.keys())):
+                        dihparamsdict[dihtyp1n] = ['   3    0.00          0.0   ', \
+                                                   '          3.   ', ' ']
 
     #Add for a specfic situation
     for i in coparas:
-      for atid in atidtrans:
-        if mol.atoms[atid].atname == 'O' and mol.atoms[atid].resid == i:
-          for ionid in ionids:
-            if ((atid, ionid, 1) in all_list.bondlist) or \
-               ((ionid, atid, 1) in all_list.bondlist):
-              dihtyp1 = (attypdict[ionid][0], attypdict[atid][0], 'C ', 'N ')
-              dihtyp2 = (attypdict[ionid][1], attypdict[atid][1], 'C ', 'N ')
-              if (dihtyp2 not in dihparamsdict) and (dihtyp2[::-1] not in dihparamsdict):
-                if dihtyp1 in list(dihparms.keys()):
-                  dihparamsdict[dihtyp2] = dihparms[dihtyp1]
-                elif dihtyp1[::-1] in list(dihparms.keys()):
-                  dihparamsdict[dihtyp2] = dihparms[dihtyp1[::-1]]
-                else:
-                  dihparamsdict[dihtyp2] = ['   3    0.00          0.0   ', \
-                                         '          3.   ', ' ']
+        for atid in atidtrans:
+            if mol.atoms[atid].atname == 'O' and mol.atoms[atid].resid == i:
+                for ionid in ionids:
+                    if ((atid, ionid, 1) in all_list.bondlist) or \
+                       ((ionid, atid, 1) in all_list.bondlist):
+                        dihtyp1 = (attypdict[ionid][0], attypdict[atid][0], 'C ', 'N ')
+                        dihtyp2 = (attypdict[ionid][1], attypdict[atid][1], 'C ', 'N ')
+                        if (dihtyp2 not in dihparamsdict) and (dihtyp2[::-1] not in dihparamsdict):
+                            if dihtyp1 in list(dihparms.keys()):
+                                dihparamsdict[dihtyp2] = dihparms[dihtyp1]
+                            elif dihtyp1[::-1] in list(dihparms.keys()):
+                                dihparamsdict[dihtyp2] = dihparms[dihtyp1[::-1]]
+                            else:
+                                dihparamsdict[dihtyp2] = ['   3    0.00          0.0   ', \
+                                                       '          3.   ', ' ']
 
     print(' ', file=fmf)
     print('DIHE', file=fmf)
     for keyv in sorted(list(dihparamsdict.keys())):
-      if 'X ' not in keyv: #For types don't contain X
-        valv = dihparamsdict[keyv]
-        keyv = keyv[0] + '-' + keyv[1] + '-' + keyv[2] + '-' + keyv[3]
-        terms = len(valv)//3
-        for i in range(0, terms):
-          temp = i * 3
-          print('YES', keyv, valv[temp] + valv[temp+1] + \
-                   valv[temp+2], file=fmf)
+        if 'X ' not in keyv: #For types don't contain X
+            valv = dihparamsdict[keyv]
+            keyv = keyv[0] + '-' + keyv[1] + '-' + keyv[2] + '-' + keyv[3]
+            terms = len(valv)//3
+            for i in range(0, terms):
+                temp = i * 3
+                print('YES', keyv, valv[temp] + valv[temp+1] + \
+                         valv[temp+2], file=fmf)
 
     for keyv in sorted(list(dihparamsdict.keys())):
-      if 'X ' in keyv:     #For types contain X
-        valv = dihparamsdict[keyv]
-        keyv = keyv[0] + '-' + keyv[1] + '-' + keyv[2] + '-' + keyv[3]
-        terms = len(valv)//3
-        for i in range(0, terms):
-          temp = i * 3
-          print('YES', keyv, valv[temp] + valv[temp+1] + \
-                   valv[temp+2], file=fmf)
+        if 'X ' in keyv:     #For types contain X
+            valv = dihparamsdict[keyv]
+            keyv = keyv[0] + '-' + keyv[1] + '-' + keyv[2] + '-' + keyv[3]
+            terms = len(valv)//3
+            for i in range(0, terms):
+                temp = i * 3
+                print('YES', keyv, valv[temp] + valv[temp+1] + \
+                         valv[temp+2], file=fmf)
     #--------------------------------------------------------------------------
     impparamsdict = {}
 
     #For improper torsion
     for imps in all_list.implist:
-      i = imps[0]
-      j = imps[1]
-      k = imps[2]
-      l = imps[3]
+        i = imps[0]
+        j = imps[1]
+        k = imps[2]
+        l = imps[3]
 
-      if list(set(ionids) & set(imps)) != []:
-        continue
-      elif list(set(atidtrans) & set(imps)) != []:
-        imptyps = {}
+        if list(set(ionids) & set(imps)) != []:
+            continue
+        elif list(set(atidtrans) & set(imps)) != []:
+            imptyps = {}
 
-        #1 situation
-        imptyp1 = (attypdict[i][0], attypdict[j][0], attypdict[k][0], \
-                   attypdict[l][0])
-        imptyp1n = (attypdict[i][1], attypdict[j][1], attypdict[k][1], \
-                    attypdict[l][1])
+            #1 situation
+            imptyp1 = (attypdict[i][0], attypdict[j][0], attypdict[k][0], \
+                       attypdict[l][0])
+            imptyp1n = (attypdict[i][1], attypdict[j][1], attypdict[k][1], \
+                        attypdict[l][1])
 
-        #3 situations
-        imptyp2 = ('X ', 'X ', attypdict[k][0], attypdict[i][0])
-        imptyp2n = ('X ', 'X ', attypdict[k][1], attypdict[i][1])
+            #3 situations
+            imptyp2 = ('X ', 'X ', attypdict[k][0], attypdict[i][0])
+            imptyp2n = ('X ', 'X ', attypdict[k][1], attypdict[i][1])
 
-        imptyp3 = ('X ', 'X ', attypdict[k][0], attypdict[j][0])
-        imptyp3n = ('X ', 'X ', attypdict[k][1], attypdict[j][1])
+            imptyp3 = ('X ', 'X ', attypdict[k][0], attypdict[j][0])
+            imptyp3n = ('X ', 'X ', attypdict[k][1], attypdict[j][1])
 
-        imptyp4 = ('X ', 'X ', attypdict[k][0], attypdict[l][0])
-        imptyp4n = ('X ', 'X ', attypdict[k][1], attypdict[l][1])
+            imptyp4 = ('X ', 'X ', attypdict[k][0], attypdict[l][0])
+            imptyp4n = ('X ', 'X ', attypdict[k][1], attypdict[l][1])
 
-        #6 situations
-        imptyp5 = ('X ', attypdict[i][0], attypdict[k][0], attypdict[j][0])
-        imptyp5n = ('X ', attypdict[i][1], attypdict[k][1], attypdict[j][1])
+            #6 situations
+            imptyp5 = ('X ', attypdict[i][0], attypdict[k][0], attypdict[j][0])
+            imptyp5n = ('X ', attypdict[i][1], attypdict[k][1], attypdict[j][1])
 
-        imptyp6 = ('X ', attypdict[j][0], attypdict[k][0], attypdict[i][0])
-        imptyp6n = ('X ', attypdict[j][1], attypdict[k][1], attypdict[i][1])
+            imptyp6 = ('X ', attypdict[j][0], attypdict[k][0], attypdict[i][0])
+            imptyp6n = ('X ', attypdict[j][1], attypdict[k][1], attypdict[i][1])
 
-        imptyp7 = ('X ', attypdict[i][0], attypdict[k][0], attypdict[l][0])
-        imptyp7n = ('X ', attypdict[i][0], attypdict[k][1], attypdict[l][1])
+            imptyp7 = ('X ', attypdict[i][0], attypdict[k][0], attypdict[l][0])
+            imptyp7n = ('X ', attypdict[i][0], attypdict[k][1], attypdict[l][1])
 
-        imptyp8 = ('X ', attypdict[l][0], attypdict[k][0], attypdict[i][0])
-        imptyp8n = ('X ', attypdict[l][1], attypdict[k][1], attypdict[i][1])
+            imptyp8 = ('X ', attypdict[l][0], attypdict[k][0], attypdict[i][0])
+            imptyp8n = ('X ', attypdict[l][1], attypdict[k][1], attypdict[i][1])
 
-        imptyp9 = ('X ', attypdict[j][0], attypdict[k][0], attypdict[l][0])
-        imptyp9n = ('X ', attypdict[j][1], attypdict[k][1], attypdict[l][1])
+            imptyp9 = ('X ', attypdict[j][0], attypdict[k][0], attypdict[l][0])
+            imptyp9n = ('X ', attypdict[j][1], attypdict[k][1], attypdict[l][1])
 
-        imptyp10 = ('X ', attypdict[l][0], attypdict[k][0], attypdict[j][0])
-        imptyp10n = ('X ', attypdict[l][1], attypdict[k][1], attypdict[j][1])
+            imptyp10 = ('X ', attypdict[l][0], attypdict[k][0], attypdict[j][0])
+            imptyp10n = ('X ', attypdict[l][1], attypdict[k][1], attypdict[j][1])
 
-        imptyps[imptyp1] = imptyp1n
-        imptyps[imptyp2] = imptyp2n
-        imptyps[imptyp3] = imptyp3n
-        imptyps[imptyp4] = imptyp4n
-        imptyps[imptyp5] = imptyp5n
-        imptyps[imptyp6] = imptyp6n
-        imptyps[imptyp7] = imptyp7n
-        imptyps[imptyp8] = imptyp8n
-        imptyps[imptyp9] = imptyp9n
-        imptyps[imptyp10] = imptyp10n
+            imptyps[imptyp1] = imptyp1n
+            imptyps[imptyp2] = imptyp2n
+            imptyps[imptyp3] = imptyp3n
+            imptyps[imptyp4] = imptyp4n
+            imptyps[imptyp5] = imptyp5n
+            imptyps[imptyp6] = imptyp6n
+            imptyps[imptyp7] = imptyp7n
+            imptyps[imptyp8] = imptyp8n
+            imptyps[imptyp9] = imptyp9n
+            imptyps[imptyp10] = imptyp10n
 
-        for imptypkey in list(imptyps.keys()):
-          if imptypkey in list(impparms.keys()):
-            impparamsdict[imptyps[imptypkey]] = impparms[imptypkey]
+            for imptypkey in list(imptyps.keys()):
+                if imptypkey in list(impparms.keys()):
+                    impparamsdict[imptyps[imptypkey]] = impparms[imptypkey]
 
     print(' ', file=fmf)
     print('IMPR', file=fmf)
     #for improper torsion
     for i in sorted(list(impparamsdict.keys())):
-      if i not in list(impparms.keys()):
-        imptypkey = i[0] + '-' + i[1] + '-' + i[2] + '-' + i[3]
-        print('YES', imptypkey, impparamsdict[i], file=fmf)
+        if i not in list(impparms.keys()):
+            imptypkey = i[0] + '-' + i[1] + '-' + i[2] + '-' + i[3]
+            print('YES', imptypkey, impparamsdict[i], file=fmf)
     #--------------------------------------------------------------------------
     #for nb
     print(' ', file=fmf)
@@ -404,21 +404,21 @@ def gene_pre_frcmod_file(ionids, naamol2f, stpdbf, stfpf, smresf, prefcdf,
     #For metal ions
     IonLJParaDict = get_ionljparadict(watermodel)
     for i in ionids:
-      element = mol.atoms[i].element
-      chg = str(int(chargedict[mol.atoms[i].resname]))
-      attyp2 = attypdict[i][1]
-      rmin = IonLJParaDict[element + chg][0]
-      ep = IonLJParaDict[element + chg][1]
-      annot = IonLJParaDict[element + chg][2]
-      print('YES   %s    %11.3f  %13.10f       %-s' %(attyp2, rmin, \
-               ep, annot), file=fmf)
+        element = mol.atoms[i].element
+        chg = str(int(chargedict[mol.atoms[i].resname]))
+        attyp2 = attypdict[i][1]
+        rmin = IonLJParaDict[element + chg][0]
+        ep = IonLJParaDict[element + chg][1]
+        annot = IonLJParaDict[element + chg][2]
+        print('YES   %s    %11.3f  %13.10f       %-s' %(attyp2, rmin, \
+                 ep, annot), file=fmf)
 
     #For the others
-    for atid in atidtrans: 
-      if atid not in ionids:
-        attyp1 = attypdict[atid][0]
-        attyp2 = attypdict[atid][1]
-        print('YES  ', attyp2 + nbparms[attyp1], file=fmf)
+    for atid in atidtrans:
+        if atid not in ionids:
+            attyp1 = attypdict[atid][0]
+            attyp2 = attypdict[atid][1]
+            print('YES  ', attyp2 + nbparms[attyp1], file=fmf)
 
     print(' ', file=fmf)
     print(' ', file=fmf)
@@ -430,5 +430,3 @@ def gene_pre_frcmod_file(ionids, naamol2f, stpdbf, stfpf, smresf, prefcdf,
     os.system("mv %s temp" %prefcdf)
     os.system("uniq temp > %s" %prefcdf)
     os.system("rm temp")
-
-

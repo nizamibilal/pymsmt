@@ -43,23 +43,25 @@ def get_typ_dict(typinds, typs):
 
     typdict = {}
     for i in range(0, len(typinds)):
-      if typinds[i] not in list(typdict.keys()):
-        typdict[typinds[i]] = [typs[i]]
-      elif typs[i] in typdict[typinds[i]]:
-        continue
-      else:
-        typdict[typinds[i]].append(typs[i])
+        if typinds[i] not in list(typdict.keys()):
+            typdict[typinds[i]] = [typs[i]]
+        elif typs[i] in typdict[typinds[i]]:
+            continue
+        else:
+            typdict[typinds[i]].append(typs[i])
     return typdict
 
 def get_rmsd(initparas):
 
-    global idxs
+    global idxs, mcresids0
+
+    print(mcresids0)
 
     print(initparas)
 
     #Modify the C4 terms in the prmtop file
     for i in range(0, len(idxs)):
-      prmtop.parm_data['LENNARD_JONES_CCOEF'][idxs[i]] = initparas[i]
+        prmtop.parm_data['LENNARD_JONES_CCOEF'][idxs[i]] = initparas[i]
 
     #Overwrite the prmtop file
     prmtop.write_parm('OptC4.top')
@@ -72,11 +74,26 @@ def get_rmsd(initparas):
     # Create the OpenMM system
     print('Creating OpenMM System')
     if options.simupha == 'gas':
-      system = Ambermol.createSystem(nonbondedMethod=app.NoCutoff)
+        system = Ambermol.createSystem(nonbondedMethod=app.NoCutoff)
     elif options.simupha == 'liquid':
-      system = Ambermol.createSystem(nonbondedMethod=app.PME,
-                                     nonbondedCutoff=8.0*u.angstroms,
-                                     constraints=app.HBonds,)
+        system = Ambermol.createSystem(nonbondedMethod=app.PME,
+                                       nonbondedCutoff=8.0*u.angstroms,
+                                       constraints=app.HBonds,)
+
+    #Add restraints
+    force = mm.CustomExternalForce("k*((x-x0)^2+(y-y0)^2+(z-z0)^2)")
+    force.addGlobalParameter("k", 200.0)
+    force.addPerParticleParameter("x0")
+    force.addPerParticleParameter("y0")
+    force.addPerParticleParameter("z0")
+    #for i in range(0, len(Ambermol.atoms)):
+    for i, atom_crd in enumerate(Ambermol.positions):
+        #if (Ambermol.atoms[i].residue.number+1 not in mcresids0) and \
+        if (i+1 not in mcresids0) and \
+          (Ambermol.atoms[i].residue.name not in ['WAT', 'HOH']) and \
+          (Ambermol.atoms[i].name in ['CA', 'C', 'N']):
+            force.addParticle(i, atom_crd.value_in_unit(u.nanometers))
+    system.addForce(force)
 
     # Create the integrator to do Langevin dynamics
     # Temperature of heat bath, Friction coefficient, Time step
@@ -87,21 +104,21 @@ def get_rmsd(initparas):
     # specify the platform to use the default (fastest) platform
     # Create the Simulation object
     if options.platf == 'ref':
-       platform = mm.Platform.getPlatformByName('Reference')
-       sim = app.Simulation(Ambermol.topology, system, integrator, platform)
+        platform = mm.Platform.getPlatformByName('Reference')
+        sim = app.Simulation(Ambermol.topology, system, integrator, platform)
     elif options.platf == 'cpu':
-       platform = mm.Platform.getPlatformByName('CPU')
-       sim = app.Simulation(Ambermol.topology, system, integrator, platform)
+        platform = mm.Platform.getPlatformByName('CPU')
+        sim = app.Simulation(Ambermol.topology, system, integrator, platform)
     elif options.platf == 'cuda':
-       platform = mm.Platform.getPlatformByName('CUDA')
-       prop = dict(CudaPrecision='mixed')
-       sim = app.Simulation(Ambermol.topology, system, integrator, platform,
-                            prop)
+        platform = mm.Platform.getPlatformByName('CUDA')
+        prop = dict(CudaPrecision='mixed')
+        sim = app.Simulation(Ambermol.topology, system, integrator, platform,
+                             prop)
     elif options.platf == 'opencl':
-       platform = mm.Platform.getPlatformByName('OpenCL')
-       prop = dict(CudaPrecision='mixed')
-       sim = app.Simulation(Ambermol.topology, system, integrator, platform,
-                            prop)
+        platform = mm.Platform.getPlatformByName('OpenCL')
+        prop = dict(CudaPrecision='mixed')
+        sim = app.Simulation(Ambermol.topology, system, integrator, platform,
+                             prop)
 
     # Set the particle positions
     sim.context.setPositions(Ambermol.positions)
@@ -125,9 +142,9 @@ def get_rmsd(initparas):
     ptrajof = open('OptC4_rmsd.txt', 'r')
     ln = 1
     for line in ptrajof:
-      if ln == 3:
-        rmsd = float(line[12:21])
-      ln += 1
+        if ln == 3:
+            rmsd = float(line[12:21])
+        ln += 1
     ptrajof.close()
 
     print('RMSD is: ', rmsd)
@@ -193,98 +210,144 @@ options.minm=options.minm.lower()
 options.platf=options.platf.lower()
 
 if options.minm == 'powell':
-  from scipy.optimize import fmin_powell as fmin
+    from scipy.optimize import fmin_powell as fmin
 elif options.minm == 'cg':
-  from scipy.optimize import fmin_cg as fmin
+    from scipy.optimize import fmin_cg as fmin
 elif options.minm == 'bfgs':
-  from scipy.optimize import fmin_bfgs as fmin
+    from scipy.optimize import fmin_bfgs as fmin
 elif options.minm == 'ncg':
-  from scipy.optimize import fmin_ncg as fmin
+    from scipy.optimize import fmin_ncg as fmin
 elif options.minm == 'l_bfgs_b':
-  from scipy.optimize import fmin_l_bfgs_b as fmin
+    from scipy.optimize import fmin_l_bfgs_b as fmin
 elif options.minm == 'tnc':
-  from scipy.optimize import fmin_tnc as fmin
+    from scipy.optimize import fmin_tnc as fmin
 elif options.minm == 'cobyla':
-  from scipy.optimize import fmin_cobyla as fmin
+    from scipy.optimize import fmin_cobyla as fmin
 elif options.minm == 'slsqp':
-  from scipy.optimize import fmin_slsqp as fmin
+    from scipy.optimize import fmin_slsqp as fmin
 
 #Get the metal center information from prmtop and coordinate files
 #Get the metal center
 prmtop, mol, atids, resids = read_amber_prm(options.pfile, options.cfile)
 mask = AmberMask(prmtop, options.ion_mask)
 
-c4terms = prmtop.parm_data['LENNARD_JONES_CCOEF']
-
 #Get the metal ion ids
 metids = []
 mettyps = []
 mettypinds = []
 for i in mask.Selected():
-  #Atom IDs
-  j = i + 1
-  metids.append(j)
-  #Amber Atom Type
-  atyp = prmtop.parm_data['AMBER_ATOM_TYPE'][i]
-  mettyps.append(atyp)
-  #Atom Type Index
-  mettypind = prmtop.parm_data['ATOM_TYPE_INDEX'][i]
-  mettypinds.append(mettypind)
+    #Atom IDs
+    j = i + 1
+    metids.append(j)
+    #Amber Atom Type
+    atyp = prmtop.parm_data['AMBER_ATOM_TYPE'][i]
+    mettyps.append(atyp)
+    #Atom Type Index
+    mettypind = prmtop.parm_data['ATOM_TYPE_INDEX'][i]
+    mettypinds.append(mettypind)
 
+smcids = []
 mcids = []
 mctyps = []
 mctypinds = []
 
-if options.model == 1: #Small model
-  for i in metids:
-    crdi = mol.atoms[i].crd
-    atmi = mol.atoms[i].element
-    radiusi = CoRadiiDict[atmi]
-    for j in atids:
-      if j != i:
-        crdj = mol.atoms[j].crd
-        atmj = mol.atoms[j].element
-        dis = calc_bond(crdi, crdj)
-        radiusj = CoRadiiDict[atmj]
-        radiusij = radiusi + radiusj
-        if (dis <= radiusij + 0.4) and (dis >= 0.1) and (atmj != 'H'):
-          k = j - 1
-          #Atom IDs
-          mcids.append(j)
-          #Amber Atom Type
-          atyp = prmtop.parm_data['AMBER_ATOM_TYPE'][k]
-          mctyps.append(atyp)
-          #Atom Type Index
-          mctypind = prmtop.parm_data['ATOM_TYPE_INDEX'][k]
-          mctypinds.append(mctypind)
-elif options.model == 2: #Big model
-  mcresids = []
-  for i in metids:
-    crdi = mol.atoms[i].crd
-    atmi = mol.atoms[i].element
-    radiusi = CoRadiiDict[atmi]
-    for j in atids:
-      if j != i:
-        crdj = mol.atoms[j].crd
-        atmj = mol.atoms[j].element
-        dis = calc_bond(crdi, crdj)
-        radiusj = CoRadiiDict[atmj]
-        radiusij = radiusi + radiusj
-        if (dis <= radiusij + 0.4) and (dis >= 0.1) and (atmj != 'H'):
-          if mol.atoms[j].resid not in mcresids:
-            mcresids.append(mol.atoms[j].resid)
+mcresids = []
 
-  for i in mcresids:
-    for j in mol.residues[i].resconter:
-      if mol.atoms[j].element != 'H':
-        k = j - 1
-        mcids.append(j)
-        #Amber Atom Type
-        atyp = prmtop.parm_data['AMBER_ATOM_TYPE'][k]
-        mctyps.append(atyp)
-        #Atom Type Index
-        mctypind = prmtop.parm_data['ATOM_TYPE_INDEX'][k]
-        mctypinds.append(mctypind)
+for i in metids:
+    crdi = mol.atoms[i].crd
+    atmi = mol.atoms[i].element
+    radiusi = CoRadiiDict[atmi]
+    for j in atids:
+        if j != i:
+            crdj = mol.atoms[j].crd
+            atmj = mol.atoms[j].element
+            dis = calc_bond(crdi, crdj)
+            radiusj = CoRadiiDict[atmj]
+            radiusij = radiusi + radiusj
+            if (dis <= radiusij + 0.4) and (dis >= 0.1) and (atmj != 'H'):
+                smcids.append(j)
+                if mol.atoms[j].resid not in mcresids:
+                    mcresids.append(mol.atoms[j].resid)
+
+mcresids0 = mcresids
+for i in metids:
+    mcresids0.append(mol.atoms[i].resid)
+mcresids0 = list(set(mcresids0))
+mcresids0.sort()
+
+if options.model == 1: #Small model
+    mcids = smcids
+elif options.model == 2: #Big model
+    for i in mcresids:
+        for j in mol.residues[i].resconter:
+            if mol.atoms[j].element != 'H':
+                mcids.append(j)
+
+#-----------------------------------------------------------------------------#
+#Get the Amber mask of the metal center complex and print it into ptraj.in file
+#-----------------------------------------------------------------------------#
+
+#Print the parmed input file, add new LJ types to the bonded atoms
+
+maskns = []
+for i in smcids:
+    maskn = str(mol.atoms[i].resid) + '@' + mol.atoms[i].atname
+    maskns.append(maskn)
+
+w_parmedf = open('OptC4_parmed1.in', 'w')
+for i in maskns:
+    print("addLJType " + ':' + i, file=w_parmedf)
+print("outparm addij_%s" %options.pfile, file=w_parmedf)
+print("quit", file=w_parmedf)
+w_parmedf.close()
+
+os.system("parmed.py -O -i OptC4_parmed1.in -p %s -c %s" %(options.pfile, options.cfile))
+
+w_parmedf = open('OptC4_parmed2.in', 'w')
+print("add12_6_4 " + options.ion_mask, file=w_parmedf)
+print("outparm %s.c4" %options.pfile, file=w_parmedf)
+print("quit", file=w_parmedf)
+w_parmedf.close()
+
+os.system("parmed.py -O -i OptC4_parmed2.in -p addij_%s -c %s" %(options.pfile, options.cfile))
+
+#Print the cpptraj input file
+maskns = []
+for i in mcids:
+    maskn = str(mol.atoms[i].resid) + '@' + mol.atoms[i].atname
+    maskns.append(maskn)
+for i in metids:
+    maskn = str(mol.atoms[i].resid) + '@' + mol.atoms[i].atname
+    maskns.append(maskn)
+
+maskslet = ':'
+for i in range(0, len(maskns)-1):
+    maskslet += maskns[i] + ','
+maskslet += maskns[-1]
+
+ptrajif = open('OptC4_ptraj.in', 'w')
+print('trajin %s' %options.cfile, file=ptrajif)
+print('trajin %s' %options.rfile, file=ptrajif)
+print('rms %s first out OptC4_rmsd.txt' %maskslet, file=ptrajif)
+print('go', file=ptrajif)
+ptrajif.close()
+
+#Get the new molecule
+
+prmtop, mol, atids, resids = read_amber_prm(options.pfile + '.c4', options.cfile)
+c4terms = prmtop.parm_data['LENNARD_JONES_CCOEF']
+
+num = 0
+for j in mcids:
+    k = j - 1
+    #assign new Amber atom types
+    #prmtop.parm_data['AMBER_ATOM_TYPE'][k] = 'X' + str(num)
+    atyp = prmtop.parm_data['AMBER_ATOM_TYPE'][k]
+    mctyps.append(atyp)
+    #Atom Type Index
+    mctypind = prmtop.parm_data['ATOM_TYPE_INDEX'][k]
+    mctypinds.append(mctypind)
+    num = num + 1
 
 #Get the atom type dictionary for people to see
 mettypdict = get_typ_dict(mettypinds, mettyps)
@@ -296,43 +359,20 @@ mettypinds.sort()
 mctypinds = list(set(mctypinds))
 mctypinds.sort()
 
-#-----------------------------------------------------------------------------#
-#Get the Amber mask of the metal center complex and print it into ptraj.in file
-#-----------------------------------------------------------------------------#
-maskns = []
-for i in mcids:
-  maskn = str(mol.atoms[i].resid) + '@' + mol.atoms[i].atname
-  maskns.append(maskn)
-for i in metids:
-  maskn = str(mol.atoms[i].resid) + '@' + mol.atoms[i].atname
-  maskns.append(maskn)
-
-maskslet = ':'
-for i in range(0, len(maskns)-1):
-  maskslet += maskns[i] + ','
-maskslet += maskns[-1]
-
-ptrajif = open('OptC4_ptraj.in', 'w')
-print('trajin %s' %options.cfile, file=ptrajif)
-print('trajin %s' %options.rfile, file=ptrajif)
-print('rms %s first out OptC4_rmsd.txt' %maskslet, file=ptrajif)
-print('go', file=ptrajif)
-ptrajif.close()
-
 #Detect the C4 terms which relates to the metal center complex
 ntyps = prmtop.pointers['NTYPES']
 idxs = []
 iddict = {}
 for i in mettypinds:
-  j = i - 1
-  for k in mctypinds:
-    l = k - 1
-    if k < i:
-      idx = prmtop.parm_data['NONBONDED_PARM_INDEX'][ntyps*j+l] - 1
-    else:
-      idx = prmtop.parm_data['NONBONDED_PARM_INDEX'][ntyps*l+j] - 1
-    idxs.append(idx)
-    iddict[idx] = (i, k)
+    j = i - 1
+    for k in mctypinds:
+        l = k - 1
+        if k < i:
+            idx = prmtop.parm_data['NONBONDED_PARM_INDEX'][ntyps*j+l] - 1
+        else:
+            idx = prmtop.parm_data['NONBONDED_PARM_INDEX'][ntyps*l+j] - 1
+        idxs.append(idx)
+        iddict[idx] = (i, k)
 
 idxs.sort()
 initparas = [c4terms[i] for i in idxs]
@@ -348,10 +388,9 @@ print("The final RMSD is: ")
 frmsd = get_rmsd(xopt)
 
 for i in range(0, len(idxs)):
-  print('The optimal value of atomtypes ' + str(iddict[idxs[i]]) + \
-        ' is ' + str(xopt[i]))
+    print('The optimal value of atomtypes ' + str(iddict[idxs[i]]) + \
+          ' is ' + str(xopt[i]))
 
 print('The following is the dictionary of the atom types: ')
 print(mettypdict)
 print(mctypdict)
-

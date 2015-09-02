@@ -134,7 +134,7 @@ for fname in pdbfnl:
             line = line.split()
             exptyp = line[-1]
             if line[-1] == 'DIFFRACTION' and line[-2] == 'X-RAY':
-               exptyp = 'X-RAY'
+                exptyp = 'X-RAY'
     fp1.close()
 
     #Get the metal ion which is the ion user want to process
@@ -266,4 +266,3 @@ for fname in pdbfnl:
 
 sf.close()
 ef.close()
-

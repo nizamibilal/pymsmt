@@ -22,7 +22,7 @@ Metal1mass = {'Li':   6.94,  'Na': 22.99,  'K':  39.10, 'Rb':  85.47,
               'Cs': 132.91, 'Tl': 204.38, 'Cu':  63.55, 'Ag': 107.87,
               'Mo':  95.96, 'Rh': 102.91, 'Re': 186.21
              }
-Metal1pdb = {  ('F', 'F'):  'F',  ('BR', 'BR'): 'Br',  ('CL', 'CL'): 'Cl', 
+Metal1pdb = {  ('F', 'F'):  'F',  ('BR', 'BR'): 'Br',  ('CL', 'CL'): 'Cl',
              ('IOD', 'I'):  'I',  ('LI', 'LI'): 'Li',  ('NA', 'NA'): 'Na',
                ('K', 'K'):  'K',  ('RB', 'RB'): 'Rb',  ('CS', 'CS'): 'Cs',
              ('TL', 'TL'): 'Tl', ('CU1', 'CU'): 'Cu',  ('AG', 'AG'): 'Ag',
@@ -64,7 +64,7 @@ Metal3pdb = { ('AL', 'AL'): 'Al',   ('V', 'V'):  'V',  ('FE', 'FE'): 'Fe',
               ('PR', 'PR'): 'Pr', ('SM', 'SM'): 'Sm', ('EU3', 'EU'): 'Eu',
               ('EU', 'EU'): 'Eu',('GD3', 'GD'): 'Gd',  ('GD', 'GD'): 'GD',
               ('TB', 'TB'): 'Tb', ('LU', 'LU'): 'Lu', ('ARS', 'AS'): 'As',
-              ('RU', 'RU'): 'Ru', ('MO', 'MO'): 'Mo', ('RH3', 'RH'): 'Rh', 
+              ('RU', 'RU'): 'Ru', ('MO', 'MO'): 'Mo', ('RH3', 'RH'): 'Rh',
               ('RH', 'RH'): 'Rh', ('OS', 'OS'): 'Os', ('IR3', 'IR'): 'Ir',
               ('AM', 'AM'): 'Am',('HO3', 'HO'): 'Ho',  ('HO', 'HO'): 'Ho'}
 
@@ -148,7 +148,7 @@ ResChgDict.update(reschgnt)
 ResChgDict.update(reschgct)
 
 """
-Metal1pdb = {'F-':  ('F', 'F'), 'Br-': ('BR', 'BR'), 'Cl-': ('CL', 'CL'), 
+Metal1pdb = {'F-':  ('F', 'F'), 'Br-': ('BR', 'BR'), 'Cl-': ('CL', 'CL'),
              'I-':  ('IOD', 'I'), 'Li+': ('LI', 'LI'), 'Na+': ('NA', 'NA'),
              'Rb+': ('RB', 'RB'), 'Tl+': ('TL', 'TL'), 'Cs+': ('CS', 'CS'),
              'K+':  ('K', 'K'), 'Cu+': ('CU1', 'CU'), 'Ag+': ('AG', 'AG'),
@@ -189,7 +189,7 @@ CoRadiiDict = {'H': 0.23, 'He': 1.50, 'Li': 0.68, 'Be': 0.35, 'B': 0.83,
                'Nb': 1.48, 'Mo': 1.47, 'Tc': 1.35, 'Ru': 1.40, 'Rh': 1.45,
                'Pd': 1.50, 'Ag': 1.59, 'Cd': 1.69, 'In': 1.63, 'Sn': 1.46,
                'Sb': 1.46, 'Sb': 1.46, 'Te': 1.47, 'I': 1.40, 'Cs': 1.67,
-               'Ba': 1.34, 'La': 1.87, 'Ce': 1.83, 'Pr': 1.82, 'Nd': 1.81, 
+               'Ba': 1.34, 'La': 1.87, 'Ce': 1.83, 'Pr': 1.82, 'Nd': 1.81,
                'Pm': 1.80, 'Sm': 1.80, 'Eu': 1.99, 'Gd': 1.79, 'Tb': 1.76,
                'Dy': 1.75, 'Ho': 1.74, 'Er': 1.73, 'Tm': 1.72, 'Yb': 1.94,
                'Lu': 1.72, 'Hf': 1.57, 'Ta': 1.43, 'W': 1.37, 'Re': 1.35,
@@ -202,7 +202,7 @@ CoRadiiDict = {'H': 0.23, 'He': 1.50, 'Li': 0.68, 'Be': 0.35, 'B': 0.83,
 #-----------------------------------------------------------------------------
 
 #VDW radii
-#From http://periodictable.com/Properties/A/VanDerWaalsRadius.an.html 
+#From http://periodictable.com/Properties/A/VanDerWaalsRadius.an.html
 
 #-----------------------------------------------------------------------------
 
@@ -264,123 +264,123 @@ def get_ionljparadict(watermodel):
 
     #Divalent ions from CM parameter set
     if watermodel == 'tip3p':
-      diljpara2 = {
-                 'Pt2': (1.266, 0.00307642, 'CM set for TIP3P water from Li et al. JCTC, 2013, 9, 2733'), 
-                 'Pd2': (1.303, 0.00509941, 'CM set for TIP3P water from Li et al. JCTC, 2013, 9, 2733'), 
-                 'Ag2': (1.336, 0.00770969, 'CM set for TIP3P water from Li et al. JCTC, 2013, 9, 2733'), 
-                 'Yb2': (1.642, 0.10185975, 'CM set for TIP3P water from Li et al. JCTC, 2013, 9, 2733'), 
-                 'Pb2': (1.745, 0.17018074, 'CM set for TIP3P water from Li et al. JCTC, 2013, 9, 2733'), 
-                 'Eu2': (1.802, 0.21475916, 'CM set for TIP3P water from Li et al. JCTC, 2013, 9, 2733'), 
-                 'Sm2': (1.819, 0.22878796, 'CM set for TIP3P water from Li et al. JCTC, 2013, 9, 2733'), 
-                 'Ra2': (2.019, 0.40664608, 'CM set for TIP3P water from Li et al. JCTC, 2013, 9, 2733'), 
-                   }
+        diljpara2 = {
+                   'Pt2': (1.266, 0.00307642, 'CM set for TIP3P water from Li et al. JCTC, 2013, 9, 2733'),
+                   'Pd2': (1.303, 0.00509941, 'CM set for TIP3P water from Li et al. JCTC, 2013, 9, 2733'),
+                   'Ag2': (1.336, 0.00770969, 'CM set for TIP3P water from Li et al. JCTC, 2013, 9, 2733'),
+                   'Yb2': (1.642, 0.10185975, 'CM set for TIP3P water from Li et al. JCTC, 2013, 9, 2733'),
+                   'Pb2': (1.745, 0.17018074, 'CM set for TIP3P water from Li et al. JCTC, 2013, 9, 2733'),
+                   'Eu2': (1.802, 0.21475916, 'CM set for TIP3P water from Li et al. JCTC, 2013, 9, 2733'),
+                   'Sm2': (1.819, 0.22878796, 'CM set for TIP3P water from Li et al. JCTC, 2013, 9, 2733'),
+                   'Ra2': (2.019, 0.40664608, 'CM set for TIP3P water from Li et al. JCTC, 2013, 9, 2733'),
+                     }
     elif watermodel == 'spce':
-      diljpara2 = {
-                 'Pt2': (1.272, 0.00334975, 'CM set for SPC/E water from Li et al. JCTC, 2013, 9, 2733'), 
-                 'Pd2': (1.305, 0.00523385, 'CM set for SPC/E water from Li et al. JCTC, 2013, 9, 2733'), 
-                 'Ag2': (1.337, 0.00780282, 'CM set for SPC/E water from Li et al. JCTC, 2013, 9, 2733'), 
-                 'Yb2': (1.634, 0.09731901, 'CM set for SPC/E water from Li et al. JCTC, 2013, 9, 2733'), 
-                 'Pb2': (1.731, 0.15989650, 'CM set for SPC/E water from Li et al. JCTC, 2013, 9, 2733'), 
-                 'Eu2': (1.786, 0.20184160, 'CM set for SPC/E water from Li et al. JCTC, 2013, 9, 2733'), 
-                 'Sm2': (1.800, 0.21312875, 'CM set for SPC/E water from Li et al. JCTC, 2013, 9, 2733'), 
-                 'Ra2': (1.980, 0.37126402, 'CM set for SPC/E water from Li et al. JCTC, 2013, 9, 2733'), 
-                   }
+        diljpara2 = {
+                   'Pt2': (1.272, 0.00334975, 'CM set for SPC/E water from Li et al. JCTC, 2013, 9, 2733'),
+                   'Pd2': (1.305, 0.00523385, 'CM set for SPC/E water from Li et al. JCTC, 2013, 9, 2733'),
+                   'Ag2': (1.337, 0.00780282, 'CM set for SPC/E water from Li et al. JCTC, 2013, 9, 2733'),
+                   'Yb2': (1.634, 0.09731901, 'CM set for SPC/E water from Li et al. JCTC, 2013, 9, 2733'),
+                   'Pb2': (1.731, 0.15989650, 'CM set for SPC/E water from Li et al. JCTC, 2013, 9, 2733'),
+                   'Eu2': (1.786, 0.20184160, 'CM set for SPC/E water from Li et al. JCTC, 2013, 9, 2733'),
+                   'Sm2': (1.800, 0.21312875, 'CM set for SPC/E water from Li et al. JCTC, 2013, 9, 2733'),
+                   'Ra2': (1.980, 0.37126402, 'CM set for SPC/E water from Li et al. JCTC, 2013, 9, 2733'),
+                     }
     elif watermodel == 'tip4pew':
-      diljpara2 = {
-                 'Pt2': (1.251, 0.00247282, 'CM set for TIP4P/EW water from Li et al. JCTC, 2013, 9, 2733'), 
-                 'Pd2': (1.288, 0.00417787, 'CM set for TIP4P/EW water from Li et al. JCTC, 2013, 9, 2733'), 
-                 'Ag2': (1.323, 0.00657749, 'CM set for TIP4P/EW water from Li et al. JCTC, 2013, 9, 2733'), 
-                 'Yb2': (1.654, 0.10888937, 'CM set for TIP4P/EW water from Li et al. JCTC, 2013, 9, 2733'), 
-                 'Pb2': (1.758, 0.17997960, 'CM set for TIP4P/EW water from Li et al. JCTC, 2013, 9, 2733'), 
-                 'Eu2': (1.823, 0.23213110, 'CM set for TIP4P/EW water from Li et al. JCTC, 2013, 9, 2733'), 
-                 'Sm2': (1.838, 0.24480038, 'CM set for TIP4P/EW water from Li et al. JCTC, 2013, 9, 2733'), 
-                 'Ra2': (2.050, 0.43454345, 'CM set for TIP4P/EW water from Li et al. JCTC, 2013, 9, 2733'), 
-                   }
+        diljpara2 = {
+                   'Pt2': (1.251, 0.00247282, 'CM set for TIP4P/EW water from Li et al. JCTC, 2013, 9, 2733'),
+                   'Pd2': (1.288, 0.00417787, 'CM set for TIP4P/EW water from Li et al. JCTC, 2013, 9, 2733'),
+                   'Ag2': (1.323, 0.00657749, 'CM set for TIP4P/EW water from Li et al. JCTC, 2013, 9, 2733'),
+                   'Yb2': (1.654, 0.10888937, 'CM set for TIP4P/EW water from Li et al. JCTC, 2013, 9, 2733'),
+                   'Pb2': (1.758, 0.17997960, 'CM set for TIP4P/EW water from Li et al. JCTC, 2013, 9, 2733'),
+                   'Eu2': (1.823, 0.23213110, 'CM set for TIP4P/EW water from Li et al. JCTC, 2013, 9, 2733'),
+                   'Sm2': (1.838, 0.24480038, 'CM set for TIP4P/EW water from Li et al. JCTC, 2013, 9, 2733'),
+                   'Ra2': (2.050, 0.43454345, 'CM set for TIP4P/EW water from Li et al. JCTC, 2013, 9, 2733'),
+                     }
 
     IonLJParaDict.update(diljpara2)
 
     #Trivalent and tetravalent ions from IOD parameter set
     if watermodel == 'tip3p':
-      higljpara = {
-                 'Al3': (1.297, 0.00471279, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
-                 'Fe3': (1.386, 0.01357097, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
-                 'Cr3': (1.344, 0.00848000, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
-                 'In3': (1.461, 0.02808726, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
-                 'Tl3': (1.513, 0.04321029, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
-                 'Y3':  (1.602, 0.08034231, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
-                 'La3': (1.718, 0.15060822, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
-                 'Ce3': (1.741, 0.16721338, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
-                 'Pr3': (1.733, 0.16134811, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
-                 'Nd3': (1.681, 0.12564307, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
-                 'Sm3': (1.659, 0.11189491, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
-                 'Eu3': (1.666, 0.11617738, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
-                 'Gd3': (1.623, 0.09126804, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
-                 'Tb3': (1.630, 0.09509276, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
-                 'Dy3': (1.609, 0.08389240, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
-                 'Er3': (1.602, 0.08034231, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
-                 'Tm3': (1.602, 0.08034231, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
-                 'Lu3': (1.588, 0.07351892, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
-                 'Hf4': (1.499, 0.03868661, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
-                 'Zr4': (1.519, 0.04525501, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
-                 'Ce4': (1.684, 0.12758274, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
-                 'U4':  (1.684, 0.12758274, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
-                 'Pu4': (1.662, 0.11371963, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
-                 'Th4': (1.708, 0.14364160, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
-                   }
+        higljpara = {
+                   'Al3': (1.297, 0.00471279, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
+                   'Fe3': (1.386, 0.01357097, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
+                   'Cr3': (1.344, 0.00848000, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
+                   'In3': (1.461, 0.02808726, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
+                   'Tl3': (1.513, 0.04321029, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
+                   'Y3':  (1.602, 0.08034231, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
+                   'La3': (1.718, 0.15060822, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
+                   'Ce3': (1.741, 0.16721338, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
+                   'Pr3': (1.733, 0.16134811, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
+                   'Nd3': (1.681, 0.12564307, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
+                   'Sm3': (1.659, 0.11189491, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
+                   'Eu3': (1.666, 0.11617738, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
+                   'Gd3': (1.623, 0.09126804, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
+                   'Tb3': (1.630, 0.09509276, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
+                   'Dy3': (1.609, 0.08389240, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
+                   'Er3': (1.602, 0.08034231, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
+                   'Tm3': (1.602, 0.08034231, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
+                   'Lu3': (1.588, 0.07351892, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
+                   'Hf4': (1.499, 0.03868661, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
+                   'Zr4': (1.519, 0.04525501, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
+                   'Ce4': (1.684, 0.12758274, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
+                   'U4':  (1.684, 0.12758274, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
+                   'Pu4': (1.662, 0.11371963, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
+                   'Th4': (1.708, 0.14364160, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
+                     }
     elif watermodel == 'spce':
-      higljpara = {
-                 'Al3': (1.296, 0.00465074, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
-                 'Fe3': (1.386, 0.01357097, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
-                 'Cr3': (1.343, 0.00838052, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
-                 'In3': (1.461, 0.02808726, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
-                 'Tl3': (1.513, 0.04321029, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
-                 'Y3':  (1.602, 0.08034231, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
-                 'La3': (1.718, 0.15060822, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
-                 'Ce3': (1.741, 0.16721338, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
-                 'Pr3': (1.734, 0.16207614, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
-                 'Nd3': (1.681, 0.12564307, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
-                 'Sm3': (1.659, 0.11189491, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
-                 'Eu3': (1.666, 0.11617738, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
-                 'Gd3': (1.623, 0.09126804, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
-                 'Tb3': (1.630, 0.09509276, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
-                 'Dy3': (1.609, 0.08389240, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
-                 'Er3': (1.602, 0.08034231, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
-                 'Tm3': (1.602, 0.08034231, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
-                 'Lu3': (1.588, 0.07351892, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
-                 'Hf4': (1.501, 0.03931188, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
-                 'Zr4': (1.521, 0.04595090, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
-                 'Ce4': (1.689, 0.13084945, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
-                 'U4':  (1.689, 0.13084945, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
-                 'Pu4': (1.666, 0.11617738, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
-                 'Th4': (1.713, 0.14710519, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
-                   }
+        higljpara = {
+                   'Al3': (1.296, 0.00465074, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
+                   'Fe3': (1.386, 0.01357097, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
+                   'Cr3': (1.343, 0.00838052, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
+                   'In3': (1.461, 0.02808726, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
+                   'Tl3': (1.513, 0.04321029, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
+                   'Y3':  (1.602, 0.08034231, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
+                   'La3': (1.718, 0.15060822, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
+                   'Ce3': (1.741, 0.16721338, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
+                   'Pr3': (1.734, 0.16207614, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
+                   'Nd3': (1.681, 0.12564307, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
+                   'Sm3': (1.659, 0.11189491, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
+                   'Eu3': (1.666, 0.11617738, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
+                   'Gd3': (1.623, 0.09126804, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
+                   'Tb3': (1.630, 0.09509276, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
+                   'Dy3': (1.609, 0.08389240, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
+                   'Er3': (1.602, 0.08034231, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
+                   'Tm3': (1.602, 0.08034231, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
+                   'Lu3': (1.588, 0.07351892, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
+                   'Hf4': (1.501, 0.03931188, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
+                   'Zr4': (1.521, 0.04595090, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
+                   'Ce4': (1.689, 0.13084945, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
+                   'U4':  (1.689, 0.13084945, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
+                   'Pu4': (1.666, 0.11617738, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
+                   'Th4': (1.713, 0.14710519, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
+                     }
     elif watermodel == 'tip4pew':
-      higljpara = {
-                 'Al3': (1.285, 0.00401101, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
-                 'Fe3': (1.375, 0.01205473, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
-                 'Cr3': (1.333, 0.00743559, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
-                 'In3': (1.450, 0.02545423, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
-                 'Tl3': (1.502, 0.03962711, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
-                 'Y3':  (1.590, 0.07447106, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
-                 'La3': (1.707, 0.14295367, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
-                 'Ce3': (1.729, 0.15845086, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
-                 'Pr3': (1.722, 0.15343866, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
-                 'Nd3': (1.669, 0.11803919, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
-                 'Sm3': (1.647, 0.10475707, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
-                 'Eu3': (1.655, 0.10948690, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
-                 'Gd3': (1.612, 0.08544204, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
-                 'Tb3': (1.619, 0.08912336, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
-                 'Dy3': (1.597, 0.07786298, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
-                 'Er3': (1.590, 0.07447106, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
-                 'Tm3': (1.590, 0.07447106, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
-                 'Lu3': (1.577, 0.06841702, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
-                 'Hf4': (1.483, 0.03393126, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
-                 'Zr4': (1.503, 0.03994409, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
-                 'Ce4': (1.667, 0.11679623, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
-                 'U4':  (1.667, 0.11679623, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
-                 'Pu4': (1.645, 0.10359269, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
-                 'Th4': (1.690, 0.13150785, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
-                   }
+        higljpara = {
+                   'Al3': (1.285, 0.00401101, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
+                   'Fe3': (1.375, 0.01205473, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
+                   'Cr3': (1.333, 0.00743559, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
+                   'In3': (1.450, 0.02545423, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
+                   'Tl3': (1.502, 0.03962711, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
+                   'Y3':  (1.590, 0.07447106, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
+                   'La3': (1.707, 0.14295367, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
+                   'Ce3': (1.729, 0.15845086, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
+                   'Pr3': (1.722, 0.15343866, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
+                   'Nd3': (1.669, 0.11803919, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
+                   'Sm3': (1.647, 0.10475707, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
+                   'Eu3': (1.655, 0.10948690, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
+                   'Gd3': (1.612, 0.08544204, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
+                   'Tb3': (1.619, 0.08912336, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
+                   'Dy3': (1.597, 0.07786298, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
+                   'Er3': (1.590, 0.07447106, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
+                   'Tm3': (1.590, 0.07447106, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
+                   'Lu3': (1.577, 0.06841702, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
+                   'Hf4': (1.483, 0.03393126, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
+                   'Zr4': (1.503, 0.03994409, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
+                   'Ce4': (1.667, 0.11679623, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
+                   'U4':  (1.667, 0.11679623, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
+                   'Pu4': (1.645, 0.10359269, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
+                   'Th4': (1.690, 0.13150785, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
+                     }
 
     IonLJParaDict.update(higljpara)
 

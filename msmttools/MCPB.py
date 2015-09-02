@@ -474,7 +474,6 @@ print('             multiplying the square of scale_factor.')
 print('The variable bondfc_avg is : ', bondfc_avg)
 print('The variable anglefc_avg is : ', anglefc_avg)
 print('The variable naa_mol2files is : ', naamol2fs)
-print('The variable software_version is : ', g0x)
 print('The variable water_model is : ', watermodel.upper())
 print('The variable ion_paraset is : ', paraset.upper(), "(Only for nonbonded model)")
 
@@ -517,17 +516,17 @@ finfcdf = gname + '_mcpbpy.frcmod'
 
 ##log file
 if options.logfile is not None:
-  fclogf = options.logfile
-  mklogf = options.logfile
+    fclogf = options.logfile
+    mklogf = options.logfile
 else:
-  fclogf = gname + '_small_fc.log'
-  mklogf = gname + '_large_mk.log'
+    fclogf = gname + '_small_fc.log'
+    mklogf = gname + '_large_mk.log'
 
 ##checkpoint file
 if options.fchkfile is not None:
-  fcfchkf = options.fchkfile
+    fcfchkf = options.fchkfile
 else:
-  fcfchkf = gname + '_small_opt.fchk'
+    fcfchkf = gname + '_small_opt.fchk'
 
 ##tleap input file
 ileapf = gname + '_tleap.in'
@@ -619,4 +618,3 @@ elif (options.step == '4n2'): #normal nonbonded model
                 ileapf, 3, watermodel, paraset)
 
 quit()
-

@@ -56,7 +56,7 @@ all_list = get_all_list(mol, blist, atids, 8.0)
 
 natids = {}
 for i in range(0, len(atids)):
-  natids[atids[i]] = i + 1
+    natids[atids[i]] = i + 1
 
 #crds after optimization
 if options.softversion in ['g03', 'g09']:
@@ -121,7 +121,7 @@ if options.dihedral is True:
         at2 = i[1]
         at3 = i[2]
         at4 = i[3]
- 
+
         n1 = 0
         n2 = 0
         for j in all_list.bondlist:
@@ -130,7 +130,7 @@ if options.dihedral is True:
                     n1 = n1 + 1
                 elif at3 in (j[0], j[1]):
                     n2 = n2 + 1
- 
+
         nat1 = natids[at1]
         nat2 = natids[at2]
         nat3 = natids[at3]
@@ -150,12 +150,12 @@ if options.improper is True:
         at2 = i[1]
         at3 = i[2] #Central atom
         at4 = i[3]
- 
+
         nat1 = natids[at1]
         nat2 = natids[at2]
         nat3 = natids[at3]
         nat4 = natids[at4]
- 
+
         if mol.atoms[at1].element == mol.atoms[at2].element:
             fcfinal1, fcfinal = get_imp_fc_with_sem(crds, fcmatrix, nat3, nat1, nat2, nat4, options.scalef) #Treat the central atom first
             print('### Improper torsion force constant between ' + \
@@ -163,7 +163,7 @@ if options.improper is True:
               mol.atoms[at2].resname + str(mol.atoms[at2].resid) + '@' + mol.atoms[at2].atname + '-' + \
               mol.atoms[at3].resname + str(mol.atoms[at3].resid) + '@' + mol.atoms[at3].atname + '(central atom)-' + \
               mol.atoms[at4].resname + str(mol.atoms[at4].resid) + '@' + mol.atoms[at4].atname + ' : ' + \
-              str(round(fcfinal, 2))) 
+              str(round(fcfinal, 2)))
             print('    *or* ' + str(round(fcfinal1, 2)) + ' (as kb in kb(b)^2), b is the distance of central atom to the plane of the other three atoms.')
         elif mol.atoms[at1].element == mol.atoms[at4].element:
             fcfinal1, fcfinal = get_imp_fc_with_sem(crds, fcmatrix, nat3, nat1, nat4, nat2, options.scalef) #Treat the central atom first
@@ -192,5 +192,5 @@ if options.improper is True:
               mol.atoms[at4].resname + str(mol.atoms[at4].resid) + '@' + mol.atoms[at4].atname + ' : ' + \
               str(round(fcfinal, 2)))
             print('    *or* ' + str(round(fcfinal1, 2)) + ' (as kb in kb(b)^2), b is the distance of central atom to the plane of the other three atoms.')
- 
+
 quit()

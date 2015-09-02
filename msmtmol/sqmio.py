@@ -30,7 +30,7 @@ def get_crdinfo_from_sqm(outfile):
 
     gauatms = []
 
-    ln = 1  
+    ln = 1
     fp = open(outfile, 'r')
     for line in fp:
         if " Final Structure" in line:
@@ -50,5 +50,3 @@ def get_crdinfo_from_sqm(outfile):
 
     linecache.clearcache()
     return gauatms
-
-
