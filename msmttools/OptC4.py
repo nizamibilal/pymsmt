@@ -21,12 +21,13 @@ import simtk.openmm as mm  #about force field
 import simtk.openmm.app as app #about algorithm
 
 # ParmEd imports
-from chemistry import unit as u
-from chemistry.amber import AmberParm, AmberMask
-from chemistry.openmm import StateDataReporter, NetCDFReporter, RestartReporter
+from parmed.unit import unit as u
+from parmed.amber import AmberParm, AmberMask
+from parmed.openmm import StateDataReporter, NetCDFReporter, RestartReporter
 
 # pyMSMT Imports
 from msmtmol.cal import calc_bond
+from msmtmol.rstfile import read_rstf
 from msmtmol.element import Atnum, CoRadiiDict
 from api.AmberParm import read_amber_prm
 
@@ -34,13 +35,14 @@ from api.AmberParm import read_amber_prm
 from optparse import OptionParser
 import os
 import sys
+import numpy
 
 #-----------------------------------------------------------------------------#
 # Functions
 #-----------------------------------------------------------------------------#
 
 def get_typ_dict(typinds, typs):
-
+    #Key is the ATOM_TYPE_INDEX, value is the AMBER_ATOM_TYPE
     typdict = {}
     for i in range(0, len(typinds)):
         if typinds[i] not in list(typdict.keys()):
@@ -53,10 +55,9 @@ def get_typ_dict(typinds, typs):
 
 def get_rmsd(initparas):
 
-    global idxs, mcresids0
+    global idxs, mcresids2, disatompairs
 
-    print(mcresids0)
-
+    print(mcresids2)
     print(initparas)
 
     #Modify the C4 terms in the prmtop file
@@ -88,8 +89,8 @@ def get_rmsd(initparas):
     force.addPerParticleParameter("z0")
     #for i in range(0, len(Ambermol.atoms)):
     for i, atom_crd in enumerate(Ambermol.positions):
-        #if (Ambermol.atoms[i].residue.number+1 not in mcresids0) and \
-        if (i+1 not in mcresids0) and \
+        #if (Ambermol.atoms[i].residue.number+1 not in mcresids2) and \
+        if (i+1 not in mcresids2) and \
           (Ambermol.atoms[i].residue.name not in ['WAT', 'HOH']) and \
           (Ambermol.atoms[i].name in ['CA', 'C', 'N']):
             force.addParticle(i, atom_crd.value_in_unit(u.nanometers))
@@ -135,20 +136,36 @@ def get_rmsd(initparas):
     state = sim.context.getState(getPositions=True, enforcePeriodicBox=True)
     restrt.report(sim, state)
 
-    print('Calculate the RMSD')
+    dis_aft_min = []
+    crds_aft_min = read_rstf(options.rfile)
+    for i in disatompairs:
+        crd1 = crds_aft_min[i[0]-1]
+        crd2 = crds_aft_min[i[1]-1]
+        bond = calc_bond(crd1, crd2)
+        dis_aft_min.append(bond)
+
+    disdiff = [abs(dis_bf_min[i] - dis_aft_min[i]) for i in range(0, len(disatompairs))]
+
+    print(disdiff)
+    disdiff = numpy.sum(disdiff)       
+
+    print(disdiff)
+    return disdiff
+
+    #print('Calculate the RMSD')
     # Perform the RMSD calcualtion, using ptraj in AmberTools
-    os.system("cpptraj -p OptC4.top -i OptC4_ptraj.in > OptC4_ptraj.out")
+    #os.system("cpptraj -p OptC4.top -i OptC4_ptraj.in > OptC4_ptraj.out")
 
-    ptrajof = open('OptC4_rmsd.txt', 'r')
-    ln = 1
-    for line in ptrajof:
-        if ln == 3:
-            rmsd = float(line[12:21])
-        ln += 1
-    ptrajof.close()
+    #ptrajof = open('OptC4_rmsd.txt', 'r')
+    #ln = 1
+    #for line in ptrajof:
+    #    if ln == 3:
+    #        rmsd = float(line[12:21])
+    #    ln += 1
+    #ptrajof.close()
 
-    print('RMSD is: ', rmsd)
-    return rmsd
+    #print('RMSD is: ', rmsd)
+    #return rmsd
 
 #-----------------------------------------------------------------------------#
 # Main Program
@@ -227,32 +244,24 @@ elif options.minm == 'slsqp':
     from scipy.optimize import fmin_slsqp as fmin
 
 #Get the metal center information from prmtop and coordinate files
-#Get the metal center
 prmtop, mol, atids, resids = read_amber_prm(options.pfile, options.cfile)
 mask = AmberMask(prmtop, options.ion_mask)
 
 #Get the metal ion ids
-metids = []
-mettyps = []
-mettypinds = []
+metids = []       #Atom IDs
+mettyps = []      #Amber Atom Type
+mettypinds = []   #Atom Type Index
 for i in mask.Selected():
-    #Atom IDs
     j = i + 1
     metids.append(j)
-    #Amber Atom Type
     atyp = prmtop.parm_data['AMBER_ATOM_TYPE'][i]
     mettyps.append(atyp)
-    #Atom Type Index
     mettypind = prmtop.parm_data['ATOM_TYPE_INDEX'][i]
     mettypinds.append(mettypind)
 
-smcids = []
-mcids = []
-mctyps = []
-mctypinds = []
-
-mcresids = []
-
+smcids = [] #Metal site ligating atom IDs
+mcresids = []  #Metal Site Residue IDs
+disatompairs = [] #Distance pair
 for i in metids:
     crdi = mol.atoms[i].crd
     atmi = mol.atoms[i].element
@@ -266,15 +275,18 @@ for i in metids:
             radiusij = radiusi + radiusj
             if (dis <= radiusij + 0.4) and (dis >= 0.1) and (atmj != 'H'):
                 smcids.append(j)
+                disatompairs.append((i, j))
                 if mol.atoms[j].resid not in mcresids:
                     mcresids.append(mol.atoms[j].resid)
 
-mcresids0 = mcresids
+#Add metal ion IDs to the Metal Site Residue IDs
+mcresids2 = mcresids
 for i in metids:
-    mcresids0.append(mol.atoms[i].resid)
-mcresids0 = list(set(mcresids0))
-mcresids0.sort()
+    mcresids2.append(mol.atoms[i].resid)
+mcresids2 = list(set(mcresids2))
+mcresids2.sort()
 
+mcids = []  #Metal site atom IDs
 if options.model == 1: #Small model
     mcids = smcids
 elif options.model == 2: #Big model
@@ -283,12 +295,23 @@ elif options.model == 2: #Big model
             if mol.atoms[j].element != 'H':
                 mcids.append(j)
 
+#Calculate the distances between metal ion and ligating atoms
+dis_bf_min = []
+crds_bf_min = read_rstf(options.cfile)
+for i in disatompairs:
+    crd1 = crds_bf_min[i[0]-1]
+    crd2 = crds_bf_min[i[1]-1]
+    bond = calc_bond(crd1, crd2)
+    dis_bf_min.append(bond)
+
+print("Distance before minimization...")
+print(dis_bf_min)
+
 #-----------------------------------------------------------------------------#
 #Get the Amber mask of the metal center complex and print it into ptraj.in file
 #-----------------------------------------------------------------------------#
 
 #Print the parmed input file, add new LJ types to the bonded atoms
-
 maskns = []
 for i in smcids:
     maskn = str(mol.atoms[i].resid) + '@' + mol.atoms[i].atname
@@ -309,8 +332,10 @@ print("outparm %s.c4" %options.pfile, file=w_parmedf)
 print("quit", file=w_parmedf)
 w_parmedf.close()
 
+#os.system("parmed.py -O -i OptC4_parmed2.in -p %s -c %s" %(options.pfile, options.cfile))
 os.system("parmed.py -O -i OptC4_parmed2.in -p addij_%s -c %s" %(options.pfile, options.cfile))
 
+"""
 #Print the cpptraj input file
 maskns = []
 for i in mcids:
@@ -331,12 +356,14 @@ print('trajin %s' %options.rfile, file=ptrajif)
 print('rms %s first out OptC4_rmsd.txt' %maskslet, file=ptrajif)
 print('go', file=ptrajif)
 ptrajif.close()
+"""
 
 #Get the new molecule
-
 prmtop, mol, atids, resids = read_amber_prm(options.pfile + '.c4', options.cfile)
 c4terms = prmtop.parm_data['LENNARD_JONES_CCOEF']
 
+mctyps = [] #Metal Site Atom Type
+mctypinds = [] #Metal Site Atom Type Index
 num = 0
 for j in mcids:
     k = j - 1
@@ -344,7 +371,6 @@ for j in mcids:
     #prmtop.parm_data['AMBER_ATOM_TYPE'][k] = 'X' + str(num)
     atyp = prmtop.parm_data['AMBER_ATOM_TYPE'][k]
     mctyps.append(atyp)
-    #Atom Type Index
     mctypind = prmtop.parm_data['ATOM_TYPE_INDEX'][k]
     mctypinds.append(mctypind)
     num = num + 1
@@ -353,7 +379,11 @@ for j in mcids:
 mettypdict = get_typ_dict(mettypinds, mettyps)
 mctypdict = get_typ_dict(mctypinds, mctyps)
 
-#Delete the repeat elements sort the list
+print('The following is the dictionary of the atom types: ')
+print(mettypdict)
+print(mctypdict)
+
+#Delete the repeat ATOM_TYPE_INDEX
 mettypinds = list(set(mettypinds))
 mettypinds.sort()
 mctypinds = list(set(mctypinds))
@@ -361,8 +391,8 @@ mctypinds.sort()
 
 #Detect the C4 terms which relates to the metal center complex
 ntyps = prmtop.pointers['NTYPES']
-idxs = []
-iddict = {}
+idxs = [] #Index of C4 terms which needs to modify
+iddict = {} #Dictionary of idx corresponding to ATOM_TYPE_INDEX pair
 for i in mettypinds:
     j = i - 1
     for k in mctypinds:
@@ -381,7 +411,6 @@ initparas = [c4terms[i] for i in idxs]
 xopt = fmin(get_rmsd, initparas, epsilon=options.stepsize)
 
 print("Final parameters...")
-
 print(xopt)
 
 print("The final RMSD is: ")
@@ -391,6 +420,4 @@ for i in range(0, len(idxs)):
     print('The optimal value of atomtypes ' + str(iddict[idxs[i]]) + \
           ' is ' + str(xopt[i]))
 
-print('The following is the dictionary of the atom types: ')
-print(mettypdict)
-print(mctypdict)
+
