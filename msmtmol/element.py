@@ -304,6 +304,7 @@ def get_ionljparadict(watermodel):
         higljpara = {
                    'Al3': (1.297, 0.00471279, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
                    'Fe3': (1.386, 0.01357097, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
+                   'Fe4': (1.386, 0.01357097, 'IOD set for Fe3+ ion in TIP3P water from Li et al. JPCB, 2015, 119, 883'),
                    'Cr3': (1.344, 0.00848000, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
                    'In3': (1.461, 0.02808726, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
                    'Tl3': (1.513, 0.04321029, 'IOD set for TIP3P water from Li et al. JPCB, 2015, 119, 883'),
@@ -331,6 +332,7 @@ def get_ionljparadict(watermodel):
         higljpara = {
                    'Al3': (1.296, 0.00465074, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
                    'Fe3': (1.386, 0.01357097, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
+                   'Fe4': (1.386, 0.01357097, 'IOD set for Fe3+ ion in SPC/E water from Li et al. JPCB, 2015, 119, 883'),
                    'Cr3': (1.343, 0.00838052, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
                    'In3': (1.461, 0.02808726, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
                    'Tl3': (1.513, 0.04321029, 'IOD set for SPC/E water from Li et al. JPCB, 2015, 119, 883'),
@@ -358,6 +360,7 @@ def get_ionljparadict(watermodel):
         higljpara = {
                    'Al3': (1.285, 0.00401101, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
                    'Fe3': (1.375, 0.01205473, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
+                   'Fe4': (1.375, 0.01205473, 'IOD set for Fe3+ ion in TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
                    'Cr3': (1.333, 0.00743559, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
                    'In3': (1.450, 0.02545423, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
                    'Tl3': (1.502, 0.03962711, 'IOD set for TIP4P/EW water from Li et al. JPCB, 2015, 119, 883'),
