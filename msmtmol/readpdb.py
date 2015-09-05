@@ -5,6 +5,7 @@ from __future__ import absolute_import, print_function
 from msmtmol.mol import Atom, Residue, Molecule, get_reslist
 from msmtmol.readmol2 import get_pure_type, get_pure_num
 from msmtmol.element import ionnamel, CoRadiiDict, Metalpdb
+from pymsmtexp import *
 
 def get_atominfo_fpdb(fname):
     Atoms = {}
@@ -42,7 +43,11 @@ def get_atominfo_fpdb(fname):
             else:
                 element = atname[0]
 
-            Atoms[atid] = Atom(gtype, atid, atname, element, atomtype, crd, charge, resid, resname)
+            if atid not in list(Atoms.keys()):
+                Atoms[atid] = Atom(gtype, atid, atname, element, atomtype, crd, charge, resid, resname)
+            else:
+                raise pymsmtError('There are more than one atom with atom id '
+                                  '%d in the PDB file : %s .' %(atid, fname))
 
             if resid not in resids:
                 resids.append(resid)

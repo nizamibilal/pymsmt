@@ -5,6 +5,7 @@ file.
 from __future__ import absolute_import
 from msmtmol.mol import Atom, Residue, Molecule
 from msmtmol.element import ionnamel, Metalpdb
+from pymsmtexp import *
 import sys
 import linecache
 
@@ -46,7 +47,11 @@ def get_atominfo(fname):
         else:
             element = atname[0]
 
-        Atoms[atid] = Atom(gtype, atid, atname, element, atomtype, crd, charge, resid, resname)
+        if atid not in list(Atoms.keys()):
+            Atoms[atid] = Atom(gtype, atid, atname, element, atomtype, crd, charge, resid, resname)
+        else:
+            raise pymsmtError('There are more than one atom with atom id '
+                              '%d in the mol2 file : %s .' %(atid, fname))
 
         #for the residue part
         if resid not in resids:
