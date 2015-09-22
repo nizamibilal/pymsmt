@@ -15,9 +15,9 @@ def get_atominfo(fname):
     fp = open(fname, 'r')
     lnum = 1
     for line in fp:
-        if (line == "@<TRIPOS>ATOM\n"):
+        if ("@<TRIPOS>ATOM" in line):
             atbgin = lnum + 1
-        elif (line == "@<TRIPOS>BOND\n"):
+        elif ("@<TRIPOS>BOND" in line):
             atend = lnum
         lnum = lnum + 1
     fp.close()
@@ -88,9 +88,9 @@ def get_bondinfo(fname):
     fp = open(fname, 'r')
     lnum = 1
     for line in fp:
-        if (line == "@<TRIPOS>BOND\n"):
+        if ("@<TRIPOS>BOND" in line):
             bdbgin = lnum + 1
-        elif (line == "@<TRIPOS>SUBSTRUCTURE\n"):
+        elif ("@<TRIPOS>SUBSTRUCTURE" in line):
             bdend = lnum
         lnum = lnum + 1
     fp.close()
