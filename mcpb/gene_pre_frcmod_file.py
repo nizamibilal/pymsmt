@@ -126,13 +126,13 @@ def gene_pre_frcmod_file(ionids, naamol2f, stpdbf, stfpf, smresf, prefcdf,
     for bonds in all_list.bondlist:
         i = bonds[0]
         j = bonds[1]
-        if list(set(ionids) & set(bonds)) != []:
+        if list(set(ionids) & set([i, j])) != []:
             #The bonds which related to the ions
             bondtyp2 = (attypdict[i][1], attypdict[j][1])
             if (bondtyp2 not in list(bondparamsdict1.keys())) and (bondtyp2[::-1] \
                 not in list(bondparamsdict1.keys())):
                 bondparamsdict1[bondtyp2] = ' '
-        elif list(set(atidtrans) & set(bonds)) != []:
+        elif list(set(atidtrans) & set([i, j])) != []:
             #The bonds related to the atoms which changed their atom types
             bondtyp1 = (attypdict[i][0], attypdict[j][0])
             bondtyp2 = (attypdict[i][1], attypdict[j][1])
