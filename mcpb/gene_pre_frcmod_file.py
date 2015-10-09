@@ -410,19 +410,30 @@ def gene_pre_frcmod_file(ionids, naamol2f, stpdbf, stfpf, smresf, prefcdf,
         attyp2 = attypdict[i][1]
 
         for j in range(0, chg):
-            fchg = chg - j
-            if element+str(fchg) in list(IonLJParaDict.keys()):
+            fchg1 = chg - j
+            if element+str(fchg1) in list(IonLJParaDict.keys()):
                 if j != 0:
                     print("Could not find VDW parameters for element %s with charge "
-                          "+%d, use them of charge +%d" %(element, chg, fchg))
-                rmin = IonLJParaDict[element + str(fchg)][0]
-                ep = IonLJParaDict[element + str(fchg)][1]
-                annot = IonLJParaDict[element + str(fchg)][2]
+                          "+%d, use them of charge +%d" %(element, chg, fchg1))
+                rmin = IonLJParaDict[element + str(fchg1)][0]
+                ep = IonLJParaDict[element + str(fchg1)][1]
+                annot = IonLJParaDict[element + str(fchg1)][2]
                 break
+
+        for j in range(chg+1, 9):
+            fchg2 = j
+            if element+str(fchg2) in list(IonLJParaDict.keys()):
+                print("Could not find VDW parameters for element %s with charge "
+                      "+%d, use them of charge +%d" %(element, chg, fchg2))
+                rmin = IonLJParaDict[element + str(fchg2)][0]
+                ep = IonLJParaDict[element + str(fchg2)][1]
+                annot = IonLJParaDict[element + str(fchg2)][2]
+                break
+
         if rmin is None:
             raise pymsmtError("Could not find VDW parameters/radius for "
                               "element %s with charge +%d " %(element, chg))
-        print('YES   %s    %11.4f  %13.10f       %-s' %(attyp2, rmin, \
+        print('YES   %s        %8.4f %13.10f       %-s' %(attyp2, rmin, \
                  ep, annot), file=fmf)
 
     #For the others
