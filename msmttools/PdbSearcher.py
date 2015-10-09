@@ -18,7 +18,7 @@ The orignal Pdbseacher software is come from:
 """
 from __future__ import print_function
 from msmtmol.readpdb import get_atominfo_fpdb, writepdbatm
-from msmtmol.element import Metalpdb, CoRadiiDict, resdict
+from msmtmol.element import METAL_PDB, CoRadiiDict, resdict
 from msmtmol.mol import pdbatm
 from msmtmol.cal import calc_bond, det_geo
 from optparse import OptionParser
@@ -142,8 +142,8 @@ for fname in pdbfnl:
     for i in atids:
         resname = mol.residues[mol.atoms[i].resid].resname
         atname = mol.atoms[i].atname
-        if (resname, atname) in list(Metalpdb.keys()):
-            if Metalpdb[(resname, atname)] == ionname:
+        if (resname, atname) in list(METAL_PDB.keys()):
+            if METAL_PDB[(resname, atname)][0] == ionname:
                 metallist.append(i)
 
     #for each metal ion in the metal list, print the metal center

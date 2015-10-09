@@ -4,7 +4,7 @@ file.
 """
 from __future__ import absolute_import
 from msmtmol.mol import Atom, Residue, Molecule
-from msmtmol.element import ionnamel, Metalpdb
+from msmtmol.element import ionnamel, METAL_PDB
 from pymsmtexp import *
 import sys
 import linecache
@@ -42,8 +42,8 @@ def get_atominfo(fname):
         charge = float(charge)
         resid = int(resid)
 
-        if (resname, atname) in list(Metalpdb.keys()):
-            element = Metalpdb[(resname, atname)]
+        if (resname, atname) in list(METAL_PDB.keys()):
+            element = METAL_PDB[(resname, atname)][0]
         else:
             element = atname[0]
 

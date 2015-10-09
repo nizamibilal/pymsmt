@@ -403,14 +403,26 @@ def gene_pre_frcmod_file(ionids, naamol2f, stpdbf, stfpf, smresf, prefcdf,
 
     #For metal ions
     IonLJParaDict = get_ionljparadict(watermodel)
+
     for i in ionids:
         element = mol.atoms[i].element
-        chg = str(int(chargedict[mol.atoms[i].resname]))
+        chg = int(round(chargedict[mol.atoms[i].resname], 0))
         attyp2 = attypdict[i][1]
-        rmin = IonLJParaDict[element + chg][0]
-        ep = IonLJParaDict[element + chg][1]
-        annot = IonLJParaDict[element + chg][2]
-        print('YES   %s    %11.3f  %13.10f       %-s' %(attyp2, rmin, \
+
+        for j in range(0, chg):
+            fchg = chg - j
+            if element+str(fchg) in list(IonLJParaDict.keys()):
+                if j != 0:
+                    print("Could not find VDW parameters for element %s with charge "
+                          "+%d, use them of charge +%d" %(element, chg, fchg))
+                rmin = IonLJParaDict[element + str(fchg)][0]
+                ep = IonLJParaDict[element + str(fchg)][1]
+                annot = IonLJParaDict[element + str(fchg)][2]
+                break
+        if rmin is None:
+            raise pymsmtError("Could not find VDW parameters/radius for "
+                              "element %s with charge +%d " %(element, chg))
+        print('YES   %s    %11.4f  %13.10f       %-s' %(attyp2, rmin, \
                  ep, annot), file=fmf)
 
     #For the others

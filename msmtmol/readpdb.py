@@ -4,7 +4,7 @@ This is the code for reading and writting pdb files.
 from __future__ import absolute_import, print_function
 from msmtmol.mol import Atom, Residue, Molecule, get_reslist
 from msmtmol.readmol2 import get_pure_type, get_pure_num
-from msmtmol.element import ionnamel, CoRadiiDict, Metalpdb
+from msmtmol.element import ionnamel, CoRadiiDict, METAL_PDB
 from pymsmtexp import *
 
 def get_atominfo_fpdb(fname):
@@ -38,8 +38,8 @@ def get_atominfo_fpdb(fname):
             atomtype = line[76:78].strip(" ")
             charge = line[78:80]
 
-            if (resname, atname) in list(Metalpdb.keys()):
-                element = Metalpdb[(resname, atname)]
+            if (resname, atname) in list(METAL_PDB.keys()):
+                element = METAL_PDB[(resname, atname)][0]
             else:
                 element = atname[0]
 
