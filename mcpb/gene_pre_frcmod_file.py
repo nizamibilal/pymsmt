@@ -409,22 +409,27 @@ def gene_pre_frcmod_file(ionids, naamol2f, stpdbf, stfpf, smresf, prefcdf,
         chg = int(round(chargedict[mol.atoms[i].resname], 0))
         attyp2 = attypdict[i][1]
 
-        for j in range(0, chg):
+        mnum = max([9-chg, chg])
+        for j in range(0, mnum):
+
             fchg1 = chg - j
-            if element+str(fchg1) in list(IonLJParaDict.keys()):
-                if j != 0:
-                    print("Could not find VDW parameters for element %s with charge "
-                          "+%d, use them of charge +%d" %(element, chg, fchg1))
+            fchg2 = chg + j
+
+            if j == 0 and element+str(fchg1) in list(IonLJParaDict.keys()):
                 rmin = IonLJParaDict[element + str(fchg1)][0]
                 ep = IonLJParaDict[element + str(fchg1)][1]
                 annot = IonLJParaDict[element + str(fchg1)][2]
                 break
-
-        for j in range(chg+1, 9):
-            fchg2 = j
-            if element+str(fchg2) in list(IonLJParaDict.keys()):
-                print("Could not find VDW parameters for element %s with charge "
-                      "+%d, use them of charge +%d" %(element, chg, fchg2))
+            elif fchg1 > 0 and element+str(fchg1) in list(IonLJParaDict.keys()):
+                print("Could not find VDW radius for element %s with charge "
+                      "+%d, use the one of charge +%d" %(element, chg, fchg1))
+                rmin = IonLJParaDict[element + str(fchg1)][0]
+                ep = IonLJParaDict[element + str(fchg1)][1]
+                annot = IonLJParaDict[element + str(fchg1)][2]
+                break
+            elif fchg2 <= 8 and element+str(fchg2) in list(IonLJParaDict.keys()):
+                print("Could not find VDW radius for element %s with charge "
+                      "+%d, use the one of charge +%d" %(element, chg, fchg2))
                 rmin = IonLJParaDict[element + str(fchg2)][0]
                 ep = IonLJParaDict[element + str(fchg2)][1]
                 annot = IonLJParaDict[element + str(fchg2)][2]

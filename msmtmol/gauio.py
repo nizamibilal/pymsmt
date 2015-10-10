@@ -157,18 +157,21 @@ def write_gau_mkf(outf, gmkf, lgchg, SpinNum, gatms, ionnames, chargedict,
         if len(ionname) > 1:
             ionname = ionname[0] + ionname[1:].lower()
 
-        for i in range(0, chg):
+        mnum = max([9-chg, chg])
+        for i in range(0, mnum):
+
             fchg1 = chg - i
-            if ionname+str(fchg1) in list(IonLJParaDict.keys()):
-                if i != 0:
-                    print("Could not find VDW radius for element %s with charge "
-                          "+%d, use the one of charge +%d" %(ionname, chg, fchg1))
+            fchg2 = chg + i
+
+            if i == 0 and ionname+str(fchg1) in list(IonLJParaDict.keys()):
                 vdwradius = IonLJParaDict[ionname + str(fchg1)][0]
                 break
-
-        for i in range(chg+1, 9):
-            fchg2 = i
-            if ionname+str(fchg2) in list(IonLJParaDict.keys()):
+            elif fchg1 > 0 and ionname+str(fchg1) in list(IonLJParaDict.keys()):
+                print("Could not find VDW radius for element %s with charge "
+                      "+%d, use the one of charge +%d" %(ionname, chg, fchg1))
+                vdwradius = IonLJParaDict[ionname + str(fchg1)][0]
+                break
+            elif fchg2 <= 8 and ionname+str(fchg2) in list(IonLJParaDict.keys()):
                 print("Could not find VDW radius for element %s with charge "
                       "+%d, use the one of charge +%d" %(ionname, chg, fchg2))
                 vdwradius = IonLJParaDict[ionname + str(fchg2)][0]
@@ -186,18 +189,21 @@ def write_gau_mkf(outf, gmkf, lgchg, SpinNum, gatms, ionnames, chargedict,
             if len(ionname) > 1:
                 ionname = ionname[0] + ionname[1:].lower()
 
-            for i in range(0, chg):
+            mnum = max([9-chg, chg])
+            for i in range(0, mnum):
+
                 fchg1 = chg - i
-                if ionname+str(fchg1) in list(IonLJParaDict.keys()):
-                    if i != 0:
-                        print("Could not find VDW radius for element %s with charge "
-                              "+%d, use the one of charge +%d" %(ionname, chg, fchg1))
+                fchg2 = chg + i
+
+                if i == 0 and ionname+str(fchg1) in list(IonLJParaDict.keys()):
                     vdwradius = IonLJParaDict[ionname + str(fchg1)][0]
                     break
-
-            for i in range(chg+1, 9):
-                fchg2 = i
-                if ionname+str(fchg2) in list(IonLJParaDict.keys()):
+                elif fchg1 > 0 and ionname+str(fchg1) in list(IonLJParaDict.keys()):
+                    print("Could not find VDW radius for element %s with charge "
+                          "+%d, use the one of charge +%d" %(ionname, chg, fchg1))
+                    vdwradius = IonLJParaDict[ionname + str(fchg1)][0]
+                    break
+                elif fchg2 <= 8 and ionname+str(fchg2) in list(IonLJParaDict.keys()):
                     print("Could not find VDW radius for element %s with charge "
                           "+%d, use the one of charge +%d" %(ionname, chg, fchg2))
                     vdwradius = IonLJParaDict[ionname + str(fchg2)][0]
