@@ -3,15 +3,14 @@ This module was written for printing the title of each program in the package.
 """
 from __future__ import print_function
 
-def print_title(program, version, release_time):
+def print_title(program, version):
     print("                                                                  ")
     print("                                                                  ")
     print("                                                                  ")
     print("******************************************************************")
     if program == 'MCPB.py':
-        print("*                  Welcome to use MCPB.py program                *")
-        print("*                         Version %s                      *" %version)
-        print("*                  Pre-release Date: %s                *" %release_time)
+        print("*                   Welcome to use MCPB.py program               *")
+        print("*                            Version %s                         *" %version)
     elif program == 'PdbSearcher.py':
         print("*               Welcome to use PdbSearcher.py program            *")
     elif program == 'AFQMM_NMR.py':
