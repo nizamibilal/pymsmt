@@ -2,9 +2,12 @@
 
 Python Metal Site Modeling Toolbox
 
-It is developed by Pengfei Li in Prof. Kenne Merz's Research Group at Michigan State University.
-This software is free of charge and a version 1.0 Beta1 has been released in AmberTools15 package.
-It should be used with AmberTools15 due to it uses other code and files inside the packge.
+    It is developed by Pengfei Li in Prof. Kenne Merz's Research Group
+    at Michigan State University.
+    This software is free of charge and a version 1.0 Beta1 has been
+    released in AmberTools15 package.
+    It should be used with AmberTools15 due to it uses other code and
+    files inside the packge.
 
 # License
 
@@ -22,4 +25,8 @@ It should be used with AmberTools15 due to it uses other code and files inside t
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+    The `setup_env.sh` and `pt.py` code is released under the GNU LESSER
+    GENERAL PUBLIC LICENSE, Version 2.1, Copyright (C) Jason Swails.
+    See GNU_LGPL_v2 in this directory for details.
 

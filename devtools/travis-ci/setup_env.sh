@@ -1,4 +1,8 @@
-#From ParmEd, author: Jason Swails
+"""
+Note: This part of code is adapted from ParmEd with author as Jason Swails.
+It is under GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1.
+"""
+
 MINICONDA=Miniconda-latest-Linux-x86_64.sh
 MINICONDA_MD5=$(curl -s http://repo.continuum.io/miniconda/ | grep -A3 $MINICONDA | sed -n '4p' | sed -n 's/ *<td>\(.*\)<\/td> */\1/p')
 wget http://repo.continuum.io/miniconda/$MINICONDA

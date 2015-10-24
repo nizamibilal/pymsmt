@@ -1,6 +1,6 @@
 """
-Note: This part of code is from ParmEd with author as Jason Swails. It
-is also under GNU General Public License.
+Note: This part of code is from ParmEd with author as Jason Swails.
+It is under GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1.
 """
 
 """

@@ -1,0 +1,14 @@
+1.  The force field parameter files in this directory are from
+    public domain.
+    Users can go to Amber website (http://ambermd.org/) to get
+    the most recent version of them.
+
+2.  The mol2 files generated based on the Amber force field lib
+    files and tleap software.
+    Users can go to Amber website (http://ambermd.org/) to get
+    the most recent version of the lib files.
+
+3.  The default force field in MCPB.py is ff14SB in this version.
+    Former force fields are not recommended for using in the
+    research, but kept in the software for user's interest.
+
