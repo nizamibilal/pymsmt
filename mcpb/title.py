@@ -20,7 +20,6 @@ def print_title(program, version):
     print("*                        Author: Pengfei Li                      *")
     print("*                        Merz Research Group                     *")
     print("*                     Michigan State University                  *")
-    print("*                        All Rights Reserved                     *")
     print("******************************************************************")
     print("                                                                  ")
     print("                                                                  ")
