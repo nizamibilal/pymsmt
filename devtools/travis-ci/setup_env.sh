@@ -1,6 +1,6 @@
 """
 Note: This part of code is adapted from ParmEd with author as Jason Swails.
-It is under GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1.
+It is under GNU Lesser General Public License, version 2.1.
 """
 
 MINICONDA=Miniconda-latest-Linux-x86_64.sh
