@@ -28,7 +28,7 @@ Python Metal Site Modeling Toolbox
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-    The `setup_env.sh` and `pt.py` code is released under the GNU LESSER
-    GENERAL PUBLIC LICENSE, Version 2.1, Copyright (C) Jason Swails.
+    The `setup_env.sh` and `pt.py` code is released under the GNU Lesser
+    General Public License, version 2.1, Copyright (C) Jason Swails.
     See GNU_LGPL_v2 in this directory for details.
 
