@@ -19,12 +19,9 @@ import linecache
 
 #Test amberhome or msmthome
 amberhome = os.getenv('AMBERHOME')
-if amberhome is None:
-    msmthome = os.getenv('MSMTHOME')
-    if (amberhome is None) and (msmthome is None):
-        raise pymsmtError('Could not perform modeling without setting either '
-                          '$AMBEHROME or $MSMTHOME in the computer setting.')
-    add = msmthome + '/lib/'
+if (amberhome is None):
+    raise pymsmtError('Could not perform modeling without setting $AMBEHROME '
+                      'in the computer setting.')
 else:
     add = amberhome + '/AmberTools/src/pymsmt/lib/'
 
