@@ -2,7 +2,7 @@
 module for define the normally used data about elements, amino acids et al.
 """
 from __future__ import absolute_import
-from msmtmol.pt import AtomicNum
+from chemistry.periodic_table import AtomicNum
 
 #-----------------------------------------------------------------------------
 #The basic information of ion

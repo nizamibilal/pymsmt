@@ -2,7 +2,7 @@
 from __future__ import absolute_import, print_function, division
 import linecache
 import numpy
-from msmtmol.pt import AtomicNum
+from chemistry.periodic_table import AtomicNum
 from msmtmol.constants import B_TO_A
 
 #------------------------------------------------------------------------------
