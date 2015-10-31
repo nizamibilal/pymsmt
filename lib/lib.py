@@ -23,22 +23,23 @@ if (amberhome is None):
     raise pymsmtError('Could not perform modeling without setting $AMBEHROME '
                       'in the computer setting.')
 else:
-    add = amberhome + '/AmberTools/src/pymsmt/lib/'
+    libadd = amberhome + '/AmberTools/src/pymsmt/lib/'
+    parmadd = amberhome + '/dat/leap/parm/'
 
 def get_lib_dict(parms):
 
-    global add
+    global libadd
 
     if parms in ['ff94', 'ff99', 'ff99SB']:
-        mol, atids, resids = get_atominfo(add + 'parm94.mol2')
+        mol, atids, resids = get_atominfo(libadd + 'parm94.mol2')
     elif (parms == 'ff03'):
-        mol, atids, resids = get_atominfo(add + 'parm03.mol2')
+        mol, atids, resids = get_atominfo(libadd + 'parm03.mol2')
     elif (parms == 'ff03.r1'):
-        mol, atids, resids = get_atominfo(add + 'parm03_r1.mol2')
+        mol, atids, resids = get_atominfo(libadd + 'parm03_r1.mol2')
     elif (parms == 'ff10'):
-        mol, atids, resids = get_atominfo(add + 'parm10.mol2')
+        mol, atids, resids = get_atominfo(libadd + 'parm10.mol2')
     elif parms in ['ff12SB', 'ff14SB']:
-        mol, atids, resids = get_atominfo(add + 'parm12.mol2')
+        mol, atids, resids = get_atominfo(libadd + 'parm12.mol2')
     else:
         mol, atids, resids = get_atominfo(parms)
 
@@ -295,20 +296,20 @@ def get_parm_dict(ffchoice, gaff, frcmodfs):
     #1. Read the parm*.dat file
     #-------------------------------------------------------------------------
 
-    global add
+    global parmadd
 
     if ffchoice == 'ff94': #parm94
-        parmf = add + 'parm94.dat'
+        parmf = parmadd + 'parm94.dat'
         lndict = {'MASS': (2, 57), 'BOND': (59, 142), 'ANGL': (143, 334),
                   'DIHE': (335, 416), 'IMPR': (417, 448), 'EQUA': (451, 453),
                   'NONB': (455, 489)}
     elif ffchoice in ['ff99', 'ff99SB', 'ff03', 'ff03.r1']:
-        parmf = add + 'parm99.dat'
+        parmf = parmadd + 'parm99.dat'
         lndict = {'MASS': (2, 66), 'BOND': (68, 184), 'ANGL': (185, 466),
                   'DIHE': (467, 631), 'IMPR': (632, 670), 'EQUA': (673, 675),
                   'NONB': (677, 719)}
     elif ffchoice in ['ff10', 'ff12SB', 'ff14SB']:
-        parmf = add + 'parm10.dat'
+        parmf = parmadd + 'parm10.dat'
         lndict = {'MASS': (2, 65), 'BOND': (67, 218), 'ANGL': (219, 619),
                   'DIHE': (620, 895), 'IMPR': (896, 955), 'EQUA': (958, 960),
                   'NONB': (962, 1001)}
@@ -369,13 +370,13 @@ def get_parm_dict(ffchoice, gaff, frcmodfs):
     #-------------------------------------------------------------------------
     if ffchoice in ['ff03', 'ff03.r1', 'ff99SB', 'ff12SB', 'ff14SB']:
         if ffchoice in ['ff03', 'ff03.r1']: #Year: 2003
-            parmf1 = add + 'frcmod.ff03'
+            parmf1 = parmadd + 'frcmod.ff03'
         elif ffchoice == 'ff99SB': #Year: 2006
-            parmf1 = add + 'frcmod.ff99SB'
+            parmf1 = parmadd + 'frcmod.ff99SB'
         elif ffchoice == 'ff12SB': #Year: 2012
-            parmf1 = add + 'frcmod.ff12SB'
+            parmf1 = parmadd + 'frcmod.ff12SB'
         elif ffchoice == 'ff14SB': #Year: 2014
-            parmf1 = add + 'frcmod.ff14SB'
+            parmf1 = parmadd + 'frcmod.ff14SB'
         parmdict1 = read_frcmod_file(parmf1)
         parmdict.combine(parmdict1)
 
@@ -384,7 +385,7 @@ def get_parm_dict(ffchoice, gaff, frcmodfs):
     #-------------------------------------------------------------------------
     if gaff == 1:
 
-        parmf2 = add + 'gaff.dat'
+        parmf2 = parmadd + 'gaff.dat'
         gaff_vsinfo = linecache.getline(parmf2, 1)
 
         if 'Version 1.7, Nov 2013' in gaff_vsinfo:
@@ -449,11 +450,11 @@ def expf(x, a, b, c):
 
 def getfc(fname, dis):
 
-    global add
+    global libadd
 
     lengthl = []
     fcl = []
-    fcf = open(add + fname, 'r')
+    fcf = open(libadd + fname, 'r')
     for line in fcf:
         length, fc = line.split()[:2]
         length = float(length)
