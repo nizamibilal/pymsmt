@@ -10,10 +10,10 @@ uninstall:
 	/bin/rm -f $(BINDIR)/MCPB.py $(BINDIR)/OptC4.py $(BINDIR)/PdbSearcher.py ${BINDIR}/espgen.py ${BINDIR}/CartHess2FC.py
 
 test:
-	/bin/rm -f $(AMBERHOME)/AmberTools/test/pymsmt/mcpb
+	/bin/rm -rf $(AMBERHOME)/AmberTools/test/pymsmt/mcpb
 	cp -r $(AMBERHOME)/AmberTools/src/pymsmt/tests/gaussian/ $(AMBERHOME)/AmberTools/test/pymsmt/mcpb/ ; \
      cd $(AMBERHOME)/AmberTools/test/pymsmt/mcpb ; ./Run.pymsmt
-	/bin/rm -f $(AMBERHOME)/AmberTools/test/pymsmt/mcpb
+	/bin/rm -rf $(AMBERHOME)/AmberTools/test/pymsmt/mcpb
 	cp -r $(AMBERHOME)/AmberTools/src/pymsmt/tests/gamess/ $(AMBERHOME)/AmberTools/test/pymsmt/mcpb/ ; \
      cd $(AMBERHOME)/AmberTools/test/pymsmt/mcpb ; ./Run.pymsmt
 
