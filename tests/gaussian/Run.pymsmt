@@ -45,8 +45,10 @@ $dacdif 1A5T_mcpbpy.pdb.save 1A5T_mcpbpy.pdb
 #For the tleap modeling
 $dacdif 1A5T_tleap.in.save 1A5T_tleap.in
 $dacdif 1A5T_dry.prmtop.save 1A5T_dry.prmtop
+$dacdif 1A5T_dry.inpcrd.save 1A5T_dry.inpcrd
 $dacdif 1A5T_dry.pdb.save 1A5T_dry.pdb
 $dacdif 1A5T_solv.prmtop.save 1A5T_solv.prmtop
+$dacdif 1A5T_solv.inpcrd.save 1A5T_solv.inpcrd
 $dacdif 1A5T_solv.pdb.save 1A5T_solv.pdb
 
 /bin/rm -f $output
