@@ -373,47 +373,13 @@ for i in smcids:
     maskn = str(mol.atoms[i].resid) + '@' + mol.atoms[i].atname
     maskns.append(maskn)
 
-w_parmedf = open('OptC4_parmed1.in', 'w')
-for i in range(0, len(maskns)):
-    print("change AMBER_ATOM_TYPE :%s M%d" %(maskns[i], i+1), file=w_parmedf)
-    print("addLJType " + ':' + maskns[i], file=w_parmedf)
-print("outparm addij_%s" %options.pfile, file=w_parmedf)
-print("quit", file=w_parmedf)
-w_parmedf.close()
-
-os.system("parmed.py -O -i OptC4_parmed1.in -p %s -c %s" %(options.pfile, options.cfile))
-
-w_parmedf = open('OptC4_parmed2.in', 'w')
-print("add12_6_4 " + options.ion_mask + " polfile lj_1264_pol.dat1", file=w_parmedf)
+w_parmedf = open('OptC4_parmed.in', 'w')
+print("add12_6_4 " + options.ion_mask, file=w_parmedf)
 print("outparm %s.c4" %options.pfile, file=w_parmedf)
 print("quit", file=w_parmedf)
 w_parmedf.close()
 
-#os.system("parmed.py -O -i OptC4_parmed2.in -p %s -c %s" %(options.pfile, options.cfile))
-os.system("parmed.py -O -i OptC4_parmed2.in -p addij_%s -c %s" %(options.pfile, options.cfile))
-
-"""
-#Print the cpptraj input file
-maskns = []
-for i in mcids:
-    maskn = str(mol.atoms[i].resid) + '@' + mol.atoms[i].atname
-    maskns.append(maskn)
-for i in metids:
-    maskn = str(mol.atoms[i].resid) + '@' + mol.atoms[i].atname
-    maskns.append(maskn)
-
-maskslet = ':'
-for i in range(0, len(maskns)-1):
-    maskslet += maskns[i] + ','
-maskslet += maskns[-1]
-
-ptrajif = open('OptC4_ptraj.in', 'w')
-print('trajin %s' %options.cfile, file=ptrajif)
-print('trajin %s' %options.rfile, file=ptrajif)
-print('rms %s first out OptC4_rmsd.txt' %maskslet, file=ptrajif)
-print('go', file=ptrajif)
-ptrajif.close()
-"""
+os.system("parmed.py -O -i OptC4_parmed.in -p %s -c %s" %(options.pfile, options.cfile))
 
 #Get the new molecule
 prmtop, mol, atids, resids = read_amber_prm(options.pfile + '.c4', options.cfile)
