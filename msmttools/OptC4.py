@@ -217,7 +217,7 @@ parser.add_option("--size", dest="stepsize", type='float', \
                        "during parameter searching. [Default: 10.0]")
 parser.add_option("--method", dest="minm", type='string', \
                   help="Optimization method of the C4 terms. The options "
-                       "are: powell, cg, bfgs, ncg, l_bfgs_b, tnc or slsqp. "
+                       "are: powell, cg, bfgs, or slsqp. "
                        "[Default: bfgs] Please check the website: "
                        "http://docs.scipy.org/doc/scipy/reference/optimize.htm"
                        " for more information if interested.")
@@ -242,25 +242,6 @@ parser.add_option("--model", dest="model", type='int', \
 options.simupha=options.simupha.lower()
 options.minm=options.minm.lower()
 options.platf=options.platf.lower()
-
-if options.minm == 'powell':
-    from scipy.optimize import fmin_powell as fmin
-elif options.minm == 'cg':
-    from scipy.optimize import fmin_cg as fmin
-elif options.minm == 'bfgs':
-    from scipy.optimize import fmin_bfgs as fmin
-elif options.minm == 'ncg':
-    from scipy.optimize import fmin_ncg as fmin
-elif options.minm == 'l_bfgs_b':
-    from scipy.optimize import fmin_l_bfgs_b as fmin
-elif options.minm == 'tnc':
-    from scipy.optimize import fmin_tnc as fmin
-elif options.minm == 'cobyla':
-    from scipy.optimize import fmin_cobyla as fmin
-elif options.minm == 'slsqp':
-    from scipy.optimize import fmin_slsqp as fmin
-elif options.minm == 'simple':
-    from scipy.optimize import minimize as fmin
 
 #Get the metal center information from prmtop and coordinate files
 prmtop, mol, atids, resids = read_amber_prm(options.pfile, options.cfile)
@@ -434,16 +415,22 @@ initparas = [c4terms[i] for i in idxs]
 print('Initial C4 parameters are : ', initparas)
 
 #Doing optimization of the parameters, initial was the normal C4 term
-xopt = fmin(get_rmsd, initparas, epsilon=options.stepsize)
+
+if options.minm == 'powell':
+    from scipy.optimize import fmin_powell as fmin
+    xopt = fmin(get_rmsd, initparas)
+elif options.minm == 'cg':
+    from scipy.optimize import fmin_cg as fmin
+    xopt = fmin(get_rmsd, initparas, epsilon=options.stepsize)
+elif options.minm == 'bfgs':
+    from scipy.optimize import fmin_bfgs as fmin
+    xopt = fmin(get_rmsd, initparas, epsilon=options.stepsize)
+elif options.minm == 'slsqp':
+    from scipy.optimize import fmin_slsqp as fmin
+    xopt = fmin(get_rmsd, initparas, epsilon=options.stepsize)
 
 print("Final parameters...")
-print(xopt)
-
-print("The final Score is: ")
-frmsd = get_rmsd(xopt)
-
 for i in range(0, len(idxs)):
     print('The optimal value of atomtypes ' + str(mettypdict[iddict[idxs[i]][0]]) + \
           + str(mctypdict[iddict[idxs[i]][1]]) + ' is ' + str(xopt[i]))
-
 
