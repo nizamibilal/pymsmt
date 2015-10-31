@@ -1,8 +1,17 @@
 #!/usr/bin/env python
 # Filename: CartHess2FC.py
 """
-This program is to get the force constant from Hessian Matrix
+This is the CartHess2FC.py program written by Pengfei Li in Merz Research
+Group at Michigan State University.
+It is designed to get the force constant from Hessian Matrix based on
+Seminario method.
+
+The Seminario method is from:
+** J. M. Seminario IJQC, 1996, 30, 1271-1277
 """
+#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+
 from __future__ import absolute_import, print_function
 from mcpb.gene_final_frcmod_file import (get_bond_fc_with_sem,
      get_ang_fc_with_sem, get_dih_fc_with_sem, get_imp_fc_with_sem)

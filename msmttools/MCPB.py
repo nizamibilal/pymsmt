@@ -1,19 +1,16 @@
 #!/usr/bin/env python
 # Filename: MCPB.py
 """
-This is the MCPB.py program written by Pengfei Li in Merz Research Group,
-Michigan State University. All Rights Reserved. It is a re-written python
-program of MCPB in MTK++. It is written to assist the metal center modeling
-in mixed systems (especially the protein system). It optimize the workflow
-of the MCPB and has better supports of different ions and force feilds. It
-supports modeling of more than 50 ions from +1 to +4 oxidation states with
-modeling by bonded and nonbonded model. It supports a series of AMBER force
-fields (ff94, ff99, ff99SB, ff03, ff03.r1, ff10, ff12SB, ff14SB). The program
-is not gurantee to work due to bugs may exist. Suggestions and bug reports
-are welcome to send to Pengfei Li (Email address: ldsoar1990@gmail.com).
-
-Please cite the following papers if you use the software to perform the
-modeling:
+This is the MCPB.py program written by Pengfei Li in Merz Research Group
+at Michigan State University.
+It is written to assist the metal center modeling in mixed systems
+(especially the protein system).
+It is a re-written python program of MCPB in MTK++.
+It optimize the workflow of the MCPB and has better supports of different
+ions and force feilds.
+It supports modeling of more than 80 ions from +1 to +8 oxidation states.
+It supports a series of AMBER force fields (GAFF, ff94, ff99, ff99SB, ff03,
+ff03.r1, ff10, ff12SB, ff14SB).
 
 The parameterization scheme is adapted from:
 ** M. B. Peters, Y. Yang, B. Wang, L. Fusti-Molnar, M. N. Weaver, K. M. Merz,
@@ -21,24 +18,6 @@ The parameterization scheme is adapted from:
 
 The Seminario method is from:
 ** J. M. Seminario IJQC, 1996, 30, 1271-1277
-
-The Emprical method is from:
-** P. Li, K. M. Merz, In preparation.
-
-The RESP fitting radii, VDW parameters and 12-6-4 parameter sets of +1 metal
-ions and halide ions are come from:
-** P. Li, L. F. Song, K. M. Merz, JCTC, 11, 1645-1657
-
-The RESP fitting radii and VDW parameters of +2 metal ions are come from:
-** P. Li, B. P. Roberts, D. K. Chakravorty, K. M. Merz, JCTC, 2013, 9,
-   2733-2748
-
-The 12-6-4 parameter set of +2 metal ions are from:
-** P. Li, K. M. Merz, JCTC, 2014, 10, 289-297
-
-The RESP fitting radii, VDW parameters and 12-6-4 parameter sets of +3 and
-+4 metal ions are come from:
-** P. Li, L. F. Song, K. M. Merz, JPCB, 2015, 119, 883-895
 """
 #==============================================================================
 # Load the MCPB module

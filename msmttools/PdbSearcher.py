@@ -2,19 +2,11 @@
 # Filename: PdbSearcher.py
 """
 This is the PdbSeacher.py program written by Pengfei Li in Merz Research Group
-in Michigan State University. All Rights Reserved. It is a re-written python
-version of Pdbseacher in MTK++. It is designed to find the metal center in the
-PDB files and collecting the information and generate the metal center complex
-pdb files for each center (with metal ion and ligating residues). The program
-are not gurantee to work due to bug may exist. Suggestions and bug reports are
-welcome to send to Pengfei Li (Email address: ldsoar1990@gmail.com).
-
-Please cite the following paper if you use the software to perform the
-modeling:
-
-The orignal Pdbseacher software is come from:
-** M. B. Peters, Y. Yang, B. Wang, L. Fusti-Molnar, M. N. Weaver, K. M. Merz,
-   JCTC, 2010, 6, 2935-2947
+at Michigan State University.
+It is a re-written python version of Pdbseacher in MTK++.
+It is designed to find the metal center in the PDB files and collecting the
+information and generate the metal center complex pdb files for each center
+(with metal ion and ligating residues).
 """
 from __future__ import print_function
 from msmtmol.readpdb import get_atominfo_fpdb, writepdbatm

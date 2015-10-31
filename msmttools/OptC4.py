@@ -2,16 +2,12 @@
 # Filename: OptC4.py
 """
 This is the OptC4.py program, written by Pengfei Li in Merz Research Group,
-Michigan State University. All Rights Reserved. It needs the OpenMM and
-ParmEd installed and also needs the SciPy module. It was designed to optimize
-the C4 terms for the metal complex in the protein system. The program is not
-gurantee to work due to bug may exist. Suggestions and bug reports are welcome
-to send to Pengfei Li (Email address: ldsoar1990@gmail.com).
+Michigan State University. It needs the OpenMM and ParmEd installed and also
+needs the SciPy module.
+It was designed to optimize the C4 terms for the metal complex in the protein
+system.
 
-Please cite the following paper if you use the software to perform the
-modeling:
-
-The 12-6-4 LJ-type potential:
+The 12-6-4 LJ-type nonbonded model was proposed in:
 ** P. Li, K. M. Merz, JCTC, 2014, 10, 289-297
 """
 from __future__ import division, print_function
