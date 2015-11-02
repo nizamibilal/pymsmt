@@ -1,15 +1,9 @@
 #!/usr/bin/env python
 # Filename: AFQMMM_NMR.py
 """
-This is the AFQMMM_NMR.py program written by Pengfe Li from Merz Research
-Group from Michigan State University. All Rights Reserved. The program is
-not gurantee to work due to bug may exist. Suggestions and bug reports are
-welcome to send to Pengfei Li (Email address: ldsoar1990@gmail.com).
-
-Please cite the following paper if you use the software to perform the
-modeling:
-
-The Automated Fragmentation QM/MM approach:
+This is the AFQMMM_NMR.py program written by Pengfe Li in Merz Research
+Group at Michigan State University.
+The Automated Fragmentation QM/MM approach is from:
 ** X. He, B. Wang and K. M. Merz. JPCB, 2009, 113, 10380-10388.
 """
 from __future__ import absolute_import, print_function
