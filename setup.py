@@ -4,7 +4,7 @@ import os
 import sys
 
 # Packages in MSMT toolkit
-packages = ['api', 'mcpb', 'lib', 'msmtmol']
+packages = ['api', 'mcpb', 'lib', 'msmtmol', 'ipmach']
 
 # Modules
 modules = ['pymsmtexp']
