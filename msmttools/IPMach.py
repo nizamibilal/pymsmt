@@ -5,9 +5,9 @@ from optparse import OptionParser
 import numpy
 import math
 from scipy.optimize import fmin #as fmin
-from ipmach import calhfe
-from ipmach import caliod
-from ipmach import tifiles
+from ipmach.calhfe import OneStep_sTI, TwoStep_sTI, OneStep_pTI, TwoStep_pTI
+from ipmach.caliod import MD_simulation
+from ipmach.tifiles import gene_topcrd
 
 #------------------------------------------------------------------------------
 # Other functions
@@ -31,28 +31,28 @@ class ION:
 def get_dG():
     if prog == 'sander':
         if TISteps == 1:
-            dG = calhfe.OneStep_sTI(ti_windows, ti_window_steps, ti_sample_steps, minexe, exe,
-                                    md_prmtop, md_inpcrd, md0_prmtop, md0_inpcrd,
-                                    ti_min_steps, ti_nvt_steps, ti_npt_steps, rev, ifc4)
+            dG = OneStep_sTI(ti_windows, ti_window_steps, ti_sample_steps, minexe, exe,
+                             md_prmtop, md_inpcrd, md0_prmtop, md0_inpcrd,
+                             ti_min_steps, ti_nvt_steps, ti_npt_steps, rev, ifc4)
         elif TISteps == 2:
-            dG = calhfe.TwoStep_sTI(ti_vdw_windows, ti_chg_windows, vdw_window_steps,
-                                    chg_window_steps, vdw_sample_steps, chg_sample_steps,
-                                    minexe, exe, md0_prmtop, md0_inpcrd, mdv_prmtop, mdv_inpcrd, md_prmtop,
-                                    ti_min_steps, ti_nvt_steps, ti_npt_steps, rev, ifc4)
+            dG = TwoStep_sTI(ti_vdw_windows, ti_chg_windows, vdw_window_steps,
+                             chg_window_steps, vdw_sample_steps, chg_sample_steps,
+                             minexe, exe, md0_prmtop, md0_inpcrd, mdv_prmtop, mdv_inpcrd, md_prmtop,
+                             ti_min_steps, ti_nvt_steps, ti_npt_steps, rev, ifc4)
     elif prog == 'pmemd':
         if TISteps == 1:
-            dG = calhfe.OneStep_pTI(ti_windows, ti_window_steps,
-                                    ti_sample_steps, exe, ti_prmtop, ti_inpcrd,
-                                    ti_min_steps, ti_nvt_steps, ti_npt_steps, rev, ifc4)
+            dG = OneStep_pTI(ti_windows, ti_window_steps,
+                             ti_sample_steps, exe, ti_prmtop, ti_inpcrd,
+                             ti_min_steps, ti_nvt_steps, ti_npt_steps, rev, ifc4)
         elif TISteps == 2:
-            dG = calhfe.TwoStep_pTI(ti_vdw_windows, ti_chg_windows, vdw_window_steps,
-                                    chg_window_steps, vdw_sample_steps, chg_sample_steps,
-                                    exe, vdw_prmtop, ti_prmtop, ti_inpcrd, ti_min_steps, ti_nvt_steps,
-                                    ti_npt_steps, rev, ifc4)
+            dG = TwoStep_pTI(ti_vdw_windows, ti_chg_windows, vdw_window_steps,
+                             chg_window_steps, vdw_sample_steps, chg_sample_steps,
+                             exe, vdw_prmtop, ti_prmtop, ti_inpcrd, ti_min_steps, ti_nvt_steps,
+                             ti_npt_steps, rev, ifc4)
     return dG
 
 def get_IOD():
-    iod, cn = caliod.MD_simulation(exe, md_prmtop, md_inpcrd, md_min_steps, md_nvt_steps,
+    iod, cn = MD_simulation(exe, md_prmtop, md_inpcrd, md_min_steps, md_nvt_steps,
                             md_npt_steps, md_md_steps, ifc4)
     return iod, cn
 
@@ -62,7 +62,7 @@ def gethfeiod(params):
 
     ion1.rmin, ion1.ep = get_ep(rmin)
 
-    tifiles.gene_topcrd(ion0, ion1, 1, c4v)
+    gene_topcrd(ion0, ion1, 1, c4v)
 
     dG = get_dG()
     iod, cn = get_IOD()
@@ -88,7 +88,7 @@ def gethfeiod(params):
 
 def gethfe(rmin):
     ion1.rmin, ion1.ep = get_ep(rmin)
-    tifiles.gene_topcrd(ion0, ion1)
+    gene_topcrd(ion0, ion1)
     dG = get_dG()
 
     print("This result of this cycle:")
@@ -110,7 +110,7 @@ def gethfe(rmin):
 def getiod(rmin):
 
     ion1.rmin, ion1.ep = get_ep(rmin)
-    tifiles.gene_topcrd(ion0, ion1)
+    gene_topcrd(ion0, ion1)
     iod, cn = get_IOD()
 
     print("This result of this cycle:")

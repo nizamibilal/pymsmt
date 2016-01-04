@@ -85,7 +85,7 @@ def print_md_inputf(file_name, nxt, window_steps, lamada):
         print("  irest=0,", file=ti_mdf)
         print("  ntx=1,", file=ti_mdf)
         print("  ig=-1,", file=ti_mdf)
-        print("  nstlim=%d,", %windows_steps, file=ti_mdf)
+        print("  nstlim=%d," %windows_steps, file=ti_mdf)
         print("  dt=0.001,")
 
     print("  cut=10.0,", file=ti_mdf)
