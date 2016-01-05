@@ -8,6 +8,7 @@ from scipy.optimize import fmin #as fmin
 from ipmach.calhfe import OneStep_sTI, TwoStep_sTI, OneStep_pTI, TwoStep_pTI
 from ipmach.caliod import MD_simulation
 from ipmach.tifiles import gene_topcrd
+from mcpb.title import print_title
 
 #------------------------------------------------------------------------------
 # Other functions
@@ -43,12 +44,12 @@ def get_dG():
         if TISteps == 1:
             dG = OneStep_pTI(ti_windows, ti_window_steps,
                              ti_sample_steps, exe, ti_prmtop, ti_inpcrd,
-                             ti_min_steps, ti_nvt_steps, ti_npt_steps, rev, ifc4)
+                             ti_min_steps, ti_nvt_steps, ti_npt_steps, rev)
         elif TISteps == 2:
             dG = TwoStep_pTI(ti_vdw_windows, ti_chg_windows, vdw_window_steps,
                              chg_window_steps, vdw_sample_steps, chg_sample_steps,
                              exe, vdw_prmtop, ti_prmtop, ti_inpcrd, ti_min_steps, ti_nvt_steps,
-                             ti_npt_steps, rev, ifc4)
+                             ti_npt_steps, rev)
     return dG
 
 def get_IOD():
@@ -68,9 +69,9 @@ def gethfeiod(params):
     iod, cn = get_IOD()
 
     print("This result of this cycle:")
-    print("    rmin=%5.3f, ep=%10.8f, c4=%5.0f " %(ion1.rmin, ion1.ep, c4v))
-    print("    HFE=%6.1f, IOD=%5.2f, CN=%3.1f" %(dG, iod, cn))
-    print("    Exp:HFE=%6.1f, IOD=%5.2f" %(HFE_VAL, IOD_VAL))
+    print("    rmin=%5.3f (Angstrom), ep=%10.8f (Kcal/mol), c4=%5.0f (Kcal/mol*A^4)" %(ion1.rmin, ion1.ep, c4v))
+    print("    HFE=%6.1f (Kcal/mol), IOD=%5.2f (Angstrom), CN=%3.1f" %(dG, iod, cn))
+    print("    Exp:HFE=%6.1f (Kcal/mol), IOD=%5.2f (Angstrom)" %(HFE_VAL, IOD_VAL))
 
     HFEerr = abs(dG - HFE_VAL)
     IODerr = abs(iod - IOD_VAL)
@@ -79,9 +80,9 @@ def gethfeiod(params):
 
     if HFEerr <= hfetol and IODerr <= iodtol:
         print("Find the parameters!")
-        print("    rmin=%5.3f, ep=%10.8f" %(ion1.rmin, ion1.ep))
-        print("    HFE=%6.1f, IOD=%5.2f, CN=%3.1f" %(dG, iod, cn))
-        print("    Exp:HFE=%6.1f, IOD=%5.2f" %(HFE_VAL, IOD_VAL))
+        print("    rmin=%5.3f (Angstrom), ep=%10.8f (Kcal/mol)" %(ion1.rmin, ion1.ep))
+        print("    HFE=%6.1f (Kcal/mol), IOD=%5.2f (Angstrom), CN=%3.1f" %(dG, iod, cn))
+        print("    Exp:HFE=%6.1f (Kcal/mol), IOD=%5.2f (Angstrom)" %(HFE_VAL, IOD_VAL))
         quit()
 
     return TOTerr
@@ -92,17 +93,17 @@ def gethfe(rmin):
     dG = get_dG()
 
     print("This result of this cycle:")
-    print("    rmin=%5.3f, ep=%10.8f" %(ion1.rmin, ion1.ep))
-    print("    HFE=%6.1f" %dG)
+    print("    Rmin/2=%5.3f (Angstrom), ep=%10.8f (Kcal/mol)" %(ion1.rmin, ion1.ep))
+    print("    HFE=%6.1f (Kcal/mol)" %dG)
 
     HFEerr = abs(dG - HFE_VAL)
 
     if HFEerr <= hfetol:
-        print("Find the parameters!")
+        print("######################Find the parameters!####################")
         iod, cn = get_IOD()
-        print("    rmin=%5.3f, ep=%10.8f" %(ion1.rmin, ion1.ep))
-        print("    HFE=%6.1f, IOD=%5.2f, CN=%3.1f" %(dG, iod, cn))
-        print("    Exp:HFE=%6.1f, IOD=%5.2f" %(HFE_VAL, IOD_VAL))
+        print("    Rmin/2=%5.3f (Angstrom), ep=%10.8f (Kcal/mol)" %(ion1.rmin, ion1.ep))
+        print("    HFE=%6.1f (Kcal/mol), IOD=%5.2f (Angstrom), CN=%3.1f" %(dG, iod, cn))
+        print("    Exp:HFE=%6.1f (Kcal/mol), IOD=%5.2f (Angstrom)" %(HFE_VAL, IOD_VAL))
         quit()
 
     return HFEerr
@@ -114,17 +115,17 @@ def getiod(rmin):
     iod, cn = get_IOD()
 
     print("This result of this cycle:")
-    print("    rmin=%5.3f, ep=%10.8f" %(ion1.rmin, ion1.ep))
-    print("    IOD=%5.2f, CN=%3.1f" %(iod, cn))
+    print("    Rmin/2=%5.3f (Angstrom), ep=%10.8f (Kcal/mol)" %(ion1.rmin, ion1.ep))
+    print("    IOD=%5.2f (Angstrom), CN=%3.1f" %(iod, cn))
 
     IODerr = abs(iod - IOD_VAL)
 
     if IODerr <= iodtol:
-        print("Find the parameters!")
+        print("######################Find the parameters!####################")
         dG = get_dG()
-        print("    rmin=%5.3f, ep=%10.8f" %(ion1.rmin, ion1.ep))
-        print("    HFE=%6.1f, IOD=%5.2f, CN=%3.1f" %(dG, iod, cn))
-        print("    Exp:HFE=%6.1f, IOD=%5.2f" %(HFE_VAL, IOD_VAL))
+        print("    Rmin/2=%5.3f (Angstrom), ep=%10.8f (Kcal/mol)" %(ion1.rmin, ion1.ep))
+        print("    HFE=%6.1f (Kcal/mol), IOD=%5.2f (Angstrom), CN=%3.1f" %(dG, iod, cn))
+        print("    Exp:HFE=%6.1f (Kcal/mol), IOD=%5.2f (Angstrom)" %(HFE_VAL, IOD_VAL))
         quit()
 
     return IODerr
@@ -137,6 +138,8 @@ parser.add_option("-i", dest="inputf", type='string',
                   help="Input file name")
 (options, args) = parser.parse_args()
 
+print_title('IPMach.py', 1.0)
+
 #---------------------------Default values------------------------------------
 cpus = 4
 gpus = 0
@@ -148,10 +151,11 @@ rev = 1
 Cal = 'HFE'
 max_iternum = 100
 mode = 'normal'
-c4v = 0.0
-prog = 'pmemd'
-hfetol = 1.0
-iodtol = 0.01
+c4v = 0.0 #Default C4 value
+prog = 'pmemd'#Default program
+hfetol = 1.0  #Hydration free energy accuray tolerance, unit kcal/mol
+iodtol = 0.01 #Ion-oxygen distance accuray tolerance, unit Angstrom
+ifc4 = 0 
 
 #----------------------------Read the input files------------------------------
 rinput = open(options.inputf, 'r')

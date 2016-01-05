@@ -17,6 +17,9 @@ def print_title(program, version):
         print("*               Welcome to use AFQMMM_NMR.py program             *")
     elif program == 'OptC4.py':
         print("*                  Welcome to use OptC4.py program               *")
+    elif program == 'IPMach.py':
+	    print("*                 Welcome to use IPMach.py program               *")
+	    print("*                        Version %s                             *" %version)
     print("*                        Author: Pengfei Li                      *")
     print("*                        Merz Research Group                     *")
     print("*                     Michigan State University                  *")

@@ -85,8 +85,8 @@ def print_md_inputf(file_name, nxt, window_steps, lamada):
         print("  irest=0,", file=ti_mdf)
         print("  ntx=1,", file=ti_mdf)
         print("  ig=-1,", file=ti_mdf)
-        print("  nstlim=%d," %windows_steps, file=ti_mdf)
-        print("  dt=0.001,")
+        print("  nstlim=%d," %window_steps, file=ti_mdf)
+        print("  dt=0.001,", file=ti_mdf)
 
     print("  cut=10.0,", file=ti_mdf)
 
@@ -149,10 +149,12 @@ def OneStep_pTI(ti_windows, ti_window_steps, ti_sample_steps, exe,
                 ti_prmtop, ti_inpcrd, ti_min_steps, ti_nvt_steps,
                 ti_npt_steps, rev):
 
-    print("Perform TI calculation...")
+    print("**Perform TI Calculation Using One Step Method and PMEMD program**")
 
     #Get lamadas
     lamadas = get_lamadas(ti_windows)
+
+    print("TOT lamadas are: ", lamadas)
 
     # 1. Total appearing--------------------------------------------------------
     for i in range(1, ti_windows+1):
@@ -161,17 +163,17 @@ def OneStep_pTI(ti_windows, ti_window_steps, ti_sample_steps, exe,
 
         if i == 1:
         # 1.1 Minimization
-            print "Perform ti_min %d steps" %ti_min_steps
+            print("Perform ti_min %d steps" %ti_min_steps)
             print_pmemd_1step_mdf('ti_min.in', 'min', ti_min_steps, lamada, 1)
             os.system("%s -O -i ti_min.in -o ti_min.out -p %s -c %s -r ti_min.rst -x ti_min.netcdf" %(exe, ti_prmtop, ti_inpcrd))
 
             # 1.2 NVT heating
-            print "Perform nvt %d steps..." %ti_nvt_steps
+            print("Perform nvt %d steps..." %ti_nvt_steps)
             print_pmemd_1step_mdf('ti_nvt.in', 'nvt', ti_nvt_steps, lamada, 1)
             os.system("%s -O -i ti_nvt.in -o ti_nvt.out -p %s -c ti_min.rst -r ti_nvt.rst -x ti_nvt.netcdf" %(exe, ti_prmtop))
 
             # 1.3 NPT equil
-            print "Perform npt %d steps..." %ti_npt_steps
+            print("Perform npt %d steps..." %ti_npt_steps)
             print_pmemd_1step_mdf('ti_npt.in', 'npt', ti_npt_steps, lamada, 1)
             os.system("%s -O -i ti_npt.in -o ti_npt.out -p %s -c ti_nvt.rst -r ti_npt.rst -x ti_npt.netcdf" %(exe, ti_prmtop))
 
@@ -232,16 +234,18 @@ def OneStep_sTI(ti_windows, ti_window_steps, ti_sample_steps, minexe, exe,
                 md_prmtop, md_inpcrd, md0_prmtop, md0_inpcrd,
                 ti_min_steps, ti_nvt_steps, ti_npt_steps, rev, ifc4):
 
-    print("Perform TI calculation...")
+    print("**Perform TI Calculation Using One Step Method and SANDER program**")
 
     # Get lamadas
     lamadas = get_lamadas(ti_windows)
+
+    print("TOT lamadas are: ", lamadas)
 
     # 1. Total appearing--------------------------------------------------------
     for i in range(1, ti_windows+1):
         lamada = lamadas[i-1]
 
-        print_sander_1step_mdf(str(i)+'_v1.in', 'ti', ti_windows_steps, lamada, ifc4)
+        print_sander_1step_mdf(str(i)+'_v1.in', 'ti', ti_window_steps, lamada, ifc4)
         os.system("cp %d_v1.in %d_v2.in" %(i, i))
 
         if i == 1:
@@ -386,11 +390,14 @@ def TwoStep_pTI(ti_vdw_windows, ti_chg_windows, vdw_window_steps,
                exe, vdw_prmtop, ti_prmtop, ti_inpcrd, ti_min_steps,
                ti_nvt_steps, ti_npt_steps, rev):
 
-    print "Perform TI calculation..."
+    print("**Perform TI Calculation Using Two Step Method and PMEMD program**")
 
     #Get lamadas
     vdw_lamadas = get_lamadas(ti_vdw_windows)
     chg_lamadas = get_lamadas(ti_chg_windows)
+
+    print("VDW lamadas are: ", vdw_lamadas)
+    print("CHG lamadas are: ", chg_lamadas)
 
     #1. VDW appearing-------------------------------------------------------
     for i in range(1, ti_vdw_windows+1):
@@ -399,7 +406,7 @@ def TwoStep_pTI(ti_vdw_windows, ti_chg_windows, vdw_window_steps,
 
         if i == 1:
             #1.1 Minimization
-            print "Perform min %d steps..." %ti_min_steps
+            print("Perform min %d steps..." %ti_min_steps)
             print_pmemd_2step_mdf('ti_min.in', 'min', ti_min_steps, vdw_lamada, 1, 'v')
             os.system("%s -O -i ti_min.in -o ti_min.out -p %s -c %s -r ti_min.rst -x ti_min.netcdf" %(exe, ti_prmtop, ti_inpcrd))
 
@@ -409,25 +416,26 @@ def TwoStep_pTI(ti_vdw_windows, ti_chg_windows, vdw_window_steps,
             os.system("%s -O -i ti_nvt.in -o ti_nvt.out -p %s -c ti_min.rst -r ti_nvt.rst -x ti_nvt.netcdf" %(exe, ti_prmtop))
 
             #1.3 NPT equil
-            print "Perform npt %d steps..." %ti_npt_steps
+            print("Perform npt %d steps..." %ti_npt_steps)
             print_pmemd_2step_mdf('ti_npt.in', 'npt', ti_npt_steps, vdw_lamada, 1, 'v')
             os.system("%s -O -i ti_npt.in -o ti_npt.out -p %s -c ti_nvt.rst -r ti_npt.rst -x ti_npt.netcdf" %(exe, ti_prmtop))
 
             #1.4 TI
-            print "VDW TI step" + str(i) + " %d steps (forward)..." %vdw_window_steps
+            print("VDW TI step" + str(i) + " %d steps (forward)..." %vdw_window_steps)
             os.system("%s -O -i %d_vdw_fwd.in -o %d_vdw_fwd.out -p %s -c ti_npt.rst -r %d_vdw_fwd.rst -x %d_vdw_fwd.netcdf" %(exe, i, i, ti_prmtop, i, i))
         else:
             j = i - 1
-            print "VDW TI step" + str(i) + " %d steps (forward)..." %vdw_window_steps
+            print("VDW TI step" + str(i) + " %d steps (forward)..." %vdw_window_steps)
             os.system("%s -O -i %d_vdw_fwd.in -o %d_vdw_fwd.out -p %s -c %d_vdw_fwd.rst -r %d_vdw_fwd.rst -x %d_vdw_fwd.netcdf" %(exe, i, i, ti_prmtop, j, i, i))
 
     #VDW TI
-    print "VDW TI step" + str(ti_vdw_windows+1) + " to equ structure %d steps (forward)..." %vdw_window_steps
+    print("VDW TI step" + str(ti_vdw_windows+1) + " to equ structure %d steps (forward)..." %vdw_window_steps)
     print_pmemd_2step_mdf(str(ti_vdw_windows+1)+'_vdw_fwd.in', 'ti', vdw_window_steps, 0.98000, 1, 'v')
     os.system("%s -O -i %d_vdw_fwd.in -o %d_vdw_fwd.out -p %s -c %d_vdw_fwd.rst -r %d_vdw_fwd.rst -x %d_vdw_fwd.netcdf" %(exe,
                ti_vdw_windows+1, ti_vdw_windows+1, ti_prmtop, ti_vdw_windows, ti_vdw_windows+1, ti_vdw_windows+1))
 
     #transfer the rst file
+    print("Transfer the RST file...")
     os.system("awk 'NR<=2' %d_vdw_fwd.rst > %d_vdw_fwd_merge.rst" %(ti_vdw_windows+1, ti_vdw_windows+1))
     os.system("awk 'NR==3' %d_vdw_fwd.rst | awk '{printf( \"%%12.7f%%12.7f%%12.7f%%12.7f%%12.7f%%12.7f\\n\", $1, $2, $3, $1, $2, $3)}' >> %d_vdw_fwd_merge.rst" %(ti_vdw_windows+1, ti_vdw_windows+1))
     os.system("awk 'NR>3' %d_vdw_fwd.rst >> %d_vdw_fwd_merge.rst" %(ti_vdw_windows+1, ti_vdw_windows+1))
@@ -438,10 +446,10 @@ def TwoStep_pTI(ti_vdw_windows, ti_chg_windows, vdw_window_steps,
         print_pmemd_2step_mdf(str(i)+'_chg_fwd.in', 'ti', chg_window_steps, chg_lamada, 1, 'c')
 
         if i == 1:
-            print "Charge TI step" + str(i) + " %d steps (forward)..." %chg_window_steps
+            print("Charge TI step" + str(i) + " %d steps (forward)..." %chg_window_steps)
             os.system("%s -O -i %d_chg_fwd.in -o %d_chg_fwd.out -p %s -c %d_vdw_fwd_merge.rst -r %d_chg_fwd.rst -x %d_chg_fwd.netcdf" %(exe, i, i, vdw_prmtop, ti_vdw_windows+1, i, i))
         else:
-            print "Charge TI step" + str(i) + " %d steps (forward)..." %chg_window_steps
+            print("Charge TI step" + str(i) + " %d steps (forward)..." %chg_window_steps)
             j = i - 1
             os.system("%s -O -i %d_chg_fwd.in -o %d_chg_fwd.out -p %s -c %d_chg_fwd.rst -r %d_chg_fwd.rst -x %d_chg_fwd.netcdf" %(exe, i, i, vdw_prmtop, j, i, i))
 
@@ -452,12 +460,18 @@ def TwoStep_pTI(ti_vdw_windows, ti_chg_windows, vdw_window_steps,
             print_pmemd_2step_mdf(str(i)+'_chg_bwd.in', 'ti', chg_window_steps, chg_lamada, -1 , 'c')
 
             if i == 1:
-                print "Charge TI step" + str(i) + " %d steps (backward)..." %chg_window_steps
+                print("Charge TI step" + str(i) + " %d steps (backward)..." %chg_window_steps)
                 os.system("%s -O -i %d_chg_bwd.in -o %d_chg_bwd.out -p %s -c %d_chg_fwd.rst -r %d_chg_bwd.rst -x %d_chg_bwd.netcdf" %(exe, i, i, vdw_prmtop, ti_chg_windows, i, i))
             else:
-                print "Charge TI step" + str(i) + " %d steps (backward)..." %chg_window_steps
+                print("Charge TI step" + str(i) + " %d steps (backward)..." %chg_window_steps)
                 j = i - 1
                 os.system("%s -O -i %d_chg_bwd.in -o %d_chg_bwd.out -p %s -c %d_chg_bwd.rst -r %d_chg_bwd.rst -x %d_chg_bwd.netcdf" %(exe, i, i, vdw_prmtop, j, i, i))
+
+        #transfer the rst file
+	print("Transfer the RST file...")
+        os.system("awk 'NR<=2' %d_chg_bwd.rst > %d_chg_bwd_merge.rst" %(ti_chg_windows, ti_chg_windows))
+        os.system("awk 'NR==3' %d_chg_bwd.rst | awk '{printf( \"%%12.7f%%12.7f%%12.7f%%12.7f%%12.7f%%12.7f\\n\", $1, $2, $3, $1, $2, $3)}' >> %d_chg_bwd_merge.rst" %(ti_chg_windows, ti_chg_windows))
+        os.system("awk 'NR>3' %d_chg_bwd.rst >> %d_chg_bwd_merge.rst" %(ti_chg_windows, ti_chg_windows))
 
         #4. VDW disappearing----------------------------------------------------
         for i in range(1, ti_vdw_windows+1):
@@ -465,10 +479,10 @@ def TwoStep_pTI(ti_vdw_windows, ti_chg_windows, vdw_window_steps,
             print_pmemd_2step_mdf(str(i)+'_vdw_bwd.in', 'ti', vdw_window_steps, vdw_lamada, -1, 'v')
 
             if i == 1:
-                print "VDW TI step" + str(i) + " %d steps (backward)..." %vdw_window_steps
-                os.system("%s -O -i %d_vdw_bwd.in -o %d_vdw_bwd.out -p %s -c %d_chg_bwd.rst -r %d_vdw_bwd.rst -x %d_vdw_bwd.netcdf" %(exe, i, i, ti_prmtop, ti_chg_windows, i, i))
+                print("VDW TI step" + str(i) + " %d steps (backward)..." %vdw_window_steps)
+                os.system("%s -O -i %d_vdw_bwd.in -o %d_vdw_bwd.out -p %s -c %d_chg_bwd_merge.rst -r %d_vdw_bwd.rst -x %d_vdw_bwd.netcdf" %(exe, i, i, ti_prmtop, ti_chg_windows, i, i))
             else:
-                print "VDW TI step" + str(i) + " %d steps (backward)..." %vdw_window_steps
+                print("VDW TI step" + str(i) + " %d steps (backward)..." %vdw_window_steps)
                 j = i - 1
                 os.system("%s -O -i %d_vdw_bwd.in -o %d_vdw_bwd.out -p %s -c %d_vdw_bwd.rst -r %d_vdw_bwd.rst -x %d_vdw_bwd.netcdf" %(exe, i, i, ti_prmtop, j, i, i))
 
@@ -504,7 +518,7 @@ def print_sander_2step_mdf(file_name, nxt, window_steps, lamada, force, ifc4):
         print("  crgmask=\":1\",", file=ti_mdf)
     elif force == 'c':
         if ifc4 == 1:
-            print print("  lj1264=1,", file=ti_mdf)
+            print("  lj1264=1,", file=ti_mdf)
     print("/", file=ti_mdf)
     ti_mdf.close()
 
@@ -513,11 +527,14 @@ def TwoStep_sTI(ti_vdw_windows, ti_chg_windows, vdw_window_steps,
             minexe, exe, md0_prmtop, md0_inpcrd, mdv_prmtop, mdv_inpcrd,
             md_prmtop, ti_min_steps, ti_nvt_steps, ti_npt_steps, rev, ifc4):
 
-    print "Perform TI calculation..."
+    print("**Perform TI Calculation Using Two Step Method and SANDER program**")
 
     #Get lamadas
     vdw_lamadas = get_lamadas(ti_vdw_windows)
     chg_lamadas = get_lamadas(ti_chg_windows)
+
+    print("VDW lamadas are: ", vdw_lamadas)
+    print("CHG lamadas are: ", chg_lamadas)
 
     #1. VDW appearing-------------------------------------------------------
     for i in range(1, ti_vdw_windows+1):
@@ -527,70 +544,70 @@ def TwoStep_sTI(ti_vdw_windows, ti_chg_windows, vdw_window_steps,
 
         if i == 1:
             #1.1 Minimization
-            print "Perform min %d steps..." %ti_min_steps
+            print("Perform min %d steps..." %ti_min_steps)
             print_sander_2step_mdf('ti_min1.in', 'min', ti_min_steps, vdw_lamada, 'v', 0)
             os.system("cp ti_min1.in ti_min2.in")
 
             #Group file
             groupf = open('ti_min.group', 'w')
-            print >> groupf, "-O -i ti_min1.in -o ti_min1.out -p %s -c %s -inf ti_min1.info -x ti_min1.netcdf -r ti_min1.rst" %(md0_prmtop, md0_inpcrd)
-            print >> groupf, "-O -i ti_min2.in -o ti_min2.out -p %s -c %s -inf ti_min2.info -x ti_min2.netcdf -r ti_min2.rst" %(mdv_prmtop, mdv_inpcrd)
+            print("-O -i ti_min1.in -o ti_min1.out -p %s -c %s -inf ti_min1.info -x ti_min1.netcdf -r ti_min1.rst" %(md0_prmtop, md0_inpcrd), file=groupf)
+            print("-O -i ti_min2.in -o ti_min2.out -p %s -c %s -inf ti_min2.info -x ti_min2.netcdf -r ti_min2.rst" %(mdv_prmtop, mdv_inpcrd), file=groupf)
             groupf.close()
             os.system("%s -ng 2 -groupfile ti_min.group" %minexe)
 
             #1.2 NVT heating
-            print "Perform nvt %d steps..." %ti_nvt_steps
+            print("Perform nvt %d steps..." %ti_nvt_steps)
             print_sander_2step_mdf('ti_nvt1.in', 'nvt', ti_nvt_steps, vdw_lamada, 'v', 0)
             os.system("cp ti_nvt1.in ti_nvt2.in")
 
             #Group file
             groupf = open('ti_nvt.group', 'w')
-            print >> groupf, "-O -i ti_nvt1.in -o ti_nvt1.out -p %s -c ti_min1.rst -inf ti_nvt1.info -x ti_nvt1.netcdf -r ti_nvt1.rst" %md0_prmtop
-            print >> groupf, "-O -i ti_nvt2.in -o ti_nvt2.out -p %s -c ti_min2.rst -inf ti_nvt2.info -x ti_nvt2.netcdf -r ti_nvt2.rst" %mdv_prmtop
+            print("-O -i ti_nvt1.in -o ti_nvt1.out -p %s -c ti_min1.rst -inf ti_nvt1.info -x ti_nvt1.netcdf -r ti_nvt1.rst" %md0_prmtop, file=groupf)
+            print("-O -i ti_nvt2.in -o ti_nvt2.out -p %s -c ti_min2.rst -inf ti_nvt2.info -x ti_nvt2.netcdf -r ti_nvt2.rst" %mdv_prmtop, file=groupf)
             groupf.close()
             os.system("%s -ng 2 -groupfile ti_nvt.group" %exe)
 
             #1.3 NPT equil
-            print "Perform npt %d steps..." %ti_npt_steps
+            print("Perform npt %d steps..." %ti_npt_steps)
             print_sander_2step_mdf('ti_npt1.in', 'npt', ti_npt_steps, vdw_lamada, 'v', 0)
             os.system("cp ti_npt1.in ti_npt2.in")
 
             #Group file
             groupf = open('ti_npt.group', 'w')
-            print >> groupf, "-O -i ti_npt1.in -o ti_npt1.out -p %s -c ti_nvt1.rst -inf ti_npt1.info -x ti_npt1.netcdf -r ti_npt1.rst" %md0_prmtop
-            print >> groupf, "-O -i ti_npt2.in -o ti_npt2.out -p %s -c ti_nvt2.rst -inf ti_npt2.info -x ti_npt2.netcdf -r ti_npt2.rst" %mdv_prmtop
+            print("-O -i ti_npt1.in -o ti_npt1.out -p %s -c ti_nvt1.rst -inf ti_npt1.info -x ti_npt1.netcdf -r ti_npt1.rst" %md0_prmtop, file=groupf)
+            print("-O -i ti_npt2.in -o ti_npt2.out -p %s -c ti_nvt2.rst -inf ti_npt2.info -x ti_npt2.netcdf -r ti_npt2.rst" %mdv_prmtop, file=groupf)
             groupf.close()
             os.system("%s -ng 2 -groupfile ti_npt.group" %exe)
 
             #1.4 TI
-            print "VDW TI step" + str(i) + " %d steps (forward)..." %vdw_window_steps
+            print("VDW TI step" + str(i) + " %d steps (forward)..." %vdw_window_steps)
             #Group file
             groupf = open(str(i)+'_vdw_fwd.group', 'w')
-            print >> groupf, "-O -i %d_vdw1.in -o %d_vdw_fwd1.out -p %s -c ti_npt1.rst -inf %d_vdw_fwd1.info -x %d_vdw_fwd1.netcdf -r %d_vdw_fwd1.rst" %(i, i, md0_prmtop, i, i, i)
-            print >> groupf, "-O -i %d_vdw2.in -o %d_vdw_fwd2.out -p %s -c ti_npt2.rst -inf %d_vdw_fwd2.info -x %d_vdw_fwd2.netcdf -r %d_vdw_fwd2.rst" %(i, i, mdv_prmtop, i, i, i)
+            print("-O -i %d_vdw1.in -o %d_vdw_fwd1.out -p %s -c ti_npt1.rst -inf %d_vdw_fwd1.info -x %d_vdw_fwd1.netcdf -r %d_vdw_fwd1.rst" %(i, i, md0_prmtop, i, i, i), file=groupf)
+            print("-O -i %d_vdw2.in -o %d_vdw_fwd2.out -p %s -c ti_npt2.rst -inf %d_vdw_fwd2.info -x %d_vdw_fwd2.netcdf -r %d_vdw_fwd2.rst" %(i, i, mdv_prmtop, i, i, i), file=groupf)
             groupf.close()
             os.system("%s -ng 2 -groupfile %d_vdw_fwd.group" %(exe, i))
         else:
             j = i - 1
-            print "VDW TI step" + str(i) + " %d steps (forward)..." %vdw_window_steps
+            print("VDW TI step" + str(i) + " %d steps (forward)..." %vdw_window_steps)
             #Group file
             groupf = open(str(i)+'_vdw_fwd.group', 'w')
-            print >> groupf, "-O -i %d_vdw1.in -o %d_vdw_fwd1.out -p %s -c %d_vdw_fwd1.rst -inf %d_vdw_fwd1.info -x %d_vdw_fwd1.netcdf -r %d_vdw_fwd1.rst" %(i, i, md0_prmtop, j, i, i, i)
-            print >> groupf, "-O -i %d_vdw2.in -o %d_vdw_fwd2.out -p %s -c %d_vdw_fwd2.rst -inf %d_vdw_fwd2.info -x %d_vdw_fwd2.netcdf -r %d_vdw_fwd2.rst" %(i, i, mdv_prmtop, j, i, i, i)
+            print("-O -i %d_vdw1.in -o %d_vdw_fwd1.out -p %s -c %d_vdw_fwd1.rst -inf %d_vdw_fwd1.info -x %d_vdw_fwd1.netcdf -r %d_vdw_fwd1.rst" %(i, i, md0_prmtop, j, i, i, i), file=groupf)
+            print("-O -i %d_vdw2.in -o %d_vdw_fwd2.out -p %s -c %d_vdw_fwd2.rst -inf %d_vdw_fwd2.info -x %d_vdw_fwd2.netcdf -r %d_vdw_fwd2.rst" %(i, i, mdv_prmtop, j, i, i, i), file=groupf)
             groupf.close()
             os.system("%s -ng 2 -groupfile %d_vdw_fwd.group" %(exe, i))
 
     #One more step to equ the structure
     k = ti_vdw_windows + 1
-    print "VDW TI step" + str(k) + " to equ structure %d steps (forward)..." %vdw_window_steps
+    print("VDW TI step" + str(k) + " to equ structure %d steps (forward)..." %vdw_window_steps)
     print_sander_2step_mdf(str(k)+'_vdw1.in', 'ti', vdw_window_steps, 0.98000, 'v', 0)
     os.system("cp %d_vdw1.in %d_vdw2.in" %(k, k))
 
     #Group file
     j = k - 1
     groupf = open(str(k)+'_vdw_fwd.group', 'w')
-    print >> groupf, "-O -i %d_vdw1.in -o %d_vdw_fwd1.out -p %s -c %d_vdw_fwd1.rst -inf %d_vdw_fwd1.info -x %d_vdw_fwd1.netcdf -r %d_vdw_fwd1.rst" %(k, k, md0_prmtop, j, k, k, k)
-    print >> groupf, "-O -i %d_vdw2.in -o %d_vdw_fwd2.out -p %s -c %d_vdw_fwd2.rst -inf %d_vdw_fwd2.info -x %d_vdw_fwd2.netcdf -r %d_vdw_fwd2.rst" %(k, k, mdv_prmtop, j, k, k, k)
+    print("-O -i %d_vdw1.in -o %d_vdw_fwd1.out -p %s -c %d_vdw_fwd1.rst -inf %d_vdw_fwd1.info -x %d_vdw_fwd1.netcdf -r %d_vdw_fwd1.rst" %(k, k, md0_prmtop, j, k, k, k), file=groupf)
+    print("-O -i %d_vdw2.in -o %d_vdw_fwd2.out -p %s -c %d_vdw_fwd2.rst -inf %d_vdw_fwd2.info -x %d_vdw_fwd2.netcdf -r %d_vdw_fwd2.rst" %(k, k, mdv_prmtop, j, k, k, k), file=groupf)
     groupf.close()
     os.system("%s -ng 2 -groupfile %d_vdw_fwd.group" %(exe, k))
 
@@ -601,20 +618,20 @@ def TwoStep_sTI(ti_vdw_windows, ti_chg_windows, vdw_window_steps,
         os.system("cp %d_chg1.in %d_chg2.in" %(i, i))
 
         if i == 1:
-            print "Charge TI step" + str(i) + " %d steps (forward)..." %chg_window_steps
+            print("Charge TI step" + str(i) + " %d steps (forward)..." %chg_window_steps)
             #Group file
             groupf = open(str(i)+'_chg_fwd.group', 'w')
-            print >> groupf, "-O -i %d_chg1.in -o %d_chg_fwd1.out -p %s -c %d_vdw_fwd1.rst -inf %d_chg_fwd1.info -x %d_chg_fwd1.netcdf -r %d_chg_fwd1.rst" %(i, i, mdv_prmtop, k, i, i, i)
-            print >> groupf, "-O -i %d_chg2.in -o %d_chg_fwd2.out -p %s -c %d_vdw_fwd2.rst -inf %d_chg_fwd2.info -x %d_chg_fwd2.netcdf -r %d_chg_fwd2.rst" %(i, i, md_prmtop, k, i, i, i)
+            print("-O -i %d_chg1.in -o %d_chg_fwd1.out -p %s -c %d_vdw_fwd1.rst -inf %d_chg_fwd1.info -x %d_chg_fwd1.netcdf -r %d_chg_fwd1.rst" %(i, i, mdv_prmtop, k, i, i, i), file=groupf)
+            print("-O -i %d_chg2.in -o %d_chg_fwd2.out -p %s -c %d_vdw_fwd2.rst -inf %d_chg_fwd2.info -x %d_chg_fwd2.netcdf -r %d_chg_fwd2.rst" %(i, i, md_prmtop, k, i, i, i), file=groupf)
             groupf.close()
             os.system("%s -ng 2 -groupfile %d_chg_fwd.group" %(exe, i))
         else:
-            print "Charge TI step" + str(i) + " %d steps (forward)..." %chg_window_steps
+            print("Charge TI step" + str(i) + " %d steps (forward)..." %chg_window_steps)
             j = i - 1
             #Group file
             groupf = open(str(i)+'_chg_fwd.group', 'w')
-            print >> groupf, "-O -i %d_chg1.in -o %d_chg_fwd1.out -p %s -c %d_chg_fwd1.rst -inf %d_chg_fwd1.info -x %d_chg_fwd1.netcdf -r %d_chg_fwd1.rst" %(i, i, mdv_prmtop, j, i, i, i)
-            print >> groupf, "-O -i %d_chg2.in -o %d_chg_fwd2.out -p %s -c %d_chg_fwd2.rst -inf %d_chg_fwd2.info -x %d_chg_fwd2.netcdf -r %d_chg_fwd2.rst" %(i, i, md_prmtop, j, i, i, i)
+            print("-O -i %d_chg1.in -o %d_chg_fwd1.out -p %s -c %d_chg_fwd1.rst -inf %d_chg_fwd1.info -x %d_chg_fwd1.netcdf -r %d_chg_fwd1.rst" %(i, i, mdv_prmtop, j, i, i, i), file=groupf)
+            print("-O -i %d_chg2.in -o %d_chg_fwd2.out -p %s -c %d_chg_fwd2.rst -inf %d_chg_fwd2.info -x %d_chg_fwd2.netcdf -r %d_chg_fwd2.rst" %(i, i, md_prmtop, j, i, i, i), file=groupf)
             groupf.close()
             os.system("%s -ng 2 -groupfile %d_chg_fwd.group" %(exe, i))
 
@@ -622,39 +639,39 @@ def TwoStep_sTI(ti_vdw_windows, ti_chg_windows, vdw_window_steps,
         #3. Charge disappearing----------------------------------------------------
         for i in range(1, ti_chg_windows+1):
             if i == 1:
-                print "Charge TI step" + str(i) + " %d steps (backward)..." %chg_window_steps
+                print("Charge TI step" + str(i) + " %d steps (backward)..." %chg_window_steps)
                 #Group file
                 groupf = open(str(i)+'_chg_bwd.group', 'w')
-                print >> groupf, "-O -i %d_chg2.in -o %d_chg_bwd2.out -p %s -c %d_chg_fwd2.rst -inf %d_chg_bwd2.info -x %d_chg_bwd2.netcdf -r %d_chg_bwd2.rst" %(i, i, md_prmtop, ti_chg_windows, i, i, i)
-                print >> groupf, "-O -i %d_chg1.in -o %d_chg_bwd1.out -p %s -c %d_chg_fwd1.rst -inf %d_chg_bwd1.info -x %d_chg_bwd1.netcdf -r %d_chg_bwd1.rst" %(i, i, mdv_prmtop, ti_chg_windows, i, i, i)
+                print("-O -i %d_chg2.in -o %d_chg_bwd2.out -p %s -c %d_chg_fwd2.rst -inf %d_chg_bwd2.info -x %d_chg_bwd2.netcdf -r %d_chg_bwd2.rst" %(i, i, md_prmtop, ti_chg_windows, i, i, i), file=groupf)
+                print("-O -i %d_chg1.in -o %d_chg_bwd1.out -p %s -c %d_chg_fwd1.rst -inf %d_chg_bwd1.info -x %d_chg_bwd1.netcdf -r %d_chg_bwd1.rst" %(i, i, mdv_prmtop, ti_chg_windows, i, i, i), file=groupf)
                 groupf.close()
                 os.system("%s -ng 2 -groupfile %d_chg_bwd.group" %(exe, i))
             else:
-                print "Charge TI step" + str(i) + " %d steps (backward)..." %chg_window_steps
+                print("Charge TI step" + str(i) + " %d steps (backward)..." %chg_window_steps)
                 j = i - 1
                 #Group file
                 groupf = open(str(i)+'_chg_bwd.group', 'w')
-                print >> groupf, "-O -i %d_chg2.in -o %d_chg_bwd2.out -p %s -c %d_chg_bwd2.rst -inf %d_chg_bwd2.info -x %d_chg_bwd2.netcdf -r %d_chg_bwd2.rst" %(i, i, md_prmtop, j, i, i, i)
-                print >> groupf, "-O -i %d_chg1.in -o %d_chg_bwd1.out -p %s -c %d_chg_bwd1.rst -inf %d_chg_bwd1.info -x %d_chg_bwd1.netcdf -r %d_chg_bwd1.rst" %(i, i, mdv_prmtop, j, i, i, i)
+                print("-O -i %d_chg2.in -o %d_chg_bwd2.out -p %s -c %d_chg_bwd2.rst -inf %d_chg_bwd2.info -x %d_chg_bwd2.netcdf -r %d_chg_bwd2.rst" %(i, i, md_prmtop, j, i, i, i), file=groupf)
+                print("-O -i %d_chg1.in -o %d_chg_bwd1.out -p %s -c %d_chg_bwd1.rst -inf %d_chg_bwd1.info -x %d_chg_bwd1.netcdf -r %d_chg_bwd1.rst" %(i, i, mdv_prmtop, j, i, i, i), file=groupf)
                 groupf.close()
                 os.system("%s -ng 2 -groupfile %d_chg_bwd.group" %(exe, i))
 
         #4. VDW disappearing----------------------------------------------------
         for i in range(1, ti_vdw_windows+1):
             if i == 1:
-                print "VDW TI step" + str(i) + " %d steps (backward)..." %vdw_window_steps
+                print("VDW TI step" + str(i) + " %d steps (backward)..." %vdw_window_steps)
                 groupf = open(str(i)+'_vdw_bwd.group', 'w')
-                print >> groupf, "-O -i %d_vdw2.in -o %d_vdw_bwd2.out -p %s -c %d_chg_bwd2.rst -inf %d_vdw_bwd2.info -x %d_vdw_bwd2.netcdf -r %d_vdw_bwd2.rst" %(i, i, mdv_prmtop, ti_chg_windows, i, i, i)
-                print >> groupf, "-O -i %d_vdw1.in -o %d_vdw_bwd1.out -p %s -c %d_chg_bwd1.rst -inf %d_vdw_bwd1.info -x %d_vdw_bwd1.netcdf -r %d_vdw_bwd1.rst" %(i, i, md0_prmtop, ti_chg_windows, i, i, i)
+                print("-O -i %d_vdw2.in -o %d_vdw_bwd2.out -p %s -c %d_chg_bwd2.rst -inf %d_vdw_bwd2.info -x %d_vdw_bwd2.netcdf -r %d_vdw_bwd2.rst" %(i, i, mdv_prmtop, ti_chg_windows, i, i, i), file=groupf)
+                print("-O -i %d_vdw1.in -o %d_vdw_bwd1.out -p %s -c %d_chg_bwd1.rst -inf %d_vdw_bwd1.info -x %d_vdw_bwd1.netcdf -r %d_vdw_bwd1.rst" %(i, i, md0_prmtop, ti_chg_windows, i, i, i), file=groupf)
                 groupf.close()
                 os.system("%s -ng 2 -groupfile %d_vdw_bwd.group" %(exe, i))
             else:
-                print "VDW TI step" + str(i) + " %d steps (backward)..." %vdw_window_steps
+                print("VDW TI step" + str(i) + " %d steps (backward)..." %vdw_window_steps)
                 j = i - 1
                 #Group file
                 groupf = open(str(i)+'_vdw_bwd.group', 'w')
-                print >> groupf, "-O -i %d_vdw2.in -o %d_vdw_bwd2.out -p %s -c %d_vdw_bwd2.rst -inf %d_vdw_bwd2.info -x %d_vdw_bwd2.netcdf -r %d_vdw_bwd2.rst" %(i, i, mdv_prmtop, j, i, i, i)
-                print >> groupf, "-O -i %d_vdw1.in -o %d_vdw_bwd1.out -p %s -c %d_vdw_bwd1.rst -inf %d_vdw_bwd1.info -x %d_vdw_bwd1.netcdf -r %d_vdw_bwd1.rst" %(i, i, md0_prmtop, j, i, i, i)
+                print("-O -i %d_vdw2.in -o %d_vdw_bwd2.out -p %s -c %d_vdw_bwd2.rst -inf %d_vdw_bwd2.info -x %d_vdw_bwd2.netcdf -r %d_vdw_bwd2.rst" %(i, i, mdv_prmtop, j, i, i, i), file=groupf)
+                print("-O -i %d_vdw1.in -o %d_vdw_bwd1.out -p %s -c %d_vdw_bwd1.rst -inf %d_vdw_bwd1.info -x %d_vdw_bwd1.netcdf -r %d_vdw_bwd1.rst" %(i, i, md0_prmtop, j, i, i, i), file=groupf)
                 groupf.close()
                 os.system("%s -ng 2 -groupfile %d_vdw_bwd.group" %(exe, i))
 
