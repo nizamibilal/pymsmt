@@ -119,7 +119,6 @@ def print_md_inputf(file_name, nxt, window_steps, lamada):
     print("  iwrap=1,", file=ti_mdf)
 
     print("  icfe=1,", file=ti_mdf)
-    print("  ifsc=1,", file=ti_mdf)
     print("  clambda=%6.5f," %lamada, file=ti_mdf)
     ti_mdf.close()
 
@@ -133,11 +132,13 @@ def print_pmemd_1step_mdf(file_name, nxt, window_steps, lamada, fwdorbwd):
 
     ti_mdf = open(file_name, 'a')
     if fwdorbwd == 1:
+    	print("  ifsc=1,", file=ti_mdf)
         print("  timask1 = \":1\",", file=ti_mdf)
         print("  scmask1 = \":1\",", file=ti_mdf)
         print("  timask2 = \":2\",", file=ti_mdf)
         print("  scmask2 = \":2\",", file=ti_mdf)
     elif fwdorbwd == -1:
+    	print("  ifsc=1,", file=ti_mdf)
         print("  timask1 = \":2\",", file=ti_mdf)
         print("  scmask1 = \":2\",", file=ti_mdf)
         print("  timask2 = \":1\",", file=ti_mdf)
@@ -224,6 +225,7 @@ def print_sander_1step_mdf(file_name, nxt, window_steps, lamada, ifc4):
     print_md_inputf(file_name, nxt, window_steps, lamada)
 
     ti_mdf = open(file_name, 'a')
+    print("  ifsc=1,", file=ti_mdf)
     print("  scmask = \":1\",", file=ti_mdf)
     if ifc4 == 1:
         print("  lj1264=1,", file=ti_mdf)
@@ -372,13 +374,16 @@ def print_pmemd_2step_mdf(file_name, nxt, window_steps, lamada, fwdorbwd, force)
         print("  timask1 = \":1\",", file=ti_mdf)
         print("  timask2 = \":2\",", file=ti_mdf)
         if force == 'c':
+    	    print("  ifsc=1,", file=ti_mdf)
             print("  scmask1 = \":1\",", file=ti_mdf)
             print("  scmask2 = \":2\",", file=ti_mdf)
             print("  crgmask = \":1|:2\"", file=ti_mdf)
     elif fwdorbwd == -1:
+
         print("  timask1 = \":2\",", file=ti_mdf)
         print("  timask2 = \":1\",", file=ti_mdf)
         if force == 'c':
+            print("  ifsc=1,", file=ti_mdf)
             print("  scmask1 = \":2\",", file=ti_mdf)
             print("  scmask2 = \":1\",", file=ti_mdf)
             print("  crgmask = \":1|:2\"", file=ti_mdf)

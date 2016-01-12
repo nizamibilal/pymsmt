@@ -60,13 +60,18 @@ def write_leapin(ion0, ion1):
     print >> leapf, "loadamberparams %s.frcmod" %ion1.attype  #VDW!=0
     print >> leapf, "ion2 = copy ion"
     print >> leapf, "remove ion2 ion2.2"
-    print >> leapf, "saveamberparm ion2 %s_wat_szero.prmtop %s_wat_szero.inpcrd" %(ion0.atname, ion0.atname) #For sander: with M0 without VDW
-    print >> leapf, "saveamberparm ion %s_wat_pti.prmtop %s_wat_pti.inpcrd" %(ion0.element, ion0.element) #For pmemd: with Na has VDW and M0 doesn't have VDW
+    #For sander: with M0 without VDW
+    print >> leapf, "saveamberparm ion2 %s_wat_szero.prmtop %s_wat_szero.inpcrd" %(ion0.atname, ion0.atname)
+    #For pmemd: with Na has VDW and M0 doesn't have VDW
+    print >> leapf, "saveamberparm ion %s_wat_pti.prmtop %s_wat_pti.inpcrd" %(ion0.element, ion0.element)
     print >> leapf, "loadamberparams %s_vdw.frcmod" %ion0.attype #VDW != 0
-    print >> leapf, "saveamberparm ion %s_wat_pvdw.prmtop %s_wat_pvdw.inpcrd" %(ion0.element, ion0.element) #For pmemd: with Na and M0 all have VDW
+    #For pmemd: with Na and M0 all have VDW
+    print >> leapf, "saveamberparm ion %s_wat_pvdw.prmtop %s_wat_pvdw.inpcrd" %(ion0.element, ion0.element)
     print >> leapf, "remove ion ion.1"
-    print >> leapf, "saveamberparm ion %s_wat_md.prmtop %s_wat_md.inpcrd" %(ion0.element, ion0.element) #For md and sander with Na+ has charge and VDW
-    print >> leapf, "saveamberparm ion2 %s_wat_svdw.prmtop %s_wat_svdw.inpcrd" %(ion0.atname, ion0.atname) #For sander, with M0 has VDW
+    #For md and sander with Na+ has charge and VDW
+    print >> leapf, "saveamberparm ion %s_wat_md.prmtop %s_wat_md.inpcrd" %(ion0.element, ion0.element)
+    #For sander, with M0 has VDW
+    print >> leapf, "saveamberparm ion2 %s_wat_svdw.prmtop %s_wat_svdw.inpcrd" %(ion0.atname, ion0.atname)
     print >> leapf, "quit"
     leapf.close()
 

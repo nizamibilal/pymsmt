@@ -18,8 +18,8 @@ def print_title(program, version):
     elif program == 'OptC4.py':
         print("*                  Welcome to use OptC4.py program               *")
     elif program == 'IPMach.py':
-	    print("*                 Welcome to use IPMach.py program               *")
-	    print("*                        Version %s                             *" %version)
+	print("*                 Welcome to use IPMach.py program               *")
+	print("*                        Version %s                             *" %version)
     print("*                        Author: Pengfei Li                      *")
     print("*                        Merz Research Group                     *")
     print("*                     Michigan State University                  *")
