@@ -21,13 +21,9 @@ import simtk.openmm as mm  #about force field
 import simtk.openmm.app as app #about algorithm
 
 # ParmEd imports
-#from chemistry import unit as u
-#from chemistry.amber import AmberParm, AmberMask
-#from chemistry.openmm import StateDataReporter, NetCDFReporter, RestartReporter
-from parmed import unit as u
-from parmed.amber._amberparm import AmberParm
-from parmed.amber.mask import AmberMask
-from parmed.openmm.reporters import StateDataReporter, NetCDFReporter, RestartReporter
+from chemistry import unit as u
+from chemistry.amber import AmberParm, AmberMask
+from chemistry.openmm import StateDataReporter, NetCDFReporter, RestartReporter
 
 # pyMSMT Imports
 from msmtmol.getlist import get_blist, get_all_list
