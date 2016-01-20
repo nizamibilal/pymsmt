@@ -126,13 +126,13 @@ def gene_pre_frcmod_file(ionids, naamol2f, stpdbf, stfpf, smresf, prefcdf,
     for bonds in all_list.bondlist:
         i = bonds[0]
         j = bonds[1]
-        if list(set(ionids) & set(bonds)) != []:
+        if list(set(ionids) & set([i, j])) != []:
             #The bonds which related to the ions
             bondtyp2 = (attypdict[i][1], attypdict[j][1])
             if (bondtyp2 not in list(bondparamsdict1.keys())) and (bondtyp2[::-1] \
                 not in list(bondparamsdict1.keys())):
                 bondparamsdict1[bondtyp2] = ' '
-        elif list(set(atidtrans) & set(bonds)) != []:
+        elif list(set(atidtrans) & set([i, j])) != []:
             #The bonds related to the atoms which changed their atom types
             bondtyp1 = (attypdict[i][0], attypdict[j][0])
             bondtyp2 = (attypdict[i][1], attypdict[j][1])
@@ -403,14 +403,42 @@ def gene_pre_frcmod_file(ionids, naamol2f, stpdbf, stfpf, smresf, prefcdf,
 
     #For metal ions
     IonLJParaDict = get_ionljparadict(watermodel)
+
     for i in ionids:
         element = mol.atoms[i].element
-        chg = str(int(chargedict[mol.atoms[i].resname]))
+        chg = int(round(chargedict[mol.atoms[i].resname], 0))
         attyp2 = attypdict[i][1]
-        rmin = IonLJParaDict[element + chg][0]
-        ep = IonLJParaDict[element + chg][1]
-        annot = IonLJParaDict[element + chg][2]
-        print('YES   %s    %11.3f  %13.10f       %-s' %(attyp2, rmin, \
+
+        mnum = max([9-chg, chg])
+        for j in range(0, mnum):
+
+            fchg1 = chg - j
+            fchg2 = chg + j
+
+            if j == 0 and element+str(fchg1) in list(IonLJParaDict.keys()):
+                rmin = IonLJParaDict[element + str(fchg1)][0]
+                ep = IonLJParaDict[element + str(fchg1)][1]
+                annot = IonLJParaDict[element + str(fchg1)][2]
+                break
+            elif fchg1 > 0 and element+str(fchg1) in list(IonLJParaDict.keys()):
+                print("Could not find VDW radius for element %s with charge "
+                      "+%d, use the one of charge +%d" %(element, chg, fchg1))
+                rmin = IonLJParaDict[element + str(fchg1)][0]
+                ep = IonLJParaDict[element + str(fchg1)][1]
+                annot = IonLJParaDict[element + str(fchg1)][2]
+                break
+            elif fchg2 <= 8 and element+str(fchg2) in list(IonLJParaDict.keys()):
+                print("Could not find VDW radius for element %s with charge "
+                      "+%d, use the one of charge +%d" %(element, chg, fchg2))
+                rmin = IonLJParaDict[element + str(fchg2)][0]
+                ep = IonLJParaDict[element + str(fchg2)][1]
+                annot = IonLJParaDict[element + str(fchg2)][2]
+                break
+
+        if rmin is None:
+            raise pymsmtError("Could not find VDW parameters/radius for "
+                              "element %s with charge +%d " %(element, chg))
+        print('YES   %s        %8.4f %13.10f       %-s' %(attyp2, rmin, \
                  ep, annot), file=fmf)
 
     #For the others

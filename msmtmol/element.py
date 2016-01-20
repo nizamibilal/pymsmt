@@ -11,101 +11,123 @@ from msmtmol.pt import AtomicNum
 #3.PDB names, the usually resname and atname for the metal ions
 #-----------------------------------------------------------------------------
 
-OrganicMass = {'H': 1.008, 'C': 12.01,  'N': 14.01,  'O': 16.00, 'S': 32.06,
-               'P': 30.97, 'F': 19.00, 'Cl': 35.45, 'Br': 79.90, 'I': 126.9
+OrganicMass = { 'H' : 1.008,
+                'C' : 12.01,
+                'N' : 14.01,
+                'O' : 16.00,
+                'S' : 32.06,
+                'P' : 30.97,
               }
 
-#Monovalent
-movions = ['Li', 'Na', 'K', 'Rb', 'Cs', 'Tl', 'Cu', 'Ag', 'Au', 'Mo',
-           'Rh', 'Re']
-Metal1mass = {'Li':   6.94,  'Na': 22.99,  'K':  39.10, 'Rb':  85.47,
-              'Cs': 132.91, 'Tl': 204.38, 'Cu':  63.55, 'Ag': 107.87,
-              'Mo':  95.96, 'Rh': 102.91, 'Re': 186.21
-             }
-Metal1pdb = {  ('F', 'F'):  'F',  ('BR', 'BR'): 'Br',  ('CL', 'CL'): 'Cl',
-             ('IOD', 'I'):  'I',  ('LI', 'LI'): 'Li',  ('NA', 'NA'): 'Na',
-               ('K', 'K'):  'K',  ('RB', 'RB'): 'Rb',  ('CS', 'CS'): 'Cs',
-             ('TL', 'TL'): 'Tl', ('CU1', 'CU'): 'Cu',  ('AG', 'AG'): 'Ag',
-             ('AU', 'AU'): 'Au',  ('MO', 'MO'): 'Mo', ('RH1', 'RH'): 'Rh',
-             ('RE', 'RE'): 'Re'}
-
-#Divalent
-divions = ['Be', 'Cu', 'Ni', 'Pt', 'Zn', 'Co', 'Pd', 'Ag', 'Cr',
-           'Fe', 'Mg',  'V', 'Mn', 'Hg', 'Cd', 'Yb', 'Ca', 'Sn',
-           'Pb', 'Eu', 'Sr', 'Sm', 'Ba', 'Ra', 'Mo']
-
-Metal2mass = {'Be':   9.01,'Cu':  63.55,'Ni':  58.69,'Pt': 195.08,'Zn':   65.4,
-              'Co':  58.93,'Pd': 106.42,'Ag': 107.87,'Cr':  52.00,'Fe':  55.85,
-              'Mg': 24.305, 'V':  50.94,'Mn':  54.94,'Hg': 200.59,'Cd': 112.41,
-              'Yb': 173.05,'Ca':  40.08,'Sn': 118.71,'Pb':  207.2,'Eu': 151.96,
-              'Sr':  87.62,'Sm': 150.36,'Ba': 137.33,'Ra': 226.03,'Mo':  95.96,
-             }
-Metal2pdb = {('BE', 'BE'): 'Be',   ('CU', 'CU'): 'Cu', ('NI', 'NI')  : 'Ni',
-             ('PT', 'PT'): 'Pt',   ('ZN', 'ZN'): 'Zn', ('CO', 'CO')  : 'Co',
-             ('PD', 'PD'): 'Pd',   ('CR', 'CR'): 'Cr', ('FE2', 'FE2'): 'Fe',
-             ('MG', 'MG'): 'Mg',   ('MN', 'MN'): 'Mn',   ('HG', 'HG'): 'Hg',
-             ('CD', 'CD'): 'Cd', ('YB2', 'YB2'): 'Yb',   ('YB', 'YB'): 'Yb',
-             ('CA', 'CA'): 'Ca',   ('PB', 'PB'): 'Pb',   ('EU', 'EU'): 'Eu',
-             ('SR', 'SR'): 'Sr',   ('BA', 'BA'): 'Ba',   ('MO', 'MO'): 'Mo'}
-
-#Trivalent
-trivions = ['Al',  'V', 'Fe', 'Cr', 'Ga', 'In', 'Tl',  'Y', 'La', 'Ce', 'Pr',
-            'Nd', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Er', 'Tm', 'Lu', 'As', 'Ru',
-            'Mo', 'Rh', 'Os', 'Ir', 'Am', 'Ho']
-Metal3mass = {'Al':  26.98,  'V':  50.94, 'Fe':  55.85, 'Cr':  52.00, 'Ga':  69.72,
-              'In': 114.82, 'Tl': 204.38, 'Y' :  88.91, 'La': 138.91, 'Ce': 140.12,
-              'Pr': 140.91, 'Nd': 144.24, 'Sm': 150.36, 'Eu': 151.96, 'Gd': 157.25,
-              'Tb': 158.93, 'Dy': 162.5,  'Er': 167.26, 'Tm': 168.93, 'Lu': 174.97,
-              'As':  74.92, 'Ru': 101.07, 'Mo':  95.96, 'Rh': 102.91, 'Os': 190.23,
-              'Ir': 192.22, 'Am': 243.00, 'Ho': 164.93, }
-Metal3pdb = { ('AL', 'AL'): 'Al',   ('V', 'V'):  'V',  ('FE', 'FE'): 'Fe',
-              ('CR', 'CR'): 'Cr', ('GA', 'GA'): 'Ga',  ('IN', 'IN'): 'In',
-                ('Y', 'Y'):  'Y', ('LA', 'LA'): 'La',  ('CE', 'CE'): 'Ce',
-              ('PR', 'PR'): 'Pr', ('SM', 'SM'): 'Sm', ('EU3', 'EU'): 'Eu',
-              ('EU', 'EU'): 'Eu',('GD3', 'GD'): 'Gd',  ('GD', 'GD'): 'GD',
-              ('TB', 'TB'): 'Tb', ('LU', 'LU'): 'Lu', ('ARS', 'AS'): 'As',
-              ('RU', 'RU'): 'Ru', ('MO', 'MO'): 'Mo', ('RH3', 'RH'): 'Rh',
-              ('RH', 'RH'): 'Rh', ('OS', 'OS'): 'Os', ('IR3', 'IR'): 'Ir',
-              ('AM', 'AM'): 'Am',('HO3', 'HO'): 'Ho',  ('HO', 'HO'): 'Ho'}
-
-#Tetravalent
-tetvions = ['Hf', 'Zr', 'Ce', 'U', 'Pu', 'Th', 'Mo', 'Os', 'Ir']
-Metal4mass = {'Hf': 178.49, 'Zr': 91.22, 'Ce': 140.12,  'U': 238.03, 'Pu': 244.06,
-              'Th': 232.04, 'Mo': 95.96, 'Os': 190.23, 'Ir': 192.22
-             }
-Metal4pdb = {('TH', 'TH'): 'Th', ('MO', 'MO'): 'Mo', ('OS4', 'OS'): 'Os',
-             ('IR', 'IR'): 'Ir'}
-
-#Pentavalent
-petvions = ['Mo']
-Metal5mass = {'Mo': 95.96}
-Metal5pdb = {('MO', 'MO'): 'Mo'}
-
-#Hexadvalent
-sxavions = ['Mo', 'W']
-Metal6mass = {'Mo': 95.96, 'W': 183.84}
-Metal6pdb = {('MO', 'MO'): 'Mo', ('W', 'W'): 'W'}
-
-#Update the dictionary
-ionnamel = movions + divions + trivions + tetvions + petvions + sxavions
-ionnamel = list(set(ionnamel))
-ionnamel2 = [i[0] + i[1].upper() for i in ionnamel if len(i) > 1]
-ionnamel = ionnamel + ionnamel2
+METAL_PDB = {
+                ('LI', 'LI')  :  ('Li', 3, 6.94),
+                ('BE', 'BE')  :  ('Be', 4, 9.01),
+                ('F' , 'F' )  :  ('F' , 9, 19.00),
+                ('NA', 'NA')  :  ('Na', 11, 22.99),
+                ('MG', 'MG')  :  ('Mg', 12, 24.305),
+                ('AL', 'AL')  :  ('Al', 13, 26.98),
+                ('CL', 'CL')  :  ('Cl', 17, 35.45),
+                ('K', 'K')    :  ('K',  19, 39.10),
+                ('CA', 'CA')  :  ('Ca', 20, 40.08),
+                ('SC', 'SC')  :  ('Sc', 21, 44.96), #Add
+                ('TI', 'TI')  :  ('Ti', 22, 47.87), #Add
+                ('V', 'V')    :  ('V',  23, 50.94),
+                ('CR', 'CR')  :  ('Cr', 24, 52.00),
+                ('MN', 'MN')  :  ('Mn', 25, 54.94),
+                ('FE2', 'FE2'):  ('Fe', 26, 55.85), #Fe2+
+                ('FE', 'FE')  :  ('Fe', 26, 55.85), #Fe3+
+                ('CO', 'CO')  :  ('Co', 27, 58.93),
+                ('NI', 'NI')  :  ('Ni', 28, 58.69),
+                ('CU1', 'CU') :  ('Cu', 29, 63.55), #Cu+
+                ('CU', 'CU')  :  ('Cu', 29, 63.55), #Cu2+
+                ('ZN', 'ZN')  :  ('Zn', 30, 65.4),
+                ('GA', 'GA')  :  ('Ga', 31, 69.72),
+                ('ARS', 'AS') :  ('As', 33, 74.92),
+                ('BR', 'BR')  :  ('Br', 35, 79.90),
+                ('RB', 'RB')  :  ('Rb', 37, 85.47),
+                ('SR', 'SR')  :  ('Sr', 38, 87.62),
+                ('Y', 'Y')    :  ('Y',  39, 88.91),
+                ('ZR', 'ZR')  :  ('Zr', 40, 91.22), #Add on
+                ('NB', 'NB')  :  ('Nb', 41, 92.91), #Add on
+                ('MO', 'MO')  :  ('Mo', 42, 95.96),
+                ('TC', 'TC')  :  ('Tc', 43, 98.0), #Add on
+                ('RU', 'RU')  :  ('Ru', 44, 101.07),
+                ('RH1', 'RH') :  ('Rh', 45, 102.91), #Rh+
+                ('RH', 'RH')  :  ('Rh', 45, 102.91),
+                ('RH3', 'RH') :  ('Rh', 45, 102.91), #Rh3+
+                ('PD', 'PD')  :  ('Pd', 46, 106.42),
+                ('AG', 'AG')  :  ('Ag', 47, 107.87),
+                ('CD', 'CD')  :  ('Cd', 48, 112.41),
+                ('IN', 'IN')  :  ('In', 49, 114.82),
+                ('SN', 'SN')  :  ('Sn', 50, 118.7), #Add on
+                ('SB', 'SB')  :  ('Sb', 51, 121.8), #Add on
+                ('TE', 'TE')  :  ('Te', 52, 127.6), #Add on
+                ('IOD', 'I')  :  ('I' , 53, 126.9),
+                ('CS', 'CS')  :  ('Cs', 55, 132.91),
+                ('BA', 'BA')  :  ('Ba', 56, 137.33),
+                ('LA', 'LA')  :  ('La', 57, 138.91),
+                ('CE', 'CE')  :  ('Ce', 58, 140.12),
+                ('PR', 'PR')  :  ('Pr', 59, 140.91),
+                ('ND', 'ND')  :  ('Nd', 60, 144.2), #Add on
+                ('PM', 'PM')  :  ('Pm', 61, 145.0), #Add on
+                ('SM', 'SM')  :  ('Sm', 62, 150.36),
+                ('EU', 'EU')  :  ('Eu', 63, 151.96), #Eu2+
+                ('EU3', 'EU') :  ('Eu', 63, 151.96), #Eu3+
+                ('GD3', 'GD') :  ('Gd', 64, 157.25), #Gd3+
+                ('GD', 'GD')  :  ('GD', 64, 157.25),
+                ('TB', 'TB')  :  ('Tb', 65, 158.93),
+                ('DY', 'DY')  :  ('Dy', 66, 162.5), #Add on
+                ('HO3', 'HO') :  ('Ho', 67, 164.93), #Ho3+
+                ('HO', 'HO')  :  ('Ho', 67, 164.93),
+                ('ER', 'ER')  :  ('Er', 68, 167.3), #Add on
+                ('TM', 'TM')  :  ('Tm', 69, 168.9),
+                ('YB2', 'YB2'):  ('Yb', 70, 173.05), #Yb2+
+                ('YB', 'YB')  :  ('Yb', 70, 173.05), #Yb3+
+                ('LU', 'LU')  :  ('Lu', 71, 174.97),
+                ('HF', 'HF')  :  ('Hf', 72, 178.5), #Add on
+                ('TA', 'TA')  :  ('Ta', 73, 180.9), #Add on
+                ('W', 'W')    :  ('W',  74, 183.84),
+                ('RE', 'RE')  :  ('Re', 75, 186.21),
+                ('OS4', 'OS') :  ('Os', 76, 190.23), #Os4+
+                ('OS', 'OS')  :  ('Os', 76, 190.23),
+                ('IR3', 'IR') :  ('Ir', 77, 192.22), #Ir3+
+                ('IR', 'IR')  :  ('Ir', 77, 192.22),
+                ('PT', 'PT')  :  ('Pt', 78, 195.08),
+                ('AU', 'AU')  :  ('Au', 79, 197.0),
+                ('HG', 'HG')  :  ('Hg', 80, 200.59),
+                ('TL', 'TL')  :  ('Tl', 81, 204.38),
+                ('PB', 'PB')  :  ('Pb', 82, 207.2),
+                ('BI', 'BI')  :  ('Bi', 83, 209.0), #Add on
+                ('PO', 'PO')  :  ('Po', 84, 209.0), #Add on
+                ('RA', 'RA')  :  ('Ra', 88, 226.0), #Add on
+                ('AC', 'AC')  :  ('Ac', 89, 227.0), #Add on
+                ('TH', 'TH')  :  ('Th', 90, 232.04),
+                ('PA', 'PA')  :  ('Pa', 91, 231.0), #Add on
+                ('U', 'U')    :  ('U',  92, 238.0), #Add on
+                ('NP', 'NP')  :  ('Np', 93, 237.0), #Add on
+                ('PU', 'PU')  :  ('Pu', 94, 244.0), #Add on
+                ('AM', 'AM')  :  ('Am', 95, 243.0),
+                ('CM', 'CM')  :  ('Cm', 96, 247.0), #Add on
+                ('BK', 'BK')  :  ('Bk', 97, 247.0), #Add on
+                ('CF', 'CF')  :  ('Cf', 98, 251.0), #Add on
+                ('ES', 'ES')  :  ('Es', 99, 252.0), #Add on
+                ('FM', 'FM')  :  ('Fm', 100, 257.0), #Add on
+                ('MD', 'MD')  :  ('Md', 101, 258.0), #Add on
+                ('NO', 'NO')  :  ('No', 102, 259.0), #Add on
+                ('LR', 'LR')  :  ('Lr', 103, 262.0), #Add on
+            }
 
 Mass = OrganicMass
-Mass.update(Metal1mass)
-Mass.update(Metal2mass)
-Mass.update(Metal3mass)
-Mass.update(Metal4mass)
-Mass.update(Metal5mass)
-Mass.update(Metal6mass)
+for i in METAL_PDB:
+    if METAL_PDB[i][0] not in Mass:
+        Mass[METAL_PDB[i][0]] = METAL_PDB[i][2]
 
-Metalpdb = Metal1pdb
-Metalpdb.update(Metal2pdb)
-Metalpdb.update(Metal3pdb)
-Metalpdb.update(Metal4pdb)
-Metalpdb.update(Metal5pdb)
-Metalpdb.update(Metal6pdb)
+ionnamel = []
+for i in METAL_PDB:
+    if METAL_PDB[i][0] not in ionnamel:
+        ionnamel.append(METAL_PDB[i][0])
+ionnamel2 = [i[0] + i[1].upper() for i in ionnamel if len(i) > 1]
+ionnamel = ionnamel + ionnamel2
 
 #-----------------------------------------------------------------------------
 
@@ -388,47 +410,40 @@ def get_ionljparadict(watermodel):
     IonLJParaDict.update(higljpara)
 
     otherljpara = {
-                'As3': (1.1778, 0.00075222, 'IOD set for TIP3P water from Li. Personal Communication.'),
-                'Ag1': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Au1': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Ru1': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Ru2': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Ru3': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Ru4': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Rh1': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Rh2': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Rh3': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Rh4': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Os1': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Os2': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Os3': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Os4': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Ir1': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Ir2': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Ir3': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Ir4': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Re1': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Re2': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Re3': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Re4': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Am1': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Am2': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Am3': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Am4': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Ho1': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Ho2': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Ho3': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Ho4': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Mo1': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Mo2': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Mo3': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Mo4': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Mo5': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Mo6': (1.20, 0.0125, 'As Zn(II) From Merz et al. JACS, 113, 8262'),
-                'Mn3': (1.467, 0.02960343, 'IOD set for Mn2+ from Li et al. JCTC, 2013, 9, 2733'),
-                'Mn4': (1.467, 0.02960343, 'IOD set for Mn2+ from Li et al. JCTC, 2013, 9, 2733'),
-                'Mn5': (1.467, 0.02960343, 'IOD set for Mn2+ from Li et al. JCTC, 2013, 9, 2733'),
-                'Mn6': (1.467, 0.02960343, 'IOD set for Mn2+ from Li et al. JCTC, 2013, 9, 2733')
+                'Sc3': (1.6475, 0.019, 'Adopted from atom type Sc3+3 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'Ti4': (1.5875, 0.017, 'Adopted from atom type Ti3+4/Ti6+4 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'Ga3': (2.1915, 0.415, 'Adopted from atom type Ga3+3 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'As3': (2.1150, 0.309, 'Adopted from atom type As3+3 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'Nb5': (1.5825, 0.059, 'Adopted from atom type Nb3+5 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'Mo6': (1.5060, 0.056, 'Adopted from atom type Mo3+6/Mo6+6 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'Tc5': (1.4990, 0.048, 'Adopted from atom type Tc6+5 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'Ru2': (1.4815, 0.056, 'Adopted from atom type Ru6+2 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'Rh3': (1.4645, 0.053, 'Adopted from atom type Rh6+3 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'Sb3': (2.2100, 0.449, 'Adopted from atom type Sb3+3 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'Te2': (2.2350, 0.398, 'Adopted from atom type Te3+2 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'Pm3': (1.7735, 0.009, 'Adopted from atom type Pm6+3 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'Ho3': (1.7045, 0.007, 'Adopted from atom type Ho6+3 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'Ta5': (1.5850, 0.081, 'Adopted from atom type Ta3+5 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'W4' : (1.5345, 0.067, 'Adopted from atom type W3+4 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'W6' : (1.5345, 0.067, 'Adopted from atom type W3+6/W6+6 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'Re5': (1.4770, 0.066, 'Adopted from atom type Re6+5 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'Re7': (1.4770, 0.066, 'Adopted from atom type Re3+7 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'Os6': (1.5600, 0.037, 'Adopted from atom type Os6+6 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'Ir3': (1.4200, 0.073, 'Adopted from atom type Ir6+3 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'Au3': (1.6465, 0.039, 'Adopted from atom type Au4+3 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'Bi3': (2.1850, 0.518, 'Adopted from atom type Bi3+3 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'Po2': (2.3545, 0.325, 'Adopted from atom type Po3+2 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'Pa4': (1.7120, 0.022, 'Adopted from atom type Pa6+4 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'Np4': (1.7120, 0.019, 'Adopted from atom type Np6+4 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'Am4': (1.6905, 0.014, 'Adopted from atom type Am6+4 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'Cm3': (1.6630, 0.013, 'Adopted from atom type Cm6+3 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'Bk3': (1.6695, 0.013, 'Adopted from atom type Bk6+3 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'Cf3': (1.6565, 0.013, 'Adopted from atom type Cf6+3 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'Es3': (1.6495, 0.012, 'Adopted from atom type Es6+3 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'Fm3': (1.6430, 0.012, 'Adopted from atom type Fm6+3 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'Md3': (1.6370, 0.011, 'Adopted from atom type Md6+3 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'No3': (1.6240, 0.011, 'Adopted from atom type No6+3 from UFF (Rappe et al. JACS, 114, 10024)'),
+                'Lr3': (1.6180, 0.011, 'Adopted from atom type Lw6+3 (Lw is the same as Lr) from UFF (Rappe et al. JACS, 114, 10024)'),
                   }
 
     IonLJParaDict.update(otherljpara)

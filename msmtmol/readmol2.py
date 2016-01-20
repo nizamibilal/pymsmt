@@ -4,7 +4,7 @@ file.
 """
 from __future__ import absolute_import
 from msmtmol.mol import Atom, Residue, Molecule
-from msmtmol.element import ionnamel, Metalpdb
+from msmtmol.element import ionnamel, METAL_PDB
 from pymsmtexp import *
 import sys
 import linecache
@@ -15,9 +15,9 @@ def get_atominfo(fname):
     fp = open(fname, 'r')
     lnum = 1
     for line in fp:
-        if (line == "@<TRIPOS>ATOM\n"):
+        if ("@<TRIPOS>ATOM" in line):
             atbgin = lnum + 1
-        elif (line == "@<TRIPOS>BOND\n"):
+        elif ("@<TRIPOS>BOND" in line):
             atend = lnum
         lnum = lnum + 1
     fp.close()
@@ -42,8 +42,8 @@ def get_atominfo(fname):
         charge = float(charge)
         resid = int(resid)
 
-        if (resname, atname) in list(Metalpdb.keys()):
-            element = Metalpdb[(resname, atname)]
+        if (resname, atname) in list(METAL_PDB.keys()):
+            element = METAL_PDB[(resname, atname)][0]
         else:
             element = atname[0]
 
@@ -88,9 +88,9 @@ def get_bondinfo(fname):
     fp = open(fname, 'r')
     lnum = 1
     for line in fp:
-        if (line == "@<TRIPOS>BOND\n"):
+        if ("@<TRIPOS>BOND" in line):
             bdbgin = lnum + 1
-        elif (line == "@<TRIPOS>SUBSTRUCTURE\n"):
+        elif ("@<TRIPOS>SUBSTRUCTURE" in line):
             bdend = lnum
         lnum = lnum + 1
     fp.close()

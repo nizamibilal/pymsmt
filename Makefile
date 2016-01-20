@@ -22,9 +22,9 @@ uninstallalone:
 	/bin/rm -f $(MSMTBINDIR)/MCPB.py $(MSMTBINDIR)/OptC4.py $(MSMTBINDIR)/PdbSearcher.py ${MSMTBINDIR}/espgen.py ${MSMTBINDIR}/CartHess2FC.py
 
 test:
-	cp -r $(AMBERHOME)/AmberTools/src/pymsmt/tests/gaussian $(AMBERHOME)/AmberTools/test/pymsmt/mcpb ; \
+	cp -r $(AMBERHOME)/AmberTools/src/pymsmt/tests/gaussian/ $(AMBERHOME)/AmberTools/test/pymsmt/mcpb/ ; \
      cd $(AMBERHOME)/AmberTools/test/pymsmt/mcpb ; ./Run.pymsmt
-	cp -r $(AMBERHOME)/AmberTools/src/pymsmt/tests/gamess $(AMBERHOME)/AmberTools/test/pymsmt/mcpb ; \
+	cp -r $(AMBERHOME)/AmberTools/src/pymsmt/tests/gamess/ $(AMBERHOME)/AmberTools/test/pymsmt/mcpb/ ; \
      cd $(AMBERHOME)/AmberTools/test/pymsmt/mcpb ; ./Run.pymsmt
 
 testalone:

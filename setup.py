@@ -4,14 +4,14 @@ import os
 import sys
 
 # Packages in MSMT toolkit
-packages = ['api', 'mcpb', 'lib', 'msmtmol']
+packages = ['api', 'mcpb', 'lib', 'msmtmol', 'ipmach']
 
 # Modules
 modules = ['pymsmtexp']
 
 # Scripts
 scripts = ['msmttools/MCPB.py', 'msmttools/OptC4.py', 'msmttools/PdbSearcher.py',
-           'msmttools/espgen.py', 'msmttools/CartHess2FC.py']
+           'msmttools/espgen.py', 'msmttools/CartHess2FC.py', 'msmttools/IPMach.py']
 
 # See if our Python version will support OpenMM. Of the ParmEd-supported
 # Pythons, only 2.4 and 2.5 do not work with OpenMM

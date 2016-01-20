@@ -1,5 +1,6 @@
 """
 Note: This part of code is from ParmEd with author as Jason Swails.
+It is under GNU Lesser General Public License, version 2.1.
 """
 
 """

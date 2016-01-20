@@ -2,23 +2,15 @@
 # Filename: PdbSearcher.py
 """
 This is the PdbSeacher.py program written by Pengfei Li in Merz Research Group
-in Michigan State University. All Rights Reserved. It is a re-written python
-version of Pdbseacher in MTK++. It is designed to find the metal center in the
-PDB files and collecting the information and generate the metal center complex
-pdb files for each center (with metal ion and ligating residues). The program
-are not gurantee to work due to bug may exist. Suggestions and bug reports are
-welcome to send to Pengfei Li (Email address: ldsoar1990@gmail.com).
-
-Please cite the following paper if you use the software to perform the
-modeling:
-
-The orignal Pdbseacher software is come from:
-** M. B. Peters, Y. Yang, B. Wang, L. Fusti-Molnar, M. N. Weaver, K. M. Merz,
-   JCTC, 2010, 6, 2935-2947
+at Michigan State University.
+It is a re-written python version of Pdbseacher in MTK++.
+It is designed to find the metal center in the PDB files and collecting the
+information and generate the metal center complex pdb files for each center
+(with metal ion and ligating residues).
 """
 from __future__ import print_function
 from msmtmol.readpdb import get_atominfo_fpdb, writepdbatm
-from msmtmol.element import Metalpdb, CoRadiiDict, resdict
+from msmtmol.element import METAL_PDB, CoRadiiDict, resdict
 from msmtmol.mol import pdbatm
 from msmtmol.cal import calc_bond, det_geo
 from optparse import OptionParser
@@ -142,8 +134,8 @@ for fname in pdbfnl:
     for i in atids:
         resname = mol.residues[mol.atoms[i].resid].resname
         atname = mol.atoms[i].atname
-        if (resname, atname) in list(Metalpdb.keys()):
-            if Metalpdb[(resname, atname)] == ionname:
+        if (resname, atname) in list(METAL_PDB.keys()):
+            if METAL_PDB[(resname, atname)][0] == ionname:
                 metallist.append(i)
 
     #for each metal ion in the metal list, print the metal center

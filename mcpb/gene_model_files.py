@@ -21,6 +21,7 @@ H_NAMES = ['HH31', 'HH32', 'HH33']  #hydrogen names for ACE and NME methyl group
 SH_NAMES = ['H1', 'H2', 'H3'] #The names of the three Hs in the methyl group
 GH_NAMES = ['HA2', 'HA3'] #GLY hydrogen names
 SH_NAMES2 = ['H1', 'H2']
+BIND_ATOMS = ['N', 'O', 'S', 'F', 'Cl', 'Br', 'I']
 
 def del_files(fnamel):
     for fname in fnamel:
@@ -37,6 +38,8 @@ def count_lines(fname):
 
 #-------------------Get metal center residue names-----------------------------
 def get_ms_resnames(pdbfile, ionids, cutoff, addres):
+
+    global BIND_ATOMS
 
     mol, atids, resids = get_atominfo_fpdb(pdbfile)
     ionids = ionids #metal ion atom id
@@ -55,13 +58,13 @@ def get_ms_resnames(pdbfile, ionids, cutoff, addres):
         for i in atids:
             if (i != met):
                 dis = calc_bond(mol.atoms[met].crd, mol.atoms[i].crd)
-                if (dis <= cutoff) and mol.atoms[i].element != 'H':
+                if (dis <= cutoff) and mol.atoms[i].element in BIND_ATOMS:
                     if (mol.atoms[i].resid not in msresids):
                         msresids.append(mol.atoms[i].resid)
 
     msresids.sort()
 
-    mcresnames = []
+    mcresnames = [] #New names of the metal site residues
     tmpl = []
     for i in msresids:
         if len(mol.residues[i].resname) == 3:
@@ -78,12 +81,15 @@ def get_ms_resnames(pdbfile, ionids, cutoff, addres):
         nresname = nresname + str(counter)
         mcresnames.append(nresname)
 
+    #Residue names of metal site ligating groups
     mcresnames0 = [mol.residues[i].resname for i in \
                    list(set(msresids)-set(metresids))]
     return mcresnames0, mcresnames
 
 #--------------------Get metal site bonded atom ids--------------------------
 def get_ms_ids(mol, atids, ionids, cutoff):
+
+    global BIND_ATOMS
 
     bdatmids = []
     bdatnams = []
@@ -93,7 +99,7 @@ def get_ms_ids(mol, atids, ionids, cutoff):
         for i in atids:
             if (i != met):
                 dis = calc_bond(mol.atoms[met].crd, mol.atoms[i].crd)
-                if (dis <= cutoff) and mol.atoms[i].element in ['O', 'N', 'S']:
+                if (dis <= cutoff) and mol.atoms[i].element in BIND_ATOMS:
                     if i not in bdatmids:
                         bdatmids.append(i)
                         bdatnams.append(mol.atoms[i].atname)

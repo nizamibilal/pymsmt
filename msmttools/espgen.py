@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # Filename: espgen.py
 """
-This is a module for generate the esp points from the Gaussian/GAMESS-US
+This is the espgen.py program written by Pengfei Li in Merz Research
+Group at Michigan State University.
+It is a program for generating the esp points from the Gaussian/GAMESS-US
 output file.
 """
 #------------------------------------------------------------------------------
