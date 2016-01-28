@@ -8,7 +8,8 @@ from scipy.optimize import fmin #as fmin
 from ipmach.calhfe import OneStep_sTI, TwoStep_sTI, OneStep_pTI, TwoStep_pTI
 from ipmach.caliod import MD_simulation
 from ipmach.tifiles import gene_topcrd
-from mcpb.title import print_title
+from title import print_title
+from pymsmtexp import *
 
 #------------------------------------------------------------------------------
 # Subprogram functions
@@ -46,13 +47,13 @@ def get_HFE():
     elif prog == 'pmemd':
         if TISteps == 1:
             dG = OneStep_pTI(ti_windows, ti_window_steps,
-                             ti_sample_steps, exe, ti_prmtop, ti_inpcrd,
+                             ti_sample_steps, exe, pti_prmtop, pti_inpcrd,
                              ti_min_steps, ti_nvt_steps, ti_npt_steps, rev)
         elif TISteps == 2:
             dG = TwoStep_pTI(ti_vdw_windows, ti_chg_windows, vdw_window_steps,
                              chg_window_steps, vdw_sample_steps,
-                             chg_sample_steps, exe, vdw_prmtop, ti_prmtop,
-                             ti_inpcrd, ti_min_steps, ti_nvt_steps,
+                             chg_sample_steps, exe, ptiv_prmtop, pti_prmtop,
+                             pti_inpcrd, ti_min_steps, ti_nvt_steps,
                              ti_npt_steps, rev)
     return dG
 
@@ -61,11 +62,11 @@ def get_IOD():
                             md_nvt_steps, md_npt_steps, md_md_steps, ifc4)
     return iod, cn
 
-def get_hfe_iod_for_1264(params):
+def get_hfe_iod_for_1264(params, sp=0):
 
-    rmin, c4v = params[0], params[1], params[2]
+    rmin, c4v = params[0], params[1]
     ion1.rmin, ion1.ep = get_ep(rmin)
-    gene_topcrd(ion0, ion1, 1, c4v)
+    gene_topcrd(ion0, ion1, watermodel, 1, c4v)
 
     dG = get_HFE()
     iod, cn = get_IOD()
@@ -74,6 +75,9 @@ def get_hfe_iod_for_1264(params):
     print("    rmin=%5.3f (Angstrom), ep=%10.8f (Kcal/mol), c4=%5.0f (Kcal/mol*A^4)" %(ion1.rmin, ion1.ep, c4v))
     print("    HFE=%6.1f (Kcal/mol), IOD=%5.2f (Angstrom), CN=%3.1f" %(dG, iod, cn))
     print("    Exp:HFE=%6.1f (Kcal/mol), IOD=%5.2f (Angstrom)" %(HFE_VAL, IOD_VAL))
+
+    if sp == 1:
+        quit()
 
     HFEerr = abs(dG - HFE_VAL)
     IODerr = abs(iod - IOD_VAL)
@@ -89,15 +93,18 @@ def get_hfe_iod_for_1264(params):
 
     return TOTerr
 
-def get_hfe_for_126(rmin):
+def get_hfe_for_126(rmin, sp=0):
 
     ion1.rmin, ion1.ep = get_ep(rmin)
-    gene_topcrd(ion0, ion1)
+    gene_topcrd(ion0, ion1, watermodel)
     dG = get_HFE()
 
     print("This result of this cycle:")
     print("    Rmin/2=%5.3f (Angstrom), ep=%10.8f (Kcal/mol)" %(ion1.rmin, ion1.ep))
     print("    HFE=%6.1f (Kcal/mol)" %dG)
+
+    if sp == 1:
+        quit()
 
     HFEerr = abs(dG - HFE_VAL)
 
@@ -111,15 +118,18 @@ def get_hfe_for_126(rmin):
 
     return HFEerr
 
-def get_iod_for_126(rmin):
+def get_iod_for_126(rmin, sp=0):
 
     ion1.rmin, ion1.ep = get_ep(rmin)
-    gene_topcrd(ion0, ion1)
+    gene_topcrd(ion0, ion1, watermodel)
     iod, cn = get_IOD()
 
     print("This result of this cycle:")
     print("    Rmin/2=%5.3f (Angstrom), ep=%10.8f (Kcal/mol)" %(ion1.rmin, ion1.ep))
     print("    IOD=%5.2f (Angstrom), CN=%3.1f" %(iod, cn))
+
+    if sp == 1:
+        quit()
 
     IODerr = abs(iod - IOD_VAL)
 
@@ -132,6 +142,18 @@ def get_iod_for_126(rmin):
         quit()
 
     return IODerr
+
+def get_sp_for_126(rmin):
+
+    ion1.rmin, ion1.ep = get_ep(rmin)
+    gene_topcrd(ion0, ion1, watermodel)
+    dG = get_HFE()
+    iod, cn = get_IOD()
+
+    print("This result of this cycle:")
+    print("    Rmin/2=%5.3f (Angstrom), ep=%10.8f (Kcal/mol)" %(ion1.rmin, ion1.ep))
+    print("    HFE=%6.1f (Kcal/mol), IOD=%5.2f (Angstrom), CN=%3.1f" %(dG, iod, cn))
+    print("    Exp:HFE=%6.1f (Kcal/mol), IOD=%5.2f (Angstrom)" %(HFE_VAL, IOD_VAL))
 
 #----------------------------------------------------------------------------#
 #                            Main Program                                    #
@@ -146,7 +168,7 @@ print_title('IPMach.py', 1.0)
 #---------------------------Default values------------------------------------
 
 # About the program and steps of TI running
-prog = 'pmemd'
+prog = 'sander'
 cpus = 2
 gpus = 0
 mode = 'normal'
@@ -158,7 +180,8 @@ ti_chg_windows = 7
 
 # About the running type
 opt = 0
-Cal = 'SP'
+para_set = 'HFE'
+cal_type = 'OPT'
 max_iternum = 100
 HFE_VAL = -100.0
 IOD_VAL = 2.0
@@ -166,6 +189,7 @@ hfetol = 1.0  #Hydration free energy accuray tolerance, unit kcal/mol
 iodtol = 0.01 #Ion-oxygen distance accuray tolerance, unit Angstrom
 
 # About the intial parameters
+watermodel = 'TIP3P'
 rmin = 1.500
 c4v = 0.0
 ifc4 = 0
@@ -208,7 +232,9 @@ for line in rinput:
     elif line[0].lower() == "opt":
         opt = int(line[1])
     elif line[0].lower() == "set":
-        Cal = line[1].upper()
+        para_set = line[1].upper()
+    elif line[0].lower() == "cal_type":
+        cal_type = line[1].upper()
     elif line[0].lower() == "maxiter":
         max_iternum = int(line[1])
     elif line[0].lower() == "hfe":
@@ -220,6 +246,8 @@ for line in rinput:
     elif line[0].lower() == "iodtol":
         iodtol = float(line[1])
     # About the intial parameters
+    elif line[0].lower() == "watermodel":
+        watermodel = line[1].upper()
     elif line[0].lower() == "rmin":
         rmin = round(float(line[1]), 3)
     elif line[0].lower() == "c4":
@@ -234,20 +262,20 @@ rmin, ep = get_ep(rmin)
 ion1 = ION(resname, atname, attype, element, charge, rmin, ep)
 
 # TI prmtop and inpcrd files for PMEMD, should have two residues merged
-ti_prmtop = element + "_wat_pti.prmtop"
-ti_inpcrd = element + "_wat_pti.inpcrd"
-vdw_prmtop = element + "_wat_pvdw.prmtop"
+pti_prmtop = element + "_wat_pti.prmtop"
+pti_inpcrd = element + "_wat_pti.inpcrd"
+ptiv_prmtop = element + "_wat_pvdw.prmtop"
 
 # TI prmtop and inpcrd files for sander
-md0_prmtop = ion0.atname + "_wat_szero.prmtop"
-md0_inpcrd = ion0.atname + "_wat_szero.inpcrd"
+md0_prmtop = element + "_wat_s0.prmtop"
+md0_inpcrd = element + "_wat_s0.inpcrd"
 
-mdv_prmtop = ion0.atname + "_wat_svdw.prmtop"
-mdv_inpcrd = ion0.atname + "_wat_svdw.inpcrd"
+mdv_prmtop = element + "_wat_sv.prmtop"
+mdv_inpcrd = element + "_wat_sv.inpcrd"
 
 # MD prmtop and inpcrd for sander/pmemd (also use as TI prmtop file for sander)
-md_prmtop = element + "_wat_md.prmtop"
-md_inpcrd = element + "_wat_md.inpcrd"
+md_prmtop = element + "_wat_svc.prmtop"
+md_inpcrd = element + "_wat_svc.inpcrd"
 
 #-------------------Setting for the program and steps use----------------------
 if gpus == 1:
@@ -262,7 +290,7 @@ else:
         if prog == 'sander':
             minexe = 'mpirun -np 2 %s.MPI' %(prog)
 
-if Cal == '1264' and exe == 'pmemd':
+if para_set == '1264' and ('pmemd' in exe):
     raise ValueError('Could not perform 12-6-4 TI calculation with pmemd!')
 
 if mode == "test":
@@ -336,7 +364,8 @@ print('The variable vdw_windows is : ', ti_vdw_windows)
 print('The variable chg_windows is : ', ti_chg_windows)
 
 # About the running type
-print('The variable set is : ', Cal)
+print('The variable set is : ', para_set)
+print('The variable cal_type is : ', cal_type)
 print('The variable maxiter is : ', max_iternum)
 print('The variable hfe is : ', HFE_VAL)
 print('The variable iod is : ', IOD_VAL)
@@ -344,6 +373,7 @@ print('The variable hfetol is : ', hfetol)
 print('The variable iodtol is : ', iodtol)
 
 # About the intial parameters
+print('The variable watermodel is : ', watermodel)
 print('The variable rmin is : ', rmin)
 print('The variable c4 is : ', c4v)
 print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
@@ -351,17 +381,20 @@ print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 #--------------------------------Doing the optimization------------------------
 initparams = [rmin, c4v]
 
-if Cal == "1264":
-    rminc4opt = fmin(get_hfe_iod_for_1264, initparams)
-elif Cal == "HFE":
-    rminopt = fmin(get_hfe_for_126, rmin)
-elif Cal == "IOD":
-    rminopt = fmin(get_iod_for_126, rmin)
-elif Cal == "SP":
-    if ifc4 == 1:
-        get_hfe_iod_for_1264(initparams)
-    else:
-        get_hfe_for_126(rmin)
-        get_iod_for_126(rmin)
+if para_set == "1264":
+    if cal_type == 'OPT':
+        rminc4opt = fmin(get_hfe_iod_for_1264, initparams)
+    elif cal_type == 'SP':
+        get_hfe_iod_for_1264(initparams, 1)
+elif para_set == "HFE":
+    if cal_type == 'OPT':
+        rminopt = fmin(get_hfe_for_126, rmin)
+    elif cal_type == 'SP':
+        get_hfe_for_126(rmin, 1)
+elif para_set == "IOD":
+    if cal_type == 'OPT':
+        rminopt = fmin(get_iod_for_126, rmin)
+    elif cal_type == 'SP':
+        get_iod_for_126(rmin, 1)
 
 
