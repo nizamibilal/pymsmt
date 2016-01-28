@@ -7,7 +7,7 @@ import sys
 packages = ['api', 'mcpb', 'lib', 'msmtmol', 'ipmach']
 
 # Modules
-modules = ['pymsmtexp']
+modules = ['pymsmtexp', 'title']
 
 # Scripts
 scripts = ['msmttools/MCPB.py', 'msmttools/OptC4.py', 'msmttools/PdbSearcher.py',

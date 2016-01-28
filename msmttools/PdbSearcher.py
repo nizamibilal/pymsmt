@@ -14,7 +14,7 @@ from msmtmol.element import METAL_PDB, CoRadiiDict, resdict
 from msmtmol.mol import pdbatm
 from msmtmol.cal import calc_bond, det_geo
 from optparse import OptionParser
-from mcpb.title import print_title
+from title import print_title
 import os
 
 #==============================================================================

@@ -29,8 +29,8 @@ from mcpb.gene_pre_frcmod_file import gene_pre_frcmod_file
 from mcpb.gene_final_frcmod_file import (gene_by_empirical_way,
           gene_by_QM_fitting_sem, gene_by_QM_fitting_zmatrix)
 from mcpb.amber_modeling import gene_leaprc
-from mcpb.title import print_title
 from msmtmol.element import resnamel
+from title import print_title
 from pymsmtexp import *
 import warnings
 import os
@@ -60,6 +60,7 @@ options.step = options.step.lower()
 # Default values
 cutoff = 2.8
 addres = []
+addbpairs = []
 chgfix_resids = []
 naamol2fs = []
 ff_choice = 'ff14SB'
@@ -155,6 +156,23 @@ for line in inputf:
                 raise pymsmtError('additional_resids need to be integer number(s).')
         else:
             raise pymsmtError('additional_resids need to be provided.')
+    #addbpairs
+    elif line[0].lower() == 'add_bonded_pairs':
+        if len(line) >= 2:
+            addbpairs0 = line[1:]
+            for i in addbpairs0:
+                pairs = i.split('-')
+                try:
+                    pairs = [int(i) for i in pairs]
+                except:
+                    raise pymsmtError('Should be integer numbers in the '
+                                      'two ends of dash symbol.')
+                if len(pairs) != 2:
+                    raise pymsmtError('Should be only two numbers in the pairs!')
+                pairs = tuple(pairs)
+                addbpairs.append(pairs)
+        else:
+            raise pymsmtError('add_bonded_pairs need to be provided.')
     #ioninfo
     elif line[0].lower() == 'ion_info':
         if (len(line)-1)%4 == 0:
@@ -433,6 +451,7 @@ except:
     raise pymsmtError('ion_mol2files needs to be provided.')
 
 print('The variable additional_resids is : ', addres)
+print('The variable add_bonded_pairs is : ', addbpairs)
 print('The variable group_name is : ', gname)
 print('The variable cut_off is : ', cutoff)
 print('The variable chgfix_resids is : ', chgfix_resids)
@@ -466,7 +485,8 @@ else:
 # Related define
 #==============================================================================
 #Get the renamed residue name
-mcresname0, mcresname = get_ms_resnames(orpdbf, ionids, cutoff, addres)
+mcresname0, mcresname = get_ms_resnames(orpdbf, ionids, cutoff, addres,
+                                        addbpairs)
 for i in mcresname0:
     if (i not in resnamel) and (i+'.mol2' not in naamol2fs):
         raise pymsmtError('%s is required in naa_mol2files but not '
@@ -523,14 +543,14 @@ ileapf = gname + '_tleap.in'
 #1a) Default. Automatically rename the atom type of the atoms in the metal
 #    complex.
 if (options.step == '1n'):
-    gene_model_files(orpdbf, ionids, addres, gname, ff_choice, premol2fs,
-                   cutoff, watermodel, 0, largeopt, sqmopt, smchg, lgchg)
+    gene_model_files(orpdbf, ionids, addres, addbpairs, gname, ff_choice,
+        premol2fs, cutoff, watermodel, 0, largeopt, sqmopt, smchg, lgchg)
 elif (options.step == '1m'):
-    gene_model_files(orpdbf, ionids, addres, gname, ff_choice, premol2fs,
-                   cutoff, watermodel, 1, largeopt, sqmopt, smchg, lgchg)
+    gene_model_files(orpdbf, ionids, addres, addbpairs, gname, ff_choice,
+        premol2fs, cutoff, watermodel, 1, largeopt, sqmopt, smchg, lgchg)
 elif (options.step in ['1', '1a']): #Default
-    gene_model_files(orpdbf, ionids, addres, gname, ff_choice, premol2fs,
-                   cutoff, watermodel, 2, largeopt, sqmopt, smchg, lgchg)
+    gene_model_files(orpdbf, ionids, addres, addbpairs, gname, ff_choice,
+        premol2fs, cutoff, watermodel, 2, largeopt, sqmopt, smchg, lgchg)
 #==============================================================================
 # Step 2 Frcmod file generation
 #==============================================================================
@@ -543,15 +563,15 @@ elif (options.step in ['1', '1a']): #Default
 #2z) Z-matrix method
 elif (options.step in ['2', '2s', '2e', '2z']):
     gene_pre_frcmod_file(ionids, premol2fs, stpdbf, stfpf, smresf, prefcdf,
-                         ff_choice, gaff, frcmodfs, watermodel)
+            ff_choice, gaff, frcmodfs, watermodel)
     if options.step == '2e':
         gene_by_empirical_way(smpdbf, ionids, stfpf, prefcdf, finfcdf)
     elif (options.step in ['2', '2s']): #Default
         gene_by_QM_fitting_sem(smpdbf, ionids, stfpf, prefcdf, finfcdf,
-                      fcfchkf, fclogf, g0x, scalef, bondfc_avg, anglefc_avg)
+            fcfchkf, fclogf, g0x, scalef, bondfc_avg, anglefc_avg)
     elif (options.step == '2z'):
         gene_by_QM_fitting_zmatrix(smpdbf, ionids, stfpf, prefcdf, finfcdf,
-                               fclogf, scalef)
+            fclogf, scalef)
 #==============================================================================
 # Step 3 Doing the RESP charge fitting and generate the mol2 files
 #==============================================================================
@@ -565,16 +585,16 @@ elif (options.step in ['2', '2s', '2e', '2z']):
 #    according to force field chosen
 elif (options.step == '3a'):
     resp_fitting(stpdbf, lgpdbf, stfpf, lgfpf, mklogf, ionids, ff_choice,
-                 premol2fs, mcresname, 0, chgfix_resids, g0x, lgchg)
+        premol2fs, mcresname, 0, chgfix_resids, g0x, lgchg)
 elif (options.step in ['3', '3b']): #Default
     resp_fitting(stpdbf, lgpdbf, stfpf, lgfpf, mklogf, ionids, ff_choice,
-                 premol2fs, mcresname, 1, chgfix_resids, g0x, lgchg)
+        premol2fs, mcresname, 1, chgfix_resids, g0x, lgchg)
 elif (options.step == '3c'):
     resp_fitting(stpdbf, lgpdbf, stfpf, lgfpf, mklogf, ionids, ff_choice,
-                 premol2fs, mcresname, 2, chgfix_resids, g0x, lgchg)
+        premol2fs, mcresname, 2, chgfix_resids, g0x, lgchg)
 elif (options.step == '3d'):
     resp_fitting(stpdbf, lgpdbf, stfpf, lgfpf, mklogf, ionids, ff_choice,
-                 premol2fs, mcresname, 3, chgfix_resids, g0x, lgchg)
+        premol2fs, mcresname, 3, chgfix_resids, g0x, lgchg)
 #==============================================================================
 # Step 4 Prepare the modeling file for leap
 #==============================================================================
@@ -584,15 +604,15 @@ elif (options.step == '3d'):
 #4n2) Normal Nonbonded model (12-6 nonbonded model) without re-fitting charges
 elif (options.step in ['4', '4b']): #bonded model, Default
     gene_leaprc(gname, orpdbf, fipdbf, stpdbf, stfpf, ionids, ionmol2fs,
-                ioninfo, mcresname, naamol2fs, ff_choice, frcmodfs, finfcdf,
-                ileapf, 1, watermodel, paraset)
+        ioninfo, mcresname, naamol2fs, ff_choice, frcmodfs, finfcdf, ileapf,
+        1, watermodel, paraset)
 elif (options.step == '4n1'): #nonbonded model with refitting the charge
     gene_leaprc(gname, orpdbf, fipdbf, stpdbf, stfpf, ionids, ionmol2fs,
-                ioninfo, mcresname, naamol2fs, ff_choice, frcmodfs, finfcdf,
-                ileapf, 2, watermodel, paraset)
+        ioninfo, mcresname, naamol2fs, ff_choice, frcmodfs, finfcdf, ileapf,
+        2, watermodel, paraset)
 elif (options.step == '4n2'): #normal nonbonded model
     gene_leaprc(gname, orpdbf, fipdbf, stpdbf, stfpf, ionids, ionmol2fs,
-                ioninfo, mcresname, naamol2fs, ff_choice, frcmodfs, finfcdf,
-                ileapf, 3, watermodel, paraset)
+        ioninfo, mcresname, naamol2fs, ff_choice, frcmodfs, finfcdf, ileapf,
+        3, watermodel, paraset)
 
 quit()
