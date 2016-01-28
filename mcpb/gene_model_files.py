@@ -37,7 +37,7 @@ def count_lines(fname):
     fp.close()
 
 #-------------------Get metal center residue names-----------------------------
-def get_ms_resnames(pdbfile, ionids, cutoff, addres):
+def get_ms_resnames(pdbfile, ionids, cutoff, addres, addbpairs):
 
     global BIND_ATOMS
 
@@ -61,6 +61,13 @@ def get_ms_resnames(pdbfile, ionids, cutoff, addres):
                 if (dis <= cutoff) and mol.atoms[i].element in BIND_ATOMS:
                     if (mol.atoms[i].resid not in msresids):
                         msresids.append(mol.atoms[i].resid)
+
+    #Add the residue numbers of additional bonded atoms
+    for i in addbpairs:
+        if (i[0] in ionids) and (mol.atoms[i[1]].resid not in msresids):
+            msresids.append(mol.atoms[i[1]].resid)
+        elif (i[1] in ionids) and (mol.atoms[i[0]].resid not in msresids):
+            msresids.append(mol.atoms[i[0]].resid)
 
     msresids.sort()
 
@@ -87,7 +94,7 @@ def get_ms_resnames(pdbfile, ionids, cutoff, addres):
     return mcresnames0, mcresnames
 
 #--------------------Get metal site bonded atom ids--------------------------
-def get_ms_ids(mol, atids, ionids, cutoff):
+def get_ms_ids(mol, atids, ionids, cutoff, addbpairs):
 
     global BIND_ATOMS
 
@@ -103,6 +110,15 @@ def get_ms_ids(mol, atids, ionids, cutoff):
                     if i not in bdatmids:
                         bdatmids.append(i)
                         bdatnams.append(mol.atoms[i].atname)
+
+    #Add the residue numbers of additional bonded atoms
+    for i in addbpairs:
+        if (i[0] in ionids):
+            bdatmids.append(i[1])
+            bdatnams.append(mol.atoms[i[1]].atname)
+        elif (i[1] in ionids):
+            bdatmids.append(i[0])
+            bdatnams.append(mol.atoms[i[0]].atname)
 
     return bdatmids, bdatnams
 
@@ -1444,7 +1460,7 @@ def build_large_model(mol, reslist, lmsresids, lmsresace, lmsresnme,
             print("Could not perform SQM optimization for the large model " + \
                   "with spin number not equal to 1.")
 
-def gene_model_files(pdbfile, ionids, addres, outf, ffchoice, naamol2f, cutoff, \
+def gene_model_files(pdbfile, ionids, addres, addbpairs, outf, ffchoice, naamol2f, cutoff, \
                      watermodel, autoattyp, largeopt, sqmopt, smchg, lgchg):
 
     mol, atids, resids = get_atominfo_fpdb(pdbfile)
@@ -1481,14 +1497,16 @@ def gene_model_files(pdbfile, ionids, addres, outf, ffchoice, naamol2f, cutoff, 
 
     #2. Metal site residues information
     msresids = [] #metal site residues
-    bdedatms, bdedatnams = get_ms_ids(mol, atids, ionids, cutoff)
+    bdedatms, bdedatnams = get_ms_ids(mol, atids, ionids, cutoff, addbpairs)
 
     #3. Get the metal site containing residues
     for i in bdedatms:
         print(str(mol.atoms[i].resid) + '-' + \
               mol.atoms[i].resname + \
               '@' + mol.atoms[i].atname + ' is in ' + str(cutoff) + \
-              ' Angstrom of these metal ions') #+
+              ' Angstrom of or set bonded (in the input file) to (one of)'
+              ' these metal ions')
+                    #+ \
                     #str(mol.atoms[i].resid) + '-' + \
                     #mol.atoms[i].resname + '@' + \
                     #mol.atoms[i].atname
