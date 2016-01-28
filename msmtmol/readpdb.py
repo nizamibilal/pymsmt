@@ -40,6 +40,8 @@ def get_atominfo_fpdb(fname):
 
             if (resname, atname) in list(METAL_PDB.keys()):
                 element = METAL_PDB[(resname, atname)][0]
+            elif atname[0:2].upper() in ['CL', 'BR']:
+                element = atname[0].upper() + atname[1].lower()
             else:
                 element = atname[0]
 

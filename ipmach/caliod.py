@@ -1,6 +1,7 @@
 #------------------------------------------------------------------------------
 # This module is for IOD and CN calculation
 #------------------------------------------------------------------------------
+from __future__ import print_function
 import numpy
 import os
 
@@ -13,79 +14,104 @@ def cal_iod(rs, grs, maxind):
     iod = -b/(2*a)
     return iod
 
+def print_md_inputf(file_name, nxt, window_steps, ifc4):
+
+    md_mdf = open(file_name, 'w')
+
+    if nxt in ['min']:
+        print("min for IOD calculation", file=md_mdf)
+    elif nxt in ['nvt']:
+        print("nvt for IOD calculation", file=md_mdf)
+    elif nxt in ['npt']:
+        print("npt for IOD calculation", file=md_mdf)
+    elif nxt in ['md']:
+        print("md for IOD calculation", file=md_mdf)
+
+    print(" &cntrl", file=md_mdf)
+
+    if nxt in ['min']:
+        print("  imin=1,", file=md_mdf)
+	print("  ncyc=1000,", file=md_mdf)
+        print("  maxcyc=%d," %window_steps, file=md_mdf)
+    elif nxt in ['nvt', 'npt', 'md']:
+        print("  imin=0,", file=md_mdf)
+        print("  irest=0,", file=md_mdf)
+        print("  ntx=1,", file=md_mdf)
+        print("  ig=-1,", file=md_mdf)
+        print("  nstlim=%d," %window_steps, file=md_mdf)
+        print("  dt=0.001,", file=md_mdf)
+
+    print("  cut=10.0,", file=md_mdf)
+    print("  ntc=2,", file=md_mdf)
+    print("  ntf=2,", file=md_mdf)
+
+    if nxt == 'min':
+        print("  ntb=1,", file=md_mdf)
+    elif nxt == 'nvt':
+        print("  ntb=1,", file=md_mdf)
+        print("  ntt=3,", file=md_mdf)
+        print("  gamma_ln=5.0,", file=md_mdf)
+        print("  tempi=0.0,", file=md_mdf)
+        print("  temp0=300.0,", file=md_mdf)
+    elif nxt in ['npt', 'md']:
+        print("  ntp=1,", file=md_mdf)
+        print("  pres0=1.01325,", file=md_mdf)
+        print("  ntt=3,", file=md_mdf)
+        print("  gamma_ln=5.0,", file=md_mdf)
+        print("  tempi=300.0,", file=md_mdf)
+        print("  temp0=300.0,", file=md_mdf)
+
+    print("  ntpr=500,", file=md_mdf)
+    print("  ntwr=500,", file=md_mdf)
+
+    if nxt == 'md':
+        print("  ntwx=500,", file=md_mdf)
+    else:
+        print("  ntwx=2000,", file=md_mdf)
+
+    if nxt != 'min':
+        print("  ntwv=-1,", file=md_mdf)
+
+    print("  ioutfm=1,", file=md_mdf)
+    print("  iwrap=1,", file=md_mdf)
+
+    if ifc4 == 1:
+        print(" lj1264=1,", file=md_mdf)
+
+    print("/", file=md_mdf)
+    md_mdf.close()
+
 def MD_simulation(exe, md_prmtop, md_inpcrd, md_min_steps, md_nvt_steps, md_npt_steps, md_md_steps, ifc4):
 
-    print "Perform MD calculation..."
+    prog = exe.split()[-1]
 
     #Normal MD simulation-IOD, CN
+    print("****Perform MD simulation using %s program..." %prog)
+
     #MIN
-    print "Perform md_min %d steps..." %md_min_steps
-    md_minf = open('md_min.in', 'w')
-    print >> md_minf, "rdf simulation first step min 1000"
-    print >> md_minf, "&cntrl"
-    print >> md_minf, " imin=1, maxcyc=%d, ncyc=1000," %md_min_steps
-    print >> md_minf, " ntb=1, cut=10.0, iwrap=1, ioutfm=1,"
-    if ifc4 == 1:
-        print >> md_minf, " lj1264=1,"
-    print >> md_minf, "/"
-    md_minf.close()
+    print("Perform md_min %d steps..." %md_min_steps)
+    print_md_inputf('md_min.in', 'min', md_min_steps, ifc4)
     os.system("%s -O -i md_min.in -o md_min.out -p %s -c %s -r md_min.rst -x md_min.netcdf" %(exe, md_prmtop, md_inpcrd))
 
     #NVT
-    print "Perform md_nvt %d steps..." %md_nvt_steps
-    md_nvtf = open('md_nvt.in', 'w')
-    print >> md_nvtf, "rdf simulation second step NVT"
-    print >> md_nvtf, " &cntrl"
-    print >> md_nvtf, "  imin=0, irest=0, ntx=1, ig=-1,"
-    print >> md_nvtf, "  nstlim=%d, dt=0.001," %md_nvt_steps
-    print >> md_nvtf, "  cut=10.0, ntb=1,"
-    print >> md_nvtf, "  ntc=2, ntf=2, "
-    print >> md_nvtf, "  ntt=3, gamma_ln=5.0, tempi=0.0, temp0=300.0,"
-    print >> md_nvtf, "  ntpr=500, ntwx=2000, ntwr=2000, ioutfm=1, ntwv=-1, iwrap=1,"
-    if ifc4 == 1:
-        print >> md_nvtf, " lj1264=1,"
-    print >> md_nvtf, "/"
-    md_nvtf.close()
+    print("Perform md_nvt %d steps..." %md_nvt_steps)
+    print_md_inputf('md_nvt.in', 'nvt', md_nvt_steps, ifc4)
     os.system("%s -O -i md_nvt.in -o md_nvt.out -p %s -c md_min.rst -r md_nvt.rst -x md_nvt.netcdf" %(exe, md_prmtop))
 
     #NPT
-    print "Perform md_npt %d steps..." %md_npt_steps
-    md_nptf = open('md_npt.in', 'w')
-    print >> md_nptf, "for deltaG calculation"
-    print >> md_nptf, " &cntrl"
-    print >> md_nptf, "  imin=0, irest=1, ntx=5, ig=-1,"
-    print >> md_nptf, "  nstlim=%d, dt=0.001," %md_npt_steps
-    print >> md_nptf, "  cut=10.0, ntp=1, pres0=1.01325, barostat=2,"
-    print >> md_nptf, "  ntc=2, ntf=2, "
-    print >> md_nptf, "  tempi=300.0, temp0=300.0, ntt=3, gamma_ln=5.0,"
-    print >> md_nptf, "  ntpr=500, ntwr=2000, ntwx=2000, ioutfm=1, iwrap=1, ntwv=-1,"
-    if ifc4 == 1:
-        print >> md_nptf, " lj1264=1,"
-    print >> md_nptf, "/"
-    md_nptf.close()
+    print("Perform md_npt %d steps..." %md_npt_steps)
+    print_md_inputf('md_npt.in', 'npt', md_npt_steps, ifc4)
     os.system("%s -O -i md_npt.in -o md_npt.out -p %s -c md_nvt.rst -r md_npt.rst -x md_npt.netcdf" %(exe, md_prmtop))
 
     #MD
-    print "Perform md_md %d steps..." %md_md_steps
-    md_mdf = open('md_md.in', 'w')
-    print >> md_mdf, "for deltaG calculation"
-    print >> md_mdf, " &cntrl"
-    print >> md_mdf, "  imin=0, irest=1, ntx=5, ig=-1,"
-    print >> md_mdf, "  nstlim=%d, dt=0.001," %md_md_steps
-    print >> md_mdf, "  cut=10.0, ntp=1, pres0=1.01325, barostat=2,"
-    print >> md_mdf, "  ntc=2, ntf=2, "
-    print >> md_mdf, "  tempi=300.0, temp0=300.0, ntt=3, gamma_ln=5.0,"
-    print >> md_mdf, "  ntpr=500, ntwr=500, ntwx=500, ioutfm=1, iwrap=1, ntwv=-1,"
-    if ifc4 == 1:
-        print >> md_mdf, " lj1264=1,"
-    print >> md_mdf, "/"
-    md_mdf.close()
+    print("Perform md_md %d steps..." %md_md_steps)
+    print_md_inputf('md_md.in', 'md', md_md_steps, ifc4)
     os.system("%s -O -i md_md.in -o md_md.out -p %s -c md_npt.rst -r md_md.rst -x md_md.netcdf" %(exe, md_prmtop))
 
     #Cpptraj input file
     cpptrajf = open('cpptraj.in', 'w')
-    print >> cpptrajf, "trajin md_md.netcdf 1 100000 1"
-    print >> cpptrajf, "radial M_O 0.01 5.0 :1 :WAT@O volume intrdf M_O"
+    print("trajin md_md.netcdf 1 100000 1", file=cpptrajf)
+    print("radial M_O 0.01 5.0 :1 :WAT@O volume intrdf M_O", file=cpptrajf)
     cpptrajf.close()
 
     os.system("cpptraj -p %s -i cpptraj.in > cpptraj.out" %md_prmtop)
