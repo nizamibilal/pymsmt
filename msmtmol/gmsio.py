@@ -2,7 +2,7 @@
 from __future__ import absolute_import, print_function, division
 import linecache
 import numpy
-from msmtmol.pt import AtomicNum
+from parmed.periodic_table import AtomicNum
 from msmtmol.constants import B_TO_A
 
 #------------------------------------------------------------------------------
@@ -104,6 +104,12 @@ def get_crds_from_gms(logfile):
         ln = ln + 1
     fp.close()
 
+    if bln is None:
+        raise pymsmtError('There is no atomic coordinates found in the '
+                          'GAMESS-US output file. Please check whether '
+                          'the GAMESS-US jobs are finished normally, and '
+                          'whether you are using the correct output file.')
+
     crdl = []
     for i in range(bln, eln+1):
         line = linecache.getline(logfile, i)
@@ -124,12 +130,22 @@ def get_crds_from_gms(logfile):
 def get_matrix_from_gms(logfile, msize):
 
     ln = 1
+    hasfc = 0
     fp = open(logfile, 'r')
     for line in fp:
         if 'CARTESIAN FORCE CONSTANT MATRIX' in line:
+            hasfc = hasfc + 1
             bln = ln + 6
         ln = ln + 1
     fp.close()
+
+    if hasfc > 0:
+        pass
+    else:
+        raise pymsmtError('There is no \'CARTESIAN FORCE CONSTANT MATRIX\' '
+                          'found in the GAMESS-US output file. Please check '
+                          'whether the GAMESS-US jobs are finished normally, '
+                          'and whether you are using the correct output file.')
 
     fcmatrix = numpy.array([[float(0) for x in range(msize)] for x in range(msize)])
 
@@ -192,6 +208,12 @@ def get_esp_from_gms(logfile, espfile):
         ln = ln + 1
     fp.close()
 
+    if (bln1 == 0) and (bln2 is None):
+        raise pymsmtError('There is no atomic coordinates found in the '
+                          'GAMESS-US output file. Please check whether '
+                          'the GAMESS-US jobs are finished normally, and '
+                          'whether you are using the correct output file.')
+
     if bln1 == 0:
         bln = bln2
     else:
@@ -215,12 +237,22 @@ def get_esp_from_gms(logfile, espfile):
     espdict = {}
 
     ln = 1
+    hasesp = 0
     fp = open(logfile, 'r')
     for line in fp:
         if 'ELECTROSTATIC POTENTIAL' in line:
+            hasesp = hasesp + 1
             bln = ln + 6
         ln = ln + 1
     fp.close()
+
+    if hasesp > 0:
+        pass
+    else:
+        raise pymsmtError('There is no \'ELECTROSTATIC POTENTIAL\' '
+                          'found in the GAMESS-US output file. Please check '
+                          'whether the GAMESS-US jobs are finished normally, '
+                          'and whether you are using the correct output file.')
 
     try:
         line = linecache.getline(logfile, bln)

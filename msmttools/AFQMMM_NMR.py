@@ -12,8 +12,8 @@ from msmtmol.cal import calc_bond
 from msmtmol.element import Atnum, CoRadiiDict, ResChgDict, resnamel
 from pymsmtexp import *
 
-from chemistry.amber.readparm import AmberParm
-from chemistry.amber.mask import AmberMask
+from parmed.amber import AmberParm
+from parmed.amber.mask import AmberMask
 from optparse import OptionParser
 import os
 
@@ -417,8 +417,8 @@ def afqmmm_nmr(cresids, mol, atids, resids):
 #==============================================================================
 # Setting the variables
 #==============================================================================
-parser = OptionParser("usage: -p toplogy_file -r coordinate_file "
-                      "-m amber_mask [-w (0 to 3)]")
+parser = OptionParser("Usage: AFQMMM_NMR.py -p toplogy_file "
+                      "-r coordinate_file -m amber_mask [-w (0 to 3)]")
 
 parser.set_defaults(water=1)
 

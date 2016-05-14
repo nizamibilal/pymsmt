@@ -31,8 +31,9 @@ def print_md_inputf(file_name, nxt, window_steps, ifc4):
 
     if nxt in ['min']:
         print("  imin=1,", file=md_mdf)
-	print("  ncyc=1000,", file=md_mdf)
         print("  maxcyc=%d," %window_steps, file=md_mdf)
+        ncyc = window_steps//2
+        print("  ncyc=%d," %ncyc, file=md_mdf)
     elif nxt in ['nvt', 'npt', 'md']:
         print("  imin=0,", file=md_mdf)
         print("  irest=0,", file=md_mdf)
@@ -65,7 +66,8 @@ def print_md_inputf(file_name, nxt, window_steps, ifc4):
     print("  ntwr=500,", file=md_mdf)
 
     if nxt == 'md':
-        print("  ntwx=500,", file=md_mdf)
+        ntwx = window_steps//2
+        print("  ntwx=%d," %ntwx, file=md_mdf)
     else:
         print("  ntwx=2000,", file=md_mdf)
 

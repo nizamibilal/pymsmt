@@ -16,6 +16,23 @@ def addspace(atomtype):
 
     #--------------------------------------------------------------------------
 
+def seq_imp(imp):
+    i = imp[0]
+    j = imp[1]
+    k = imp[2]
+    l = imp[3]
+
+    if i == 'X ' and j == 'X ':
+        new_imp = imp
+    if i == 'X ' and j != 'X ':
+        new_seq = sorted([j, l])
+        new_imp = (i, new_seq[0], k, new_seq[1])
+    elif 'X ' not in imp:
+        new_seq = sorted([i, j, l])
+        new_imp = (new_seq[0], new_seq[1], k, new_seq[2])
+
+    return new_imp
+
 def gene_pre_frcmod_file(ionids, naamol2f, stpdbf, stfpf, smresf, prefcdf,
                          ffchoice, gaff, frcmodfs, watermodel):
 
@@ -42,6 +59,7 @@ def gene_pre_frcmod_file(ionids, naamol2f, stpdbf, stfpf, smresf, prefcdf,
     dihparms = Params.dih
     impparms = Params.imp
     nbparms = Params.nb
+    ljedparms = Params.ljed
 
     #--------------------------------------------------------------------------
 
@@ -101,12 +119,10 @@ def gene_pre_frcmod_file(ionids, naamol2f, stpdbf, stfpf, smresf, prefcdf,
     #for metal ions
     for i in ionids:
         attyp = attypdict[i][1]
-        atname = mol.atoms[i].atname
-        if len(atname) > 1:
-            atname = atname[0] + atname[1:].lower()
-        massi = Mass[atname]
+        element = mol.atoms[i].element
+        massi = Mass[element]
         print('YES', attyp + ' '  + str(round(massi, 2))  + \
-              '                              ' + atname + ' ion', file=fmf)
+              '                              ' + element + ' ion', file=fmf)
 
     #for ligating atoms
     for atid in atidtrans:
@@ -219,15 +235,15 @@ def gene_pre_frcmod_file(ionids, naamol2f, stpdbf, stfpf, smresf, prefcdf,
         k = dihs[2]
         l = dihs[3]
         if list(set(ionids) & set(dihs)) != []:
-            #The dihedral related to the metal ions
+            # Treat the dihedrals related to the metal ions as zero
             dihtyp1 = (attypdict[i][0], attypdict[j][0], attypdict[k][0], \
                        attypdict[l][0])
             dihtyp1n = (attypdict[i][1], attypdict[j][1], attypdict[k][1], \
                         attypdict[l][1])
             if (dihtyp1 not in list(dihparamsdict.keys())) and (dihtyp1[::-1] \
                not in list(dihparamsdict.keys())):
-                dihparamsdict[dihtyp1n] = ['   3    0.00          0.0   ', \
-                                           '          3.   ', ' ']
+                dihparamsdict[dihtyp1n] = ['    3       0.00       0.00 ', 3, '    Treat as zero by MCPB.py']
+
         elif list(set(atidtrans) & set(dihs)) != []:
             if list(set(atidtrans) & set(dihs[0::3])) == []:
             #Neither the 1st and 4th atom change atom types
@@ -258,8 +274,8 @@ def gene_pre_frcmod_file(ionids, naamol2f, stpdbf, stfpf, smresf, prefcdf,
                 else:
                     if (dihtyp1n not in list(dihparamsdict.keys())) and (dihtyp1n[::-1] \
                         not in list(dihparamsdict.keys())):
-                        dihparamsdict[dihtyp1n] = ['   3    0.00          0.0   ', \
-                                                   '          3.   ', ' ']
+                        dihparamsdict[dihtyp1n] = ['    3       0.00       0.00 ', 3, '    Treat as zero by MCPB.py']
+
             else:
             #There is 1st or 4th atoms or both changed the atom type(s)
                 dihtyp1 = (attypdict[i][0], attypdict[j][0], attypdict[k][0], \
@@ -282,8 +298,7 @@ def gene_pre_frcmod_file(ionids, naamol2f, stpdbf, stfpf, smresf, prefcdf,
                         continue
                     elif (dihtyp1n not in list(dihparamsdict.keys())) and (dihtyp1n[::-1] \
                           not in list(dihparamsdict.keys())):
-                        dihparamsdict[dihtyp1n] = ['   3    0.00          0.0   ', \
-                                                   '          3.   ', ' ']
+                        dihparamsdict[dihtyp1n] =  ['    3       0.00       0.00 ', 3, '    Treat as zero by MCPB.py']
 
     #Add for a specfic situation
     for i in coparas:
@@ -300,21 +315,12 @@ def gene_pre_frcmod_file(ionids, naamol2f, stpdbf, stfpf, smresf, prefcdf,
                             elif dihtyp1[::-1] in list(dihparms.keys()):
                                 dihparamsdict[dihtyp2] = dihparms[dihtyp1[::-1]]
                             else:
-                                dihparamsdict[dihtyp2] = ['   3    0.00          0.0   ', \
-                                                       '          3.   ', ' ']
+                                dihparamsdict[dihtyp2] = ['    3       0.00       0.00 ', 3, '    Treat as zero by MCPB.py']
 
     print(' ', file=fmf)
     print('DIHE', file=fmf)
-    for keyv in sorted(list(dihparamsdict.keys())):
-        if 'X ' not in keyv: #For types don't contain X
-            valv = dihparamsdict[keyv]
-            keyv = keyv[0] + '-' + keyv[1] + '-' + keyv[2] + '-' + keyv[3]
-            terms = len(valv)//3
-            for i in range(0, terms):
-                temp = i * 3
-                print('YES', keyv, valv[temp] + valv[temp+1] + \
-                         valv[temp+2], file=fmf)
-
+    # First is the term contains X and then the others, consistent with Amber
+    # manual
     for keyv in sorted(list(dihparamsdict.keys())):
         if 'X ' in keyv:     #For types contain X
             valv = dihparamsdict[keyv]
@@ -322,80 +328,150 @@ def gene_pre_frcmod_file(ionids, naamol2f, stpdbf, stfpf, smresf, prefcdf,
             terms = len(valv)//3
             for i in range(0, terms):
                 temp = i * 3
-                print('YES', keyv, valv[temp] + valv[temp+1] + \
-                         valv[temp+2], file=fmf)
-    #--------------------------------------------------------------------------
-    impparamsdict = {}
+                print('YES', keyv + valv[temp] + str(valv[temp+1]).rjust(3) + \
+                    '.0' + valv[temp+2], file=fmf)
 
-    #For improper torsion
+    for keyv in sorted(list(dihparamsdict.keys())):
+        if 'X ' not in keyv: #For types don't contain X
+            valv = dihparamsdict[keyv]
+            keyv = keyv[0] + '-' + keyv[1] + '-' + keyv[2] + '-' + keyv[3]
+            terms = len(valv)//3
+            for i in range(0, terms):
+                temp = i * 3
+                print('YES', keyv + valv[temp] + str(valv[temp+1]).rjust(3) + \
+                    '.0' + valv[temp+2], file=fmf)
+    #--------------------------------------------------------------------------
+    impparamsdict = {} # Dict for the new improper parameters
+
+    # For improper torsion, which is only not necessary term in Amber force
+    # field here the code only duplicates the available improper parameters
+    # for changed atom types
     for imps in all_list.implist:
         i = imps[0]
         j = imps[1]
         k = imps[2]
         l = imps[3]
 
+        # For improper torsions related to metal ions, doesn't consider them
         if list(set(ionids) & set(imps)) != []:
             continue
         elif list(set(atidtrans) & set(imps)) != []:
+        # Find all possible improper torsions which are related to the atoms
+        # whose atom types were changed, and get them into a dict
+
             imptyps = {}
 
-            #1 situation
+            #1 situation for all atom representation
             imptyp1 = (attypdict[i][0], attypdict[j][0], attypdict[k][0], \
                        attypdict[l][0])
             imptyp1n = (attypdict[i][1], attypdict[j][1], attypdict[k][1], \
                         attypdict[l][1])
+            imptyp1 = seq_imp(imptyp1)
+            imptyp1n = seq_imp(imptyp1n)
 
-            #3 situations
+            #3 situations for two X used in the representation, i, j, l
             imptyp2 = ('X ', 'X ', attypdict[k][0], attypdict[i][0])
             imptyp2n = ('X ', 'X ', attypdict[k][1], attypdict[i][1])
+            imptyp2 = seq_imp(imptyp2)
+            imptyp2n = seq_imp(imptyp2n)
 
             imptyp3 = ('X ', 'X ', attypdict[k][0], attypdict[j][0])
             imptyp3n = ('X ', 'X ', attypdict[k][1], attypdict[j][1])
+            imptyp3 = seq_imp(imptyp3)
+            imptyp3n = seq_imp(imptyp3n)
 
             imptyp4 = ('X ', 'X ', attypdict[k][0], attypdict[l][0])
             imptyp4n = ('X ', 'X ', attypdict[k][1], attypdict[l][1])
+            imptyp4 = seq_imp(imptyp4)
+            imptyp4n = seq_imp(imptyp4n)
 
-            #6 situations
+            #6 situations for one X used in the representation: ij, ji, il, li, jl, lj
             imptyp5 = ('X ', attypdict[i][0], attypdict[k][0], attypdict[j][0])
             imptyp5n = ('X ', attypdict[i][1], attypdict[k][1], attypdict[j][1])
+            imptyp5 = seq_imp(imptyp5)
+            imptyp5n = seq_imp(imptyp5n)
 
             imptyp6 = ('X ', attypdict[j][0], attypdict[k][0], attypdict[i][0])
             imptyp6n = ('X ', attypdict[j][1], attypdict[k][1], attypdict[i][1])
+            imptyp6 = seq_imp(imptyp6)
+            imptyp6n = seq_imp(imptyp6n)
 
             imptyp7 = ('X ', attypdict[i][0], attypdict[k][0], attypdict[l][0])
             imptyp7n = ('X ', attypdict[i][0], attypdict[k][1], attypdict[l][1])
+            imptyp7 = seq_imp(imptyp7)
+            imptyp7n = seq_imp(imptyp7n)
 
             imptyp8 = ('X ', attypdict[l][0], attypdict[k][0], attypdict[i][0])
             imptyp8n = ('X ', attypdict[l][1], attypdict[k][1], attypdict[i][1])
+            imptyp8 = seq_imp(imptyp8)
+            imptyp8n = seq_imp(imptyp8n)
 
             imptyp9 = ('X ', attypdict[j][0], attypdict[k][0], attypdict[l][0])
             imptyp9n = ('X ', attypdict[j][1], attypdict[k][1], attypdict[l][1])
+            imptyp9 = seq_imp(imptyp9)
+            imptyp9n = seq_imp(imptyp9n)
 
             imptyp10 = ('X ', attypdict[l][0], attypdict[k][0], attypdict[j][0])
             imptyp10n = ('X ', attypdict[l][1], attypdict[k][1], attypdict[j][1])
+            imptyp10 = seq_imp(imptyp10)
+            imptyp10n = seq_imp(imptyp10n)
 
-            imptyps[imptyp1] = imptyp1n
-            imptyps[imptyp2] = imptyp2n
-            imptyps[imptyp3] = imptyp3n
-            imptyps[imptyp4] = imptyp4n
-            imptyps[imptyp5] = imptyp5n
-            imptyps[imptyp6] = imptyp6n
-            imptyps[imptyp7] = imptyp7n
-            imptyps[imptyp8] = imptyp8n
-            imptyps[imptyp9] = imptyp9n
-            imptyps[imptyp10] = imptyp10n
+            # If the improper torsion don't change, don't consider them, this
+            # is due to the old force field lib would be enough to deal with
+            # these situations
+            if imptyp1n != imptyp1:
+                imptyps[imptyp1] = imptyp1n
 
+            if imptyp2n != imptyp2:
+                imptyps[imptyp2] = imptyp2n
+
+            if imptyp3n != imptyp3:
+                imptyps[imptyp3] = imptyp3n
+
+            if imptyp4n != imptyp4:
+                imptyps[imptyp4] = imptyp4n
+
+            if imptyp5n != imptyp5:
+                imptyps[imptyp5] = imptyp5n
+
+            if imptyp6n != imptyp6:
+                imptyps[imptyp6] = imptyp6n
+
+            if imptyp7n != imptyp7:
+                imptyps[imptyp7] = imptyp7n
+
+            if imptyp8n != imptyp8:
+                imptyps[imptyp8] = imptyp8n
+
+            if imptyp9n != imptyp9:
+                imptyps[imptyp9] = imptyp9n
+
+            if imptyp10n != imptyp10:
+                imptyps[imptyp10] = imptyp10n
+
+            # If the corresponding old improper types available in the lib, then
+            # add the parameters to the impparamsdict for new improper types
             for imptypkey in list(imptyps.keys()):
                 if imptypkey in list(impparms.keys()):
                     impparamsdict[imptyps[imptypkey]] = impparms[imptypkey]
 
     print(' ', file=fmf)
     print('IMPR', file=fmf)
-    #for improper torsion
-    for i in sorted(list(impparamsdict.keys())):
-        if i not in list(impparms.keys()):
+    # Print improper torsion, first has two Xs, then one X, then the others
+    for i in list(impparamsdict.keys()):
+        if i[0] == 'X ' and i[1] == 'X ':
             imptypkey = i[0] + '-' + i[1] + '-' + i[2] + '-' + i[3]
-            print('YES', imptypkey, impparamsdict[i], file=fmf)
+            print('YES', imptypkey + impparamsdict[i], file=fmf)
+
+    for i in list(impparamsdict.keys()):
+        if i[0] == 'X ' and i[1] != 'X ':
+            imptypkey = i[0] + '-' + i[1] + '-' + i[2] + '-' + i[3]
+            print('YES', imptypkey + impparamsdict[i], file=fmf)
+
+    for i in list(impparamsdict.keys()):
+        if 'X ' not in i:
+            imptypkey = i[0] + '-' + i[1] + '-' + i[2] + '-' + i[3]
+            print('YES', imptypkey + impparamsdict[i], file=fmf)
     #--------------------------------------------------------------------------
     #for nb
     print(' ', file=fmf)

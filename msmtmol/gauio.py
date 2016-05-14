@@ -7,7 +7,7 @@ import numpy
 import linecache
 from pymsmtexp import *
 from msmtmol.constants import B_TO_A
-from msmtmol.pt import AtomicNum
+from parmed.periodic_table import AtomicNum
 
 #------------------------------------------------------------------------------
 #------------------------Write Gaussian input file-----------------------------
@@ -233,14 +233,24 @@ def get_crds_from_fchk(fname, atnums):
     crdnums = atnums * 3
     fp = open(fname, 'r')
     i = 1
+    hascrd = 0
     for line in fp:
         if 'Current cartesian coordinates' in line:
+            hascrd = hascrd + 1
             beginl = i + 1
             line = line.strip('\n')
             line = line.split()
             crdnums2 = int(line[-1])
         i = i + 1
     fp.close()
+
+    if hascrd > 0:
+        pass
+    else:
+        raise pymsmtError('There is no \'Current cartesian coordinates\' '
+                          'found in the fchk file. Please check whether the '
+                          'Gaussian jobs are finished normally, and whether '
+                          'you are using the correct fchk file.')
 
     if crdnums == crdnums2:
         pass
@@ -273,14 +283,24 @@ def get_matrix_from_fchk(fname, msize):
 
     fp = open(fname, 'r')
     i = 1
+    hasfc = 0
     for line in fp:
         if 'Cartesian Force Constants' in line:
+            hasfc = hasfc + 1
             beginl = i + 1
             line = line.strip('\n')
             line = line.split()
             elenums2 = int(line[-1])
         i = i + 1
     fp.close()
+
+    if hasfc > 0:
+        pass
+    else:
+        raise pymsmtError('There is no \'Cartesian Force Constants\' found in '
+                          'the fchk file. Please check whether the Gaussian '
+                          'jobs are finished normally, and whether you are '
+                          'using the correct fchk file.')
 
     if elenums == elenums2:
         pass
@@ -438,12 +458,23 @@ def get_esp_from_gau(logfile, espfile):
     crdl2 = []
 
     ln = 1
+    hasesp1 = 0
     fp = open(logfile, 'r')
     for line in fp:
         if 'Electrostatic Properties Using The SCF Density' in line:
+            hasesp1 = hasesp1 + 1
             bln = ln
         ln = ln + 1
     fp.close()
+
+    if hasesp1 > 0:
+        pass
+    else:
+        raise pymsmtError('There is no \'Electrostatic Properties Using The '
+                          'SCF Density\' found in the Gaussian output file. '
+                          'Please check whether the Gaussian jobs are '
+                          'finished normally, and whether you are using the '
+                          'correct output file.')
 
     ln = 1
     fp = open(logfile, 'r')
@@ -469,12 +500,23 @@ def get_esp_from_gau(logfile, espfile):
     espl2 = []
 
     ln = 1
+    hasesp2 = 0
     fp = open(logfile, 'r')
     for line in fp:
         if 'Electrostatic Properties (Atomic Units)' in line:
+            hasesp2 = hasesp2 + 1
             bln = ln + 6
         ln = ln + 1
     fp.close()
+
+    if hasesp2 > 0:
+        pass
+    else:
+        raise pymsmtError('There is no \'Electrostatic Properties (Atomic '
+                          'Units)\' found in the Gaussian output file. Please '
+                          'check whether the Gaussian jobs are finished '
+                          'normally, and whether you are using the correct '
+                          'output file.')
 
     ln = 1
     fp = open(logfile, 'r')

@@ -8,12 +8,13 @@ output file.
 """
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
-
 from msmtmol.gauio import get_esp_from_gau
 from msmtmol.gmsio import get_esp_from_gms
 from optparse import OptionParser
+from title import print_title
 
-parser = OptionParser("usage: -i input_file -o output_file [-v software]")
+parser = OptionParser("Usage: espgen.py -i input_file -o output_file "
+                              "[-v software]")
 
 parser.set_defaults(softversion='gau')
 
@@ -25,6 +26,10 @@ parser.add_option("-v", dest="softversion", type='string',
                   help="Software version [Default is gau (means Gaussian), \n"
                        "           other option is gms (means GAMESS-US)]")
 (options, args) = parser.parse_args()
+
+# Print the title of the program
+version = '1.0'
+print_title('espgen.py', version)
 
 if options.softversion == 'gau':
     get_esp_from_gau(options.inputfile, options.outputfile)

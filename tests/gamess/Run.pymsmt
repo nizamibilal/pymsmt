@@ -11,18 +11,18 @@ fi
 input=1A5T.in
 output=mcpbpy.out
 
-$mcpbpy -i $input -s 1 > $output 2>&1 || error
-$mcpbpy -i $input -s 2 >> $output 2>&1 || error
-$mcpbpy -i $input -s 3 >> $output 2>&1 || error
-$mcpbpy -i $input -s 4 >> $output 2>&1 || error
+$mcpbpy -i $input --step 1 > $output 2>&1 || error
+$mcpbpy -i $input --step 2 >> $output 2>&1 || error
+$mcpbpy -i $input --step 3 >> $output 2>&1 || error
+$mcpbpy -i $input --step 4 >> $output 2>&1 || error
 tleap -s -f 1A5T_tleap.in > 1A5T_tleap.out
 
 #For modeling files generation
-$dacdif 1A5T_small.pdb.save 1A5T_small.pdb
-$dacdif 1A5T_small_opt.com.save 1A5T_small_opt.com
-$dacdif 1A5T_small_opt.inp.save 1A5T_small_opt.inp
-$dacdif 1A5T_small_fc.inp.save 1A5T_small_fc.inp
-$dacdif 1A5T_small_fc.com.save 1A5T_small_fc.com
+$dacdif 1A5T_sidechain.pdb.save 1A5T_sidechain.pdb
+$dacdif 1A5T_sidechain_opt.com.save 1A5T_sidechain_opt.com
+$dacdif 1A5T_sidechain_opt.inp.save 1A5T_sidechain_opt.inp
+$dacdif 1A5T_sidechain_fc.inp.save 1A5T_sidechain_fc.inp
+$dacdif 1A5T_sidechain_fc.com.save 1A5T_sidechain_fc.com
 $dacdif 1A5T_standard.pdb.save 1A5T_standard.pdb
 $dacdif 1A5T_standard.fingerprint.save 1A5T_standard.fingerprint
 $dacdif 1A5T_large_mk.inp.save 1A5T_large_mk.inp
@@ -30,8 +30,8 @@ $dacdif 1A5T_large_mk.com.save 1A5T_large_mk.com
 $dacdif 1A5T_large.pdb.save 1A5T_large.pdb
 $dacdif 1A5T_large.fingerprint.save 1A5T_large.fingerprint
 #For parameter calcualtion
-$dacdif 1A5T_mcpbpy_pre.frcmod.save 1A5T_mcpbpy_pre.frcmod
-$dacdif 1A5T_mcpbpy.frcmod.save 1A5T_mcpbpy.frcmod
+$dacdif 1A5T_pre.frcmod.save 1A5T_pre.frcmod
+$dacdif 1A5T.frcmod.save 1A5T.frcmod
 #For resp charge fitting
 $dacdif resp1.in.save resp1.in
 $dacdif resp2.in.save resp2.in

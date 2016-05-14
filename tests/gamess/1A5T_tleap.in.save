@@ -1,10 +1,10 @@
 source leaprc.ff14SB
 source leaprc.gaff
 addAtomTypes {
-        { "M1"  "Zn" "sp3" }
         { "Y1"  "S" "sp3" }
-        { "Y2"  "S" "sp3" }
         { "Y3"  "S" "sp3" }
+        { "Y2"  "S" "sp3" }
+        { "M1"  "Zn" "sp3" }
         { "Y4"  "S" "sp3" }
 }
 loadamberparams frcmod.ions1lsm_hfe_tip3p
@@ -13,7 +13,7 @@ CM2 = loadmol2 CM2.mol2
 CM3 = loadmol2 CM3.mol2
 CM4 = loadmol2 CM4.mol2
 ZN1 = loadmol2 ZN1.mol2
-loadamberparams 1A5T_mcpbpy.frcmod
+loadamberparams 1A5T.frcmod
 mol = loadpdb 1A5T_mcpbpy.pdb
 bond mol.50.SG mol.325.ZN
 bond mol.59.SG mol.325.ZN

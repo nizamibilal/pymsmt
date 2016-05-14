@@ -7,6 +7,7 @@ from msmtmol.readpdb import get_atominfo_fpdb, writepdb
 from msmtmol.readmol2 import get_atominfo
 from msmtmol.getlist import get_mc_blist
 from msmtmol.element import resnamel, IonHFEparal, IonCMparal, IonIODparal
+from lib.lib import FF_DICT
 from mcpb.rename_residues import rename_res, get_diS_bond
 from pymsmtexp import *
 import warnings
@@ -35,11 +36,10 @@ def gene_ion_libfile(resname, atname, element, charge):
     os.system('tleap -s -f %s.cmd > %s.log' %(resname, resname))
 
 def get_frcmod_fname(element, charge, watermodel, paraset):
-    ##Get the frcmod file which will be loaded
-    #Check whether there is parameter for the ion
+    """Get the frcmod file name which need to be loaded."""
 
+    # Check whether there is parameter for the ion
     atomtyp0 = element + str(charge)
-
     if paraset in ['iod', '12_6_4']:
         if atomtyp0 not in IonIODparal:
             raise pymsmtError('There is no %s parameter set for %s ion with '
@@ -70,34 +70,26 @@ def get_frcmod_fname(element, charge, watermodel, paraset):
                                   'database.' \
                                   %(paraset, element, charge, watermodel))
 
-    #For +1 metal ions
-    if charge in [1, -1]:
-        frcmodf = 'frcmod.ions1lsm_'
-        if paraset == 'hfe':
-            frcmodf = frcmodf + paraset + '_' + watermodel
-        elif paraset == 'iod':
-            frcmodf = frcmodf + paraset
-        elif paraset == '12_6_4':
-            frcmodf = frcmodf + '1264_' + watermodel
-    #For +2 metal ions, cm is the default
-    elif charge == 2:
-        frcmodf = 'frcmod.ionslrcm_'
+    #For monovalent ions
+    if charge in [-1, 1]:
+        frcmodf = 'frcmod.ions1lm_'
         if paraset in ['hfe', 'cm']:
-            frcmodf = frcmodf + paraset + '_' + watermodel
-        elif paraset == 'iod':
-            frcmodf = frcmodf + paraset
-        elif paraset == '12_6_4':
-            frcmodf = 'frcmod.ionslm_'
-            frcmodf = frcmodf + '1264_' + watermodel
-    #For +3 and +4 metal ions
-    elif charge in [3, 4]:
-        frcmodf = 'frcmod.ions34lsm_'
-        if paraset == 'hfe':
-            frcmodf = frcmodf + paraset + '_' + watermodel
+            frcmodf = frcmodf + '126_' + watermodel
         elif paraset == 'iod':
             frcmodf = frcmodf + 'iod'
         elif paraset == '12_6_4':
             frcmodf = frcmodf + '1264_' + watermodel
+    #For +2, +3, and +4 ions
+    elif charge in [2, 3, 4]:
+        frcmodf = 'frcmod.ions234lm_'
+        if paraset == 'hfe':
+            frcmodf = frcmodf + 'hfe_' + watermodel
+        elif paraset == 'iod':
+            frcmodf = frcmodf + 'iod_' + watermodel
+        elif paraset == '12_6_4':
+            frcmodf = frcmodf + '1264_' + watermodel
+        elif paraset == 'cm':
+            frcmodf = frcmodf + '126_' + watermodel
 
     return frcmodf
 
@@ -110,8 +102,9 @@ def get_frcmod_fname(element, charge, watermodel, paraset):
 ##############################################################################
 
 def gene_leaprc(gname, orpdbf, fipdbf, stpdbf, stfpf, ionids,\
-                ionmol2fs, ioninf, mcresname, naamol2fs, ff_choice, frcmodfs,
-                finfcdf, ileapf, model, watermodel='tip3p', paraset='cm'):
+                ionmol2fs, ioninf, mcresname, naamol2fs, ff_choice, gaff,
+                frcmodfs, finfcdf, ileapf, model, watermodel='tip3p',
+                paraset='cm'):
 
     print("******************************************************************")
     print("*                                                                *")
@@ -175,15 +168,19 @@ def gene_leaprc(gname, orpdbf, fipdbf, stpdbf, stfpf, ionids,\
                                               'but different element.')
         fp0.close()
     #---------------------Get the bond information, mol2 is the standard model
-
     if model == 1:
         mol2, atids2, resids2 = get_atominfo_fpdb(stpdbf)
         blist = get_mc_blist(mol2, atids2, ionids, stfpf)
         blist1 = [(i[0], i[1]) for i in blist]
+        if paraset == 'cm':
+            frcmodf = get_frcmod_fname('Na', 1, watermodel, 'hfe')
+        else:
+            frcmodf = get_frcmod_fname('Na', 1, watermodel, paraset)
+
+        frcmodfs.append(frcmodf)
 
     #----------------------Generate the lib file and get the frcmod file name
     if model == 2:
-        frcmodfs = []
         for ionmol2f in ionmol2fs:
             ionmol, ionatids, ionresids = get_atominfo(ionmol2f)
             for i in ionatids:
@@ -192,6 +189,7 @@ def gene_leaprc(gname, orpdbf, fipdbf, stpdbf, stfpf, ionids,\
                 frcmodf = get_frcmod_fname(element, chg, watermodel, paraset)
                 if frcmodf not in frcmodfs:
                     frcmodfs.append(frcmodf)
+
     elif model == 3 and ioninf != []:
         #get the metal information
         metresns = ioninf[0::4]
@@ -205,7 +203,7 @@ def gene_leaprc(gname, orpdbf, fipdbf, stpdbf, stfpf, ionids,\
             if metchg < -1 or metchg > 4:
                 raise pymsmtError('Could not deal with atomic ion which has charge '
                                   'less than -1 or bigger than +4.')
-        frcmodfs = []
+
         for i in range(0, len(metresns)):
             if metchgs[i] > 1: #if it is -1 or +1 ions, no need to create the lib file
                 gene_ion_libfile(metresns[i], metatns[i], metelmts[i], metchgs[i])
@@ -217,14 +215,35 @@ def gene_leaprc(gname, orpdbf, fipdbf, stpdbf, stfpf, ionids,\
 
     print('Generating the leap input file...')
 
-    ##Generate the tleap.in file
+    # Source the protein force field
     lp = open(ileapf, 'w')
-    if ff_choice in ['ff94', 'ff99', 'ff99SB', 'ff03', 'ff10']:
-        print('source oldff/leaprc.%s' %ff_choice, file=lp)
-    elif ff_choice in ['ff03.r1', 'ff12SB', 'ff14SB']:
-        print('source leaprc.%s' %ff_choice, file=lp)
-    print('source leaprc.gaff', file=lp)
-    #Add atom types, for bonded model
+
+    #Load leaprc files
+    print("source %s" %FF_DICT[ff_choice].sleaprcf, file=lp)
+
+    # Source GAFF
+    if gaff == 1:
+        print('source leaprc.gaff', file=lp)
+    elif gaff == 2:
+        print('source leaprc.gaff2')
+
+    # Source water model
+    if ff_choice in ['ff94', 'ff99', 'ff99SB', 'ff03', 'ff10', 'ff14ipq', 'ff14SB']:
+    # For the old force fields, default is TIP3P water model
+        if watermodel == 'spce':
+            print('HOH = SPC', file=lp)
+            print('WAT = SPC', file=lp)
+            print('loadAmberParams frcmod.spce', file=lp)
+        elif watermodel == 'tip4pew':
+            print('HOH = T4P', file=lp)
+            print('WAT = T4P', file=lp)
+            print('loadAmberParams frcmod.tip4pew', file=lp)
+    elif ff_choice == 'fb15': # fb15 use tip3pfb
+        pass
+    else: # For other new force fields
+        print('source leaprc.water.' + watermodel, file=lp)
+
+    # Add atom types, only for models 1 and 2
     if model in [1, 2]:
         if atomdefs.keys() != []:
             print('addAtomTypes {', file=lp)
@@ -232,12 +251,7 @@ def gene_leaprc(gname, orpdbf, fipdbf, stpdbf, stfpf, ionids,\
                 print('        { "%s"  "%s" "sp3" }' %(i, atomdefs[i]), file=lp)
             print('}', file=lp)
 
-    #load lib and frcmod files for monovalent ions (for salt)
-    if ff_choice in ['ff94', 'ff99', 'ff99SB', 'ff03', 'ff03.r1']:
-        print('loadoff atomic_ions.lib', file=lp)
-    print('loadamberparams frcmod.ions1lsm_hfe_%s' %watermodel, file=lp)
-
-    #Load mol2 file for the refitting charge residues
+    # Load mol2 file for the refitting charge residues
     if model in [1, 2]:
         for i in resns:
             print('%s = loadmol2 %s.mol2' %(i, i), file=lp)
@@ -245,25 +259,22 @@ def gene_leaprc(gname, orpdbf, fipdbf, stpdbf, stfpf, ionids,\
         for i in naamol2fs:
             print('%s = loadmol2 %s.mol2' %(i, i), file=lp)
 
-    #Load frcmod files for non-standard residues and metal site
-    for i in frcmodfs:
-        print('loadamberparams %s' %i, file=lp)
-
-    if model == 1:
-        print('loadamberparams %s' %finfcdf, file=lp)
-    elif model == 2:
-        for frcmodf in frcmodfs:
-            print('loadamberparams %s' %frcmodf, file=lp)
+    # Load frcmod files for non-standard residues and metal site
+    if model in [1, 2]:
+        for i in frcmodfs:
+            print('loadamberparams %s' %i, file=lp)
+        if model == 1:
+            print('loadamberparams %s' %finfcdf, file=lp)
     elif model == 3:
         for metresn in metresns:
             print('loadoff %s.lib' %metresn, file=lp)
-        for frcmodf in frcmodfs:
-            print('loadamberparams %s' %frcmodf, file=lp)
+        for i in frcmodfs:
+            print('loadamberparams %s' %i, file=lp)
 
-    #load pdb file
+    # Load pdb file
     print('mol = loadpdb %s' %fipdbf, file=lp)
 
-    ##The Disulfur Bond information
+    # Bond disulfur bond
     if disul != []:
         for i in disul:
             at1 = i[0]
@@ -275,7 +286,7 @@ def gene_leaprc(gname, orpdbf, fipdbf, stpdbf, stfpf, ionids,\
             print('bond', 'mol.' + str(resid1) + '.' + atname1, 'mol.' + \
                   str(resid2) + '.' + atname2, file=lp)
 
-    ##Bond including the metal ions
+    # Bond metal ion with ligating atoms
     if model == 1:
         for bond in blist1:
             if list(set(bond) & set(ionids)) != []:
@@ -288,8 +299,7 @@ def gene_leaprc(gname, orpdbf, fipdbf, stpdbf, stfpf, ionids,\
                 print('bond', 'mol.' + str(resid1) + '.' + atname1, 'mol.' + \
                       str(resid2) + '.' + atname2, file=lp)
 
-    ##Nonstandard residues with nearby residues
-
+    # Bond metal ion ligating residues with surronding residues
     if model in [1, 2]:
         bondcmds = []
         for i in metcenres1:
@@ -313,23 +323,24 @@ def gene_leaprc(gname, orpdbf, fipdbf, stpdbf, stfpf, ionids,\
         for j in bondcmds:
             print(j, file=lp)
 
-    #Save dry structure
+    # Save dry structure
     print('savepdb mol %s_dry.pdb' %gname, file=lp)
     print('saveamberparm mol %s_dry.prmtop %s_dry.inpcrd' \
           %(gname, gname), file=lp)
-    #Solvatebox
+
+    # Solvatebox
     if watermodel == 'tip3p':
         print('solvatebox mol TIP3PBOX 10.0', file=lp)
     elif watermodel == 'spce':
         print('solvatebox mol SPCBOX 10.0', file=lp)
-        print('loadamberparams frcmod.spce', file=lp)
     elif watermodel == 'tip4pew':
         print('solvatebox mol TIP4PEWBOX 10.0', file=lp)
-        print('loadamberparams frcmod.tip4pew', file=lp)
-    #Add counter ions
+
+    # Add counter ions
     print('addions mol Na+ 0', file=lp)
     print('addions mol Cl- 0', file=lp)
-    #Save solvated structure
+
+    # Save solvated structure
     print('savepdb mol %s_solv.pdb' %gname, file=lp)
     print('saveamberparm mol %s_solv.prmtop %s_solv.inpcrd' \
           %(gname, gname), file=lp)
@@ -340,5 +351,3 @@ def gene_leaprc(gname, orpdbf, fipdbf, stpdbf, stfpf, ionids,\
 
     print('Finish generating the leap input file.')
 
-    #tleap
-    #os.system('tleap -s -f %s > %s' %(ileapf, oleapf))

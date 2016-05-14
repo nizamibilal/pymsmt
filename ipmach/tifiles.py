@@ -10,12 +10,12 @@ Mass = {'H':   1.008,  'C':  12.01,  'N':  14.01,  'O':  16.00,  'S':  32.06,
         'Mg': 24.305,  'V':  50.94, 'Mn':  54.94, 'Hg': 200.59, 'Cd': 112.41,
         'Yb': 173.05, 'Ca':  40.08, 'Sn': 118.71, 'Pb':  207.2, 'Eu': 151.96,
         'Sr':  87.62, 'Sm': 150.36, 'Ba': 137.33, 'Ra': 226.03, 'Al':  26.98,
-	'Fe':  55.85, 'Cr':  52.00, 'In': 114.82, 'Tl': 204.38, 'Y' :  88.91,
-	'La': 138.91, 'Ce': 140.12, 'Pr': 140.91, 'Nd': 144.24, 'Sm': 150.36,
-	'Eu': 151.96, 'Gd': 157.25, 'Tb': 158.93, 'Dy':  162.5, 'Er': 167.26,
-	'Tm': 168.93, 'Lu': 174.97, 'As':  74.92, 'Ru': 101.07, 'Hf': 178.49,
-	'Zr':  91.22, 'Ce': 140.12, 'U' : 238.03, 'Pu': 244.06, 'Th': 232.04,
-	'Mo':  95.96
+	    'Fe':  55.85, 'Cr':  52.00, 'In': 114.82, 'Tl': 204.38, 'Y' :  88.91,
+	    'La': 138.91, 'Ce': 140.12, 'Pr': 140.91, 'Nd': 144.24, 'Sm': 150.36,
+	    'Eu': 151.96, 'Gd': 157.25, 'Tb': 158.93, 'Dy':  162.5, 'Er': 167.26,
+	    'Tm': 168.93, 'Lu': 174.97, 'As':  74.92, 'Ru': 101.07, 'Hf': 178.49,
+	    'Zr':  91.22, 'Ce': 140.12, 'U' : 238.03, 'Pu': 244.06, 'Th': 232.04,
+	    'Mo':  95.96
         }
 
 def write_frcmod(ion, fname):
@@ -53,35 +53,37 @@ def write_leapin(ion0, ion1, watermodel):
 
     leapf = open('tleap.in', 'w')
 
-    print("source leaprc.ff14SB", file=leapf)
+    print("source leaprc.protein.ff14SB", file=leapf)
+    print("loadOff solvents.lib", file=leapf)
 
-    print("loadoff %s.lib" %ion0.resname, file=leapf)
+    print("loadOff %s.lib" %ion0.resname, file=leapf)
+    print("loadOff %s.lib" %ion1.resname, file=leapf)
 
     # 1st is the metal ion without VDW or CHG, 2nd is the one with VDW and CHG
     print("ion = loadpdb ION.pdb", file=leapf)
 
+    print("loadamberparams %s.frcmod" %ion0.attype, file=leapf)  # VDW=0
+    print("loadamberparams %s.frcmod" %ion1.attype, file=leapf)  # VDW!=0
+
     if watermodel == 'OPC':
-        print("solvatebox ion OPCBOX 13", file=leapf)
         print("loadamberparams frcmod.opc", file=leapf)
+        print("solvatebox ion OPCBOX 13", file=leapf)
     elif watermodel == 'TIP3P':
         print("solvatebox ion TIP3PBOX 13", file=leapf)
     elif watermodel == 'SPC':
         print("solvatebox ion SPCBOX 13", file=leapf)
     elif watermodel == 'SPCE':
-        print("solvatebox ion SPCBOX 13", file=leapf)
         print("loadamberparams frcmod.spce", file=leapf)
+        print("solvatebox ion SPCBOX 13", file=leapf)
     elif watermodel == 'TIP4P':
-        print("solvatebox ion TIP4PBOX 13", file=leapf)
         print("loadamberparams frcmod.tip4p", file=leapf)
+        print("solvatebox ion TIP4PBOX 13", file=leapf)
     elif watermodel == 'TIP4PEW':
-        print("solvatebox ion TIP4PEWBOX 13", file=leapf)
         print("loadamberparams frcmod.tip4pew", file=leapf)
+        print("solvatebox ion TIP4PEWBOX 13", file=leapf)
     elif watermodel == 'TIP5P':
-        print("solvatebox ion TIP5PBOX 13", file=leapf)
         print("loadamberparams frcmod.tip5p", file=leapf)
-
-    print("loadamberparams %s.frcmod" %ion0.attype, file=leapf)  # VDW=0
-    print("loadamberparams %s.frcmod" %ion1.attype, file=leapf)  # VDW!=0
+        print("solvatebox ion TIP5PBOX 13", file=leapf)
 
     print("ion2 = copy ion", file=leapf)
 

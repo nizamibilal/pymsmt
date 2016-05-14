@@ -158,12 +158,14 @@ def get_sp_for_126(rmin):
 #----------------------------------------------------------------------------#
 #                            Main Program                                    #
 #----------------------------------------------------------------------------#
-parser = OptionParser("usage: -i inputfile")
+parser = OptionParser("Usage: IPMach.py -i inputfile")
 parser.add_option("-i", dest="inputf", type='string',
                   help="Input file name")
 (options, args) = parser.parse_args()
 
-print_title('IPMach.py', 1.0)
+# Print the title of the program
+version = '1.0-beta'
+print_title('IPMach.py', version)
 
 #---------------------------Default values------------------------------------
 
@@ -321,6 +323,20 @@ elif mode == "normal":
     md_nvt_steps = 500000
     md_npt_steps = 500000
     md_md_steps = 2000000
+elif mode == "scan":
+    ti_min_steps = 1000
+    ti_nvt_steps = 200000
+    ti_npt_steps = 200000
+    ti_window_steps = 80000
+    ti_sample_steps = ti_window_steps * 3/4
+    vdw_window_steps = 80000
+    vdw_sample_steps = vdw_window_steps * 3/4
+    chg_window_steps = 80000
+    chg_sample_steps = chg_window_steps * 3/4
+    md_min_steps = 1000
+    md_nvt_steps = 200000
+    md_npt_steps = 200000
+    md_md_steps = 800000
 
 #--------------------------------Print the variables---------------------------
 print("The input file you are using is : %s" %options.inputf)

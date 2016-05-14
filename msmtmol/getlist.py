@@ -268,6 +268,7 @@ def get_blist(mol, atids):
     return blist
 
 def get_mc_blist(mol, atids, ionids, fpf):
+    "Get Metal Site Bond List"
 
     blist = []
 

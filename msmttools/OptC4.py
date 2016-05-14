@@ -6,6 +6,7 @@ Michigan State University. It needs the OpenMM and ParmEd installed and also
 needs the SciPy module.
 It was designed to optimize the C4 terms for the metal complex in the protein
 system.
+
 The 12-6-4 LJ-type nonbonded model was proposed in:
 ** P. Li, K. M. Merz, JCTC, 2014, 10, 289-297
 """
@@ -16,9 +17,11 @@ import simtk.openmm as mm  #about force field
 import simtk.openmm.app as app #about algorithm
 
 # ParmEd imports
-from chemistry import unit as u
-from chemistry.amber import AmberParm, AmberMask
-from chemistry.openmm import StateDataReporter, NetCDFReporter, RestartReporter
+from parmed import unit as u
+from parmed.amber import AmberParm
+from parmed.amber.mask import AmberMask
+from parmed.openmm.reporters import (StateDataReporter, NetCDFReporter,
+                                     RestartReporter)
 
 # pyMSMT Imports
 from msmtmol.getlist import get_blist, get_all_list
@@ -26,6 +29,7 @@ from msmtmol.cal import calc_bond, calc_angle, calc_dih
 from msmtmol.rstfile import read_rstf
 from msmtmol.element import Atnum, CoRadiiDict
 from api.AmberParm import read_amber_prm
+from title import print_title
 
 # Other Imports
 from optparse import OptionParser
@@ -105,12 +109,12 @@ def get_rmsd(initparas):
         sim = app.Simulation(Ambermol.topology, system, integrator, platform)
     elif options.platf == 'cuda':
         platform = mm.Platform.getPlatformByName('CUDA')
-        prop = dict(CudaPrecision='mixed')
+        prop = dict(CudaPrecision=options.presn)
         sim = app.Simulation(Ambermol.topology, system, integrator, platform,
                              prop)
     elif options.platf == 'opencl':
         platform = mm.Platform.getPlatformByName('OpenCL')
-        prop = dict(CudaPrecision='mixed')
+        prop = dict(OpenCLPrecision=options.presn)
         sim = app.Simulation(Ambermol.topology, system, integrator, platform,
                              prop)
 
@@ -187,17 +191,17 @@ def get_rmsd(initparas):
 # Main Program
 #-----------------------------------------------------------------------------#
 
-parser = OptionParser("usage: -m amber_mask -p topology_file "
-                      "-c coordinate_file -r restart_file \n"
-                      "       [--maxsteps maxsteps] "
+parser = OptionParser("Usage: OptC4.py -m amber_mask -p topology_file "
+                      " -c coordinate_file -r restart_file \n"
+                      "                [--maxsteps maxsteps] "
                       "[--phase simulation_phase] \n"
-                      "       [--size optimization_step_size] "
+                      "                [--size optimization_step_size] "
                       "[--method optimization_method] \n"
-                      "       [--platform device_platform] "
+                      "                [--platform device_platform] "
                       "[--model metal_complex_model]")
 
 parser.set_defaults(simupha='gas', maxsteps=1000, stepsize=10.0, minm='bfgs',
-                    platf='cpu', model=1)
+                    platf='cpu', presn='single', model=1)
 
 parser.add_option("-m", dest="ion_mask", type='string', help="Amber mask of "
                   "the center metal ion")
@@ -216,8 +220,8 @@ parser.add_option("--size", dest="stepsize", type='float', \
                        "during parameter searching. [Default: 10.0]")
 parser.add_option("--method", dest="minm", type='string', \
                   help="Optimization method of the C4 terms. The options "
-                       "are: powell, cg, bfgs, ncg, l_bfgs_b, tnc or slsqp. "
-                       "[Default: bfgs] Please check the website: "
+                       "are: powell, cg, bfgs, or slsqp. [Default: bfgs] "
+                       "Please check the website: "
                        "http://docs.scipy.org/doc/scipy/reference/optimize.htm"
                        " for more information if interested.")
 parser.add_option("--platform", dest="platf", type='string', \
@@ -226,10 +230,17 @@ parser.add_option("--platform", dest="platf", type='string', \
                        "software to perform the structure minimization. "
                        "Please check OpenMM user guide for more information "
                        "if interested.")
+parser.add_option("--presn", dest="presn", type='string', \
+                  help="Precision used. The options are: single, mixed, or "
+                       "double. This option is only valid when using the CUDA "
+                       "or OpenCL platform. [Default: single]")
 parser.add_option("--model", dest="model", type='int', \
                   help="The metal ion complex model chosen to calculate the "
-                  "RMSD value. RMSD value is the criterion for the "
-                  "optimization (with a smaller RMSD value, better the "
+                  "sum of unsigned average errors of bond lengths, angles, "
+                  "and dihedrals (the units of them are angstrom, degree and "
+                  "degree respectively while the weights of them are 1/100, "
+                  "1/2 and 1 respectively). This sum is the criterion for the "
+                  "optimization (with a smaller value, better the "
                   "parameters). The options are: 1 or 2. "
                   "1 means a small model (only contains the metal ion and "
                   "binding heavy atoms) while 2 means a big (contains the "
@@ -237,29 +248,14 @@ parser.add_option("--model", dest="model", type='int', \
                   "[Default: 1]")
 (options, args) = parser.parse_args()
 
+# Print the title of the program
+version = '1.1'
+print_title('OptC4.py', version)
+
 #lowercase the input variables
 options.simupha=options.simupha.lower()
 options.minm=options.minm.lower()
 options.platf=options.platf.lower()
-
-if options.minm == 'powell':
-    from scipy.optimize import fmin_powell as fmin
-elif options.minm == 'cg':
-    from scipy.optimize import fmin_cg as fmin
-elif options.minm == 'bfgs':
-    from scipy.optimize import fmin_bfgs as fmin
-elif options.minm == 'ncg':
-    from scipy.optimize import fmin_ncg as fmin
-elif options.minm == 'l_bfgs_b':
-    from scipy.optimize import fmin_l_bfgs_b as fmin
-elif options.minm == 'tnc':
-    from scipy.optimize import fmin_tnc as fmin
-elif options.minm == 'cobyla':
-    from scipy.optimize import fmin_cobyla as fmin
-elif options.minm == 'slsqp':
-    from scipy.optimize import fmin_slsqp as fmin
-elif options.minm == 'simple':
-    from scipy.optimize import minimize as fmin
 
 #Get the metal center information from prmtop and coordinate files
 prmtop, mol, atids, resids = read_amber_prm(options.pfile, options.cfile)
@@ -359,8 +355,8 @@ for i in atompairs:
         dih = calc_dih(crd1, crd2, crd3, crd4)
         val_bf_min.append(('dih', dih))
 
-print("Bond, angle and dihedral before minimization...")
-print(val_bf_min)
+#print("Bond, angle and dihedral before minimization...")
+#print(val_bf_min)
 
 #-----------------------------------------------------------------------------#
 #Get the Amber mask of the metal center complex and print it into ptraj.in file
@@ -372,47 +368,13 @@ for i in smcids:
     maskn = str(mol.atoms[i].resid) + '@' + mol.atoms[i].atname
     maskns.append(maskn)
 
-w_parmedf = open('OptC4_parmed1.in', 'w')
-for i in range(0, len(maskns)):
-    print("change AMBER_ATOM_TYPE :%s M%d" %(maskns[i], i+1), file=w_parmedf)
-    print("addLJType " + ':' + maskns[i], file=w_parmedf)
-print("outparm addij_%s" %options.pfile, file=w_parmedf)
-print("quit", file=w_parmedf)
-w_parmedf.close()
-
-os.system("parmed.py -O -i OptC4_parmed1.in -p %s -c %s" %(options.pfile, options.cfile))
-
-w_parmedf = open('OptC4_parmed2.in', 'w')
-print("add12_6_4 " + options.ion_mask + " polfile lj_1264_pol.dat1", file=w_parmedf)
+w_parmedf = open('OptC4_parmed.in', 'w')
+print("add12_6_4 " + options.ion_mask, file=w_parmedf)
 print("outparm %s.c4" %options.pfile, file=w_parmedf)
 print("quit", file=w_parmedf)
 w_parmedf.close()
 
-#os.system("parmed.py -O -i OptC4_parmed2.in -p %s -c %s" %(options.pfile, options.cfile))
-os.system("parmed.py -O -i OptC4_parmed2.in -p addij_%s -c %s" %(options.pfile, options.cfile))
-
-"""
-#Print the cpptraj input file
-maskns = []
-for i in mcids:
-    maskn = str(mol.atoms[i].resid) + '@' + mol.atoms[i].atname
-    maskns.append(maskn)
-for i in metids:
-    maskn = str(mol.atoms[i].resid) + '@' + mol.atoms[i].atname
-    maskns.append(maskn)
-
-maskslet = ':'
-for i in range(0, len(maskns)-1):
-    maskslet += maskns[i] + ','
-maskslet += maskns[-1]
-
-ptrajif = open('OptC4_ptraj.in', 'w')
-print('trajin %s' %options.cfile, file=ptrajif)
-print('trajin %s' %options.rfile, file=ptrajif)
-print('rms %s first out OptC4_rmsd.txt' %maskslet, file=ptrajif)
-print('go', file=ptrajif)
-ptrajif.close()
-"""
+os.system("parmed -O -i OptC4_parmed.in -p %s -c %s" %(options.pfile, options.cfile))
 
 #Get the new molecule
 prmtop, mol, atids, resids = read_amber_prm(options.pfile + '.c4', options.cfile)
@@ -467,16 +429,20 @@ initparas = [c4terms[i] for i in idxs]
 print('Initial C4 parameters are : ', initparas)
 
 #Doing optimization of the parameters, initial was the normal C4 term
-xopt = fmin(get_rmsd, initparas, epsilon=options.stepsize)
+
+if options.minm == 'powell':
+    from scipy.optimize import fmin_powell as fmin
+    xopt = fmin(get_rmsd, initparas)
+elif options.minm == 'cg':
+    from scipy.optimize import fmin_cg as fmin
+    xopt = fmin(get_rmsd, initparas, epsilon=options.stepsize)
+elif options.minm == 'bfgs':
+    from scipy.optimize import fmin_bfgs as fmin
+    xopt = fmin(get_rmsd, initparas, epsilon=options.stepsize)
+elif options.minm == 'slsqp':
+    from scipy.optimize import fmin_slsqp as fmin
+    xopt = fmin(get_rmsd, initparas, epsilon=options.stepsize)
 
 print("Final parameters...")
 print(xopt)
-
-print("The final Score is: ")
-frmsd = get_rmsd(xopt)
-
-for i in range(0, len(idxs)):
-    print('The optimal value of atomtypes ' + str(mettypdict[iddict[idxs[i]][0]]) + \
-          + str(mctypdict[iddict[idxs[i]][1]]) + ' is ' + str(xopt[i]))
-
 

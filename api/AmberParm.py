@@ -1,5 +1,5 @@
 from __future__ import absolute_import, print_function
-from chemistry.amber.readparm import AmberParm
+from parmed.amber import AmberParm
 from msmtmol.element import AtnumRev
 from msmtmol.rstfile import read_rstf
 from msmtmol.mol import *

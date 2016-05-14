@@ -18,19 +18,14 @@ from title import print_title
 import os
 
 #==============================================================================
-# Print the title
-#==============================================================================
-
-print_title('PdbSearcher.py')
-
-#==============================================================================
 # Setting the options
 #==============================================================================
 
-parser = OptionParser("usage: -i/--ion ionname -l/--list input_file \n"
-                      "       -e/--env environment_file \n"
-                      "       -s/--sum summary_file \n"
-                      "       [-c/--cut cutoff]")
+parser = OptionParser("Usage: PdbSearcher.py -i/--ion ionname "
+                      "-l/--list input_file \n"
+                      "                      -e/--env environment_file "
+                      "-s/--sum summary_file \n"
+                      "                      [-c/--cut cutoff]")
 parser.add_option("-i", "--ion", type='string', dest="ionname",
                   help="Element symbol of ion, e.g. Zn")
 parser.add_option("-l", "--list", type='string', dest="inputf",
@@ -56,6 +51,12 @@ parser.add_option("-c", "--cut", type='float', dest='cutoff',
                        "structure) and no bigger than the covalent radius sum "
                        "of the two atoms with a tolerance of 0.4.")
 (options, args) = parser.parse_args()
+
+#==============================================================================
+# Print the title
+#==============================================================================
+version = '1.0'
+print_title('PdbSearcher.py', version)
 
 #==============================================================================
 # Read in th pdb file names from input file
@@ -105,7 +106,7 @@ print('PDB,', 'ION_RESID,', 'ION_RESNAME,', 'ION_ATOM_ID,', \
 #==============================================================================
 
 for fname in pdbfnl:
-    print("Performing the " + fname + " file")
+    print("***Performing the " + fname + " file")
 
     #get the metal list
     mol, atids, resids = get_atominfo_fpdb(fname)
@@ -188,7 +189,7 @@ for fname in pdbfnl:
             reslets = reslets + reslet
         nospace = ''
         reslets = nospace.join(sorted(reslets))
-        print(len(mcresids), reslets)
+        print('   Find metal center', reslets)
 
         #Get the geometry and geometry rms
         geo, georms = det_geo(mccrds)

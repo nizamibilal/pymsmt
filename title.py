@@ -4,26 +4,16 @@ This module was written for printing the title of each program in the package.
 from __future__ import print_function
 
 def print_title(program, version):
-    print("                                                                  ")
-    print("                                                                  ")
-    print("                                                                  ")
-    print("******************************************************************")
-    if program == 'MCPB.py':
-        print("*                   Welcome to use MCPB.py program               *")
-        print("*                            Version %s                         *" %version)
-    elif program == 'PdbSearcher.py':
-        print("*               Welcome to use PdbSearcher.py program            *")
-    elif program == 'AFQMM_NMR.py':
-        print("*               Welcome to use AFQMMM_NMR.py program             *")
-    elif program == 'OptC4.py':
-        print("*                  Welcome to use OptC4.py program               *")
-    elif program == 'IPMach.py':
-	print("*                 Welcome to use IPMach.py program               *")
-	print("*                        Version %s                             *" %version)
-    print("*                        Author: Pengfei Li                      *")
-    print("*                        Merz Research Group                     *")
-    print("*                     Michigan State University                  *")
-    print("******************************************************************")
-    print("                                                                  ")
-    print("                                                                  ")
-    print("                                                                  ")
+    totleng = 66
+    shrtlen = 66 - 4
+
+    print("*" * totleng)
+    welcmstrg = "Welcome to use the " + program + " program"
+    print("*", welcmstrg.center(shrtlen), "*")
+    versnstrg = "Version " + version
+    print("*", versnstrg.center(shrtlen), "*")
+    print("*", "Author: Pengfei Li".center(shrtlen), "*")
+    print("*", "Merz Research Group".center(shrtlen), "*")
+    print("*", "Michigan State University".center(shrtlen), "*")
+    print("*" * totleng)
+

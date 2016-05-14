@@ -14,7 +14,7 @@ constants.
 """
 from __future__ import absolute_import, print_function
 from msmtmol.readpdb import get_atominfo_fpdb
-from msmtmol.getlist import get_alist, get_mc_blist
+from msmtmol.getlist import get_blist, get_mc_blist, get_alist
 from msmtmol.gauio import (get_crds_from_fchk, get_matrix_from_fchk,
                            get_fc_from_log)
 from msmtmol.gmsio import get_crds_from_gms, get_matrix_from_gms
@@ -174,7 +174,7 @@ def print_frcmod_file(pref, finf, finalparmdict, method):
     finfrcmod.close()
 
 #-----------------------------------------------------------------------------
-##Empirical method Ref: Li et al. In preparation.
+# Empirical method for Zinc Ref: Yu et al. In preparation.
 #-----------------------------------------------------------------------------
 
 def fcfit_ep_bond(dis, elmts):
@@ -208,6 +208,13 @@ def fcfit_ep_angle(elmts):
         return 50.00
     elif set(elmts[0:2]) == set(['Zn', 'O']) or set(elmts[1:3]) == set(['Zn', 'O']):
         return 50.00
+
+def get_coord_num(blist, atn):
+    cn = 0
+    for j in blist:
+        if atn == j[0] or atn == j[1]:
+            cn = cn + 1
+    return cn
 
 def gene_by_empirical_way(smpdbf, ionids, stfpf, pref, finf):
 
@@ -270,17 +277,30 @@ def gene_by_empirical_way(smpdbf, ionids, stfpf, pref, finf):
             at2 = ang[1]
             at3 = ang[2]
             angtyp = (attypdict[at1], attypdict[at2], attypdict[at3])
+
             if angtyp == misang or angtyp[::-1] == misang:
                 crd1 = mol.atoms[at1].crd
                 crd2 = mol.atoms[at2].crd
                 crd3 = mol.atoms[at3].crd
-                angval = calc_angle(crd1, crd2, crd3)
-                angvals.append(angval)
 
                 elmt1 = mol.atoms[at1].element
                 elmt2 = mol.atoms[at2].element
                 elmt3 = mol.atoms[at3].element
                 elmts = [elmt1, elmt2, elmt3]
+
+                angval = calc_angle(crd1, crd2, crd3)
+
+                if ((elmt1 == 'H') and (at3 in ionids)) or \
+                   ((at1 in ionids) and (elmt3 == 'H')):
+                    cn = get_coord_num(blist, at2)
+                    if cn == 2 and (abs(angval - 180.00) > 5.00):
+                        angval = 180.00
+                    elif cn == 3 and (abs(angval - 120.00) > 5.00):
+                        angval = 120.00
+                    elif cn == 4 and (abs(angval - 109.47) > 5.00):
+                        angval = 109.47
+
+                angvals.append(angval)
                 fcfinal = fcfit_ep_angle(elmts)
                 afconst.append(fcfinal)
 
@@ -293,11 +313,9 @@ def gene_by_empirical_way(smpdbf, ionids, stfpf, pref, finf):
     print_frcmod_file(pref, finf, finalparmdict, 'empirical')
 
 #-----------------------------------------------------------------------------
-
-##Seminario method Ref: Calculation of intramolecular force fields from
-##second-derivative tensors
-##Seminario, International Journal of Quantum Chemistry 1996, 60(7), 1271-1277
-
+# Seminario method Ref: Calculation of intramolecular force fields from
+# second-derivative tensors
+# Seminario, International Journal of Quantum Chemistry 1996, 60(7), 1271-1277
 #-----------------------------------------------------------------------------
 
 def get_bond_fc_with_sem(crds, fcmatrix, nat1, nat2, scalef, bondavg):
@@ -347,9 +365,23 @@ def get_bond_fc_with_sem(crds, fcmatrix, nat1, nat2, scalef, bondavg):
         return dis, fcfinal, stdv
 
     elif bondavg == 0:
-
         fcfinal = fcfinal1 * scalef * scalef
         return dis, fcfinal
+
+def get_ang_fc(afcmatrix12, afcmatrix32, vecPA,vecPC, dis12, dis32):
+    eigval12, eigvector12 = eig(afcmatrix12)
+    eigval32, eigvector32 = eig(afcmatrix32)
+    contri12 = 0.0
+    contri32 = 0.0
+    for i in range(0, 3):
+        ev12 = eigvector12[:,i]
+        ev32 = eigvector32[:,i]
+        contri12 = contri12 + eigval12[i] * abs(dot(vecPA, ev12))
+        contri32 = contri32 + eigval32[i] * abs(dot(vecPC, ev32))
+    contri12 = 1.0 / (contri12 * dis12 * dis12)
+    contri32 = 1.0 / (contri32 * dis32 * dis32)
+    fcfinal = (1.0 / (contri12 + contri32)) * H_TO_KCAL_MOL * 0.5
+    return fcfinal
 
 def get_ang_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, scalef, angavg):
 
@@ -386,18 +418,7 @@ def get_ang_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, scalef, angavg):
     for i in range(0, 3):
         for j in range(0, 3):
             afcmatrix32[i][j] = -fcmatrix[3*(nat3-1)+i][3*(nat2-1)+j]
-    eigval12, eigvector12 = eig(afcmatrix12)
-    eigval32, eigvector32 = eig(afcmatrix32)
-    contri12 = 0.0
-    contri32 = 0.0
-    for i in range(0, 3):
-        ev12 = eigvector12[:,i]
-        ev32 = eigvector32[:,i]
-        contri12 = contri12 + eigval12[i] * abs(dot(vecPA, ev12))
-        contri32 = contri32 + eigval32[i] * abs(dot(vecPC, ev32))
-    contri12 = 1.0 / (contri12 * dis12 * dis12)
-    contri32 = 1.0 / (contri32 * dis32 * dis32)
-    fcfinal1 = (1.0 / (contri12 + contri32)) * H_TO_KCAL_MOL * 0.5
+    fcfinal1 = get_ang_fc(afcmatrix12, afcmatrix32, vecPA,vecPC, dis12, dis32)
 
     if angavg == 1:
         #2. Second way to chose the matrix----------------------------------
@@ -407,19 +428,7 @@ def get_ang_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, scalef, angavg):
         for i in range(0, 3):
             for j in range(0, 3):
                 afcmatrix32[i][j] = -fcmatrix[3*(nat3-1)+i][3*(nat2-1)+j]
-        eigval12, eigvector12 = eig(afcmatrix12)
-        eigval32, eigvector32 = eig(afcmatrix32)
-        contri12 = 0.0
-        contri32 = 0.0
-        for i in range(0, 3):
-            ev12 = eigvector12[:,i]
-            ev32 = eigvector32[:,i]
-            contri12 = contri12 + eigval12[i] * abs(dot(vecPA, ev12))
-            contri32 = contri32 + eigval32[i] * abs(dot(vecPC, ev32))
-        contri12 = 1.0 / (contri12 * dis12 * dis12)
-        contri32 = 1.0 / (contri32 * dis32 * dis32)
-        fcfinal2 = (1.0 / (contri12 + contri32)) * H_TO_KCAL_MOL * 0.5
-
+        fcfinal2 = get_ang_fc(afcmatrix12, afcmatrix32, vecPA,vecPC, dis12, dis32)
         #Hatree to kcal/mol
         #Times 0.5 factor since AMBER use k(r-r0)^2 but not 1/2*k*(r-r0)^2
 
@@ -430,18 +439,7 @@ def get_ang_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, scalef, angavg):
         for i in range(0, 3):
             for j in range(0, 3):
                 afcmatrix32[i][j] = -fcmatrix[3*(nat2-1)+i][3*(nat3-1)+j]
-        eigval12, eigvector12 = eig(afcmatrix12)
-        eigval32, eigvector32 = eig(afcmatrix32)
-        contri12 = 0.0
-        contri32 = 0.0
-        for i in range(0, 3):
-            ev12 = eigvector12[:,i]
-            ev32 = eigvector32[:,i]
-            contri12 = contri12 + eigval12[i] * abs(dot(vecPA, ev12))
-            contri32 = contri32 + eigval32[i] * abs(dot(vecPC, ev32))
-        contri12 = 1.0 / (contri12 * dis12 * dis12)
-        contri32 = 1.0 / (contri32 * dis32 * dis32)
-        fcfinal3 = (1.0 / (contri12 + contri32)) * H_TO_KCAL_MOL * 0.5
+        fcfinal3 = get_ang_fc(afcmatrix12, afcmatrix32, vecPA,vecPC, dis12, dis32)
 
         #4. Fourth way to chose the matrix----------------------------------
         for i in range(0, 3):
@@ -450,19 +448,9 @@ def get_ang_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, scalef, angavg):
         for i in range(0, 3):
             for j in range(0, 3):
                 afcmatrix32[i][j] = -fcmatrix[3*(nat2-1)+i][3*(nat3-1)+j]
-        eigval12, eigvector12 = eig(afcmatrix12)
-        eigval32, eigvector32 = eig(afcmatrix32)
-        contri12 = 0.0
-        contri32 = 0.0
-        for i in range(0, 3):
-            ev12 = eigvector12[:,i]
-            ev32 = eigvector32[:,i]
-            contri12 = contri12 + eigval12[i] * abs(dot(vecPA, ev12))
-            contri32 = contri32 + eigval32[i] * abs(dot(vecPC, ev32))
-        contri12 = 1.0 / (contri12 * dis12 * dis12)
-        contri32 = 1.0 / (contri32 * dis32 * dis32)
-        fcfinal4 = (1.0 / (contri12 + contri32)) * H_TO_KCAL_MOL * 0.5
+        fcfinal4 = get_ang_fc(afcmatrix12, afcmatrix32, vecPA,vecPC, dis12, dis32)
 
+        # Get the average values
         fcfinal = average([fcfinal1, fcfinal2, fcfinal3, fcfinal4])
         stdv = std([fcfinal1, fcfinal2, fcfinal3, fcfinal4])
         fcfinal = fcfinal * scalef * scalef
@@ -473,7 +461,7 @@ def get_ang_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, scalef, angavg):
         fcfinal = fcfinal1 * scalef * scalef
         return angval, fcfinal
 
-def get_dih_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, nat4, n1, n2, scalef):
+def get_dih_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, nat4, scalef):
 
     crd1 = crds[3*nat1-3:3*nat1]
     crd2 = crds[3*nat2-3:3*nat2]
@@ -534,13 +522,16 @@ def get_dih_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, nat4, n1, n2, scalef):
 
     fcfinal1 = (1.0 / (contri12 + contri34)) * H_TO_KCAL_MOL * 0.5 #/ (math.degrees(1.0)**2)
 
-    fcfinal = fcfinal1 * (math.radians(180.0/float(n2))) **2 / (float(n1) * float(n2))
+    #fcfinal = fcfinal1 * (math.radians(180.0/float(n2))) **2 / (float(n1) * float(n2))
 
-    fcfinal = fcfinal * scalef * scalef
+    fcfinal = fcfinal1 * scalef * scalef
 
-    return dihval, fcfinal1, fcfinal
+    #return dihval, fcfinal1, fcfinal
+
+    return dihval, fcfinal
 
 def get_imp_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, nat4, scalef):
+    #nat1 is the central atom A
 
     crd1 = crds[3*nat1-3:3*nat1]
     crd2 = crds[3*nat2-3:3*nat2]
@@ -551,6 +542,7 @@ def get_imp_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, nat4, scalef):
     dis13 = calc_bond(crd1, crd3) #unit is bohr
     dis23 = calc_bond(crd2, crd3) #unit is bohr
     dis34 = calc_bond(crd3, crd4) #unit is bohr
+    dis24 = calc_bond(crd2, crd4) #unit is bohr
 
     #get the unit vector
     vec12 = array(crd2) - array(crd1) #vec12 is vec2 - vec1
@@ -559,6 +551,15 @@ def get_imp_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, nat4, scalef):
     vec32 = - vec23
     vec34 = array(crd4) - array(crd3)
     vec43 = - vec34
+    vec24 = array(crd4) - array(crd2)
+    vec42 = - vec24
+
+    # Calculate the distance from A to plane BCD
+    cp = cross(vec24, vec23)
+    a, b, c = cp
+    d = dot(cp, crd4)
+    disAtoBCD = abs(a*crd1[0]+b*crd1[1]+c*crd1[2]-d)
+    disAtoBCD = disAtoBCD/math.sqrt(a**2 + b**2 + c**2)
 
     vec12 = array([i/dis12 for i in vec12])
     vec21 = array([i/dis12 for i in vec21])
@@ -566,11 +567,13 @@ def get_imp_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, nat4, scalef):
     vec32 = array([i/dis23 for i in vec32])
     vec34 = array([i/dis34 for i in vec34])
     vec43 = array([i/dis34 for i in vec43])
+    vec24 = array([i/dis24 for i in vec24])
+    vec42 = array([i/dis24 for i in vec42])
 
     #get the normalized vector
     vecUNp = cross(vec43, vec23)
     vecUN = array([i/norm(vecUNp) for i in vecUNp]) #vecUN is the vector
-                                     #perpendicular to the plance of ABC
+                                     #perpendicular to the plance of BCD
 
     afcmatrix12 = array([[float(0) for x in range(3)] for x in range(3)])
     afcmatrix13 = array([[float(0) for x in range(3)] for x in range(3)])
@@ -599,31 +602,33 @@ def get_imp_fc_with_sem(crds, fcmatrix, nat1, nat2, nat3, nat4, scalef):
         contri13 = contri13 + eigval13[i] * abs(dot(vecUN, ev13))
         contri14 = contri14 + eigval14[i] * abs(dot(vecUN, ev14))
 
-    kAN = (contri12 + contri13 + contri14) * H_TO_KCAL_MOL * 0.5
+    kAN = (contri12 + contri13 + contri14) * HB2_TO_KCAL_MOL_A2 * 0.5
 
-    fcfinal1 = kAN/(B_TO_A**2)
+    fcfinal = kAN * scalef * scalef
 
-    #Get hABCD
-    pval = (dis12 + dis23 + dis13)/2.0
-    sqABC = math.sqrt(pval*(pval-dis12)*(pval-dis23)*(pval-dis13))
-    disAtoBC = sqABC * 2.0 / dis23 #distance between A and BC side, unit is bohr
+    #1: B, 2: C, 3: A, 4: D
+    #dAtoBC = cal_height(dis12, dis13, dis23)
+    #dDtoBC = cal_height(dis12, dis14, dis)
+
+    #def cal_height(dis12, dis13, dis23):
+    #pval = (dis12 + dis23 + dis13)/2.0
+    #sqABC = math.sqrt(pval*(pval-dis12)*(pval-dis23)*(pval-dis13)) #Get area of ABC
+    #disAH = sqABC * 2.0 / dis23 #distance between A and BC side, unit is bohr
+
+    #disDH = math.sqrt(disAH**2 + dis34**2)
+    #hADH = disAH * disDH
 
     #get the normalized vector
-    vecUNABCp = cross(vec32, vec12)
-    vecUNABC = array([i/norm(vecUNABCp) for i in vecUNABCp])
-    vecUNBCDp = cross(vec43, vec23)
-    vecUNBCD = array([i/norm(vecUNBCDp) for i in vecUNBCDp])
-
-    #dihang = math.acos(dot(vecUNABC, vecUNBCD))
-
+    #vecUNABCp = cross(vec32, vec12)
+    #vecUNABC = array([i/norm(vecUNABCp) for i in vecUNABCp])
+    #vecUNBCDp = cross(vec43, vec23)
+    #vecUNBCD = array([i/norm(vecUNBCDp) for i in vecUNBCDp])
     #hABCD = disAtoBC * dot(vecUNABC, vecUNBCD)
 
-    fcfinal = (disAtoBC ** 2) * kAN / 2.0 #H_TO_KCAL_MOL #HB2_TO_KCAL_MOL_A2
+    #fcfinal = (disAH ** 2) * kAN / 2.0
 
-    fcfinal1 = fcfinal1 * scalef * scalef
-    fcfinal = fcfinal * scalef * scalef
-
-    return fcfinal1, fcfinal
+    #return fcfinal1, fcfinal
+    return fcfinal, disAtoBCD
 
 def gene_by_QM_fitting_sem(smpdbf, ionids, stfpf, pref, finf, chkfname,
                            logfile, g0x, scalef, bondavg, angavg):
@@ -725,8 +730,67 @@ def gene_by_QM_fitting_sem(smpdbf, ionids, stfpf, pref, finf, chkfname,
     print_frcmod_file(pref, finf, finalparmdict, 'Seminario')
 
 #-----------------------------------------------------------------------------
-##Z-matrix method: obtain the force constant from the entire Hessian matrix
+# Z-matrix method: obtain the force constant from the entire Hessian matrix
 #-----------------------------------------------------------------------------
+
+def get_all_fc_with_zmatrix(pdbf, logfname, scalef):
+    """Generate all the force constants with Z-matrix method"""
+
+    sturefs, vals, fcs = get_fc_from_log(logfname)
+
+    #pdb file
+    mol, atids, resids = get_atominfo_fpdb(pdbf)
+
+    #reverse new id dict
+    rvnatids = {}
+    for i in xrange(len(atids)):
+        rvnatids[i+1] = atids[i]
+
+    print_method_title('Z-matrix')
+
+    print_bond_title()
+    for i in xrange(len(sturefs)):
+        if len(sturefs[i]) == 2:
+            at1 = rvnatids[sturefs[i][0]]
+            at2 = rvnatids[sturefs[i][1]]
+            dis = vals[i]
+            fcfinal = fcs[i] * HB2_TO_KCAL_MOL_A2 * 0.5
+            fcfinal = fcfinal * scalef * scalef
+
+            at1_rep = atom_rep(mol, at1)
+            at2_rep = atom_rep(mol, at2)
+            print_bond_inf(at1_rep, at2_rep, fcfinal, dis)
+
+    print_angle_title()
+    for i in xrange(len(sturefs)):
+        if len(sturefs[i]) == 3:
+            at1 = rvnatids[sturefs[i][0]]
+            at2 = rvnatids[sturefs[i][1]]
+            at3 = rvnatids[sturefs[i][2]]
+            angval = vals[i]
+            fcfinal = fcs[i] * H_TO_KCAL_MOL * 0.5
+
+            at1_rep = atom_rep(mol, at1)
+            at2_rep = atom_rep(mol, at2)
+            at3_rep = atom_rep(mol, at3)
+            print_angle_inf(at1_rep, at2_rep, at3_rep, fcfinal, angval)
+
+    print_dih_title()
+    for i in xrange(len(sturefs)):
+        if len(sturefs[i]) == 4:
+            at1 = rvnatids[sturefs[i][0]]
+            at2 = rvnatids[sturefs[i][1]]
+            at3 = rvnatids[sturefs[i][2]]
+            at4 = rvnatids[sturefs[i][3]]
+            dihval = vals[i]
+            fcfinal = fcs[i] * H_TO_KCAL_MOL * 0.5
+
+            at1_rep = atom_rep(mol, at1)
+            at2_rep = atom_rep(mol, at2)
+            at3_rep = atom_rep(mol, at3)
+            at4_rep = atom_rep(mol, at4)
+            print_dih_inf(at1_rep, at2_rep, at3_rep, at4_rep, fcfinal, dihval)
+
 def gene_by_QM_fitting_zmatrix(smpdbf, ionids, stfpf, pref, finf, logfname,
                                scalef):
 
@@ -803,3 +867,4 @@ def gene_by_QM_fitting_zmatrix(smpdbf, ionids, stfpf, pref, finf, logfname,
 
     #Print out the final frcmod file
     print_frcmod_file(pref, finf, finalparmdict, 'Z-matrix')
+

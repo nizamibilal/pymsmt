@@ -138,13 +138,13 @@ def print_pmemd_1step_mdf(file_name, nxt, window_steps, lamada, fwdorbwd):
 
     ti_mdf = open(file_name, 'a')
     if fwdorbwd == 1:
-    	print("  ifsc=1,", file=ti_mdf)
+        print("  ifsc=1,", file=ti_mdf)
         print("  timask1 = \":1\",", file=ti_mdf)
         print("  scmask1 = \":1\",", file=ti_mdf)
         print("  timask2 = \":2\",", file=ti_mdf)
         print("  scmask2 = \":2\",", file=ti_mdf)
     elif fwdorbwd == -1:
-    	print("  ifsc=1,", file=ti_mdf)
+        print("  ifsc=1,", file=ti_mdf)
         print("  timask1 = \":2\",", file=ti_mdf)
         print("  scmask1 = \":2\",", file=ti_mdf)
         print("  timask2 = \":1\",", file=ti_mdf)
@@ -379,7 +379,7 @@ def print_pmemd_2step_mdf(file_name, nxt, window_steps, lamada, fwdorbwd, force)
         if force == 'v':
             print("  timask1 = \":1\",", file=ti_mdf)
             print("  timask2 = \":2\",", file=ti_mdf)
-    	    print("  ifsc=1,", file=ti_mdf)
+            print("  ifsc=1,", file=ti_mdf)
             print("  scmask1 = \":1\",", file=ti_mdf)
             print("  scmask2 = \":2\",", file=ti_mdf)
             print("  crgmask = \":1|:2\"", file=ti_mdf)
@@ -484,7 +484,7 @@ def TwoStep_pTI(ti_vdw_windows, ti_chg_windows, vdw_window_steps,
                 os.system("%s -O -i %d_chg_bwd.in -o %d_chg_bwd.out -p %s -c %d_chg_bwd.rst -r %d_chg_bwd.rst -x %d_chg_bwd.netcdf" %(exe, i, i, vdw_prmtop, j, i, i))
 
         #transfer the rst file
-	print("Transfer the RST file...")
+        print("Transfer the RST file...")
         os.system("awk 'NR<=2' %d_chg_bwd.rst > %d_chg_bwd_merge.rst" %(ti_chg_windows, ti_chg_windows))
         os.system("awk 'NR==3' %d_chg_bwd.rst | awk '{printf( \"%%12.7f%%12.7f%%12.7f%%12.7f%%12.7f%%12.7f\\n\", $1, $2, $3, $1, $2, $3)}' >> %d_chg_bwd_merge.rst" %(ti_chg_windows, ti_chg_windows))
         os.system("awk 'NR>3' %d_chg_bwd.rst >> %d_chg_bwd_merge.rst" %(ti_chg_windows, ti_chg_windows))
