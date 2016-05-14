@@ -47,6 +47,18 @@ _ljedre = re.compile(r'(\s*\w.)(\s+\w.)(\s+\-?\d+\.\d*)(\s+\-?\d+\.\d*)(\s+\-?\d
 #-----------------------------------------------------------------------------
 # Define the force field dictionary
 #-----------------------------------------------------------------------------
+def get_ambv(fname):
+    r_fname = open(fname, 'r')
+    for rln in r_fname:
+        ln = rln.strip()
+        if 'AmberTools' in ln:
+            ln_l = ln.split()
+            for i in ln_l:
+                if 'AmberTools' in i:
+                    ambv = int(i[-2:])
+                    break
+            break
+    return ambv
 
 #Test amberhome or msmthome
 amberhome = os.getenv('AMBERHOME')
@@ -57,6 +69,9 @@ else:
     cmdadd = amberhome + '/dat/leap/cmd/'
     libadd = amberhome + '/AmberTools/src/pymsmt/lib/'
     parmadd = amberhome + '/dat/leap/parm/'
+    #Get Amber version
+    readmef = amberhome + '/README'
+    ambv = get_ambv(readmef)
 
 class force_field:
     def __init__(self, sleaprcf, mol2f, datf, frcmodfs=[]):
@@ -70,49 +85,75 @@ class force_field:
             self.frcmodfs = frcmodfs
 
 #Define the avaliable force fields
-
-# Old force fields
-ff94 = force_field('oldff/leaprc.ff94', 'parm94.mol2', 'parm94.dat')
-
-ff99 = force_field('oldff/leaprc.ff99', 'parm94.mol2', 'parm99.dat')
-
-ff99SB = force_field('oldff/leaprc.ff99', 'parm94.mol2', 'parm99.dat',
-    ['frcmod.ff99SB'])
-
-ff03 = force_field('oldff/leaprc.ff03', 'parm03.mol2', 'parm99.dat',
-    ['frcmod.ff03'])
-
-ff03_r1 = force_field('leaprc.protein.ff03.r1', 'parm03_r1.mol2',
-    'parm99.dat', ['frcmod.ff03'])
-
-ff10 = force_field('oldff/leaprc.ff10', 'parm10.mol2', 'parm10.dat')
-
-ff14ipq = force_field('oldff/leaprc.ff14ipq', 'parm14ipq.mol2',
-    'parm14ipq.dat', ['frcmod.tip4pew'])
-
-ff14SB = force_field('oldff/leaprc.ff14SB', 'parm12.mol2', 'parm10.dat',
-    ['frcmod.ff14SB'])
-
-# New force fields
-ff14SB_redq = force_field('leaprc.ff14SB.redq', 'parm12_redq.mol2', 'parm10.dat',
-    ['frcmod.ff14SB'])
-
-ff14SBonlysc = force_field('leaprc.protein.ff14SBonlysc', 'parm12.mol2', 'parm10.dat',
-    ['frcmod.ff14SB', 'frcmod.ff99SB14'])
-
-ff15ipq = force_field('leaprc.protein.ff15ipq', 'parm15ipq_10.0.mol2',
-    'parm15ipq_10.3.dat')
-
-ff15ipq_vac = force_field('leaprc.protein.ff15ipq-vac', 'parm15ipq-vac_10.0.mol2',
-    'parm15ipq_10.3.dat')
-
-fb15 = force_field('leaprc.protein.fb15', 'parm_fb15.mol2', 'parm99.dat',
-    ['frcmod.fb15', 'frcmod.tip3pfb'])
-
-FF_DICT = {'ff94': ff94, 'ff99': ff99, 'ff99SB': ff99SB, 'ff03': ff03,
-    'ff03.r1': ff03_r1, 'ff10': ff10, 'ff14ipq': ff14ipq,'ff14SB': ff14SB,
-    'ff14SB.redq': ff14SB_redq, 'ff14SBonlysc': ff14SBonlysc, 'ff15ipq': ff15ipq,
-    'ff15ipq-vac': ff15ipq_vac, 'fb15': fb15}
+#if ambv == 12:
+    # Old FFs
+#    ff94 = force_field('oldff/leaprc.ff94', 'parm94.mol2', 'parm94.dat')
+#    ff99 = force_field('oldff/leaprc.ff99', 'parm94.mol2', 'parm99.dat')
+#    ff03 = force_field('oldff/leaprc.ff03', 'parm03.mol2', 'parm99.dat',
+#        ['frcmod.ff03'])
+    # New FFs
+#    ff99SB = force_field('leaprc.ff99SB', 'parm94.mol2', 'parm99.dat',
+#        ['frcmod.ff99SB'])
+#    ff03_r1 = force_field('leaprc.ff03.r1', 'parm03_r1.mol2', 'parm99.dat',
+#        ['frcmod.ff03'])
+#    ff10 = force_field('leaprc.ff10', 'parm10.mol2', 'parm10.dat')
+#    ff12SB = force_field('leaprc.ff12SB', 'parm12.mol2', 'parm10.dat',
+#        ['frcmod.ff12SB'])
+#    FF_DICT = {'ff94': ff94, 'ff99': ff99, 'ff03': ff03, 'ff99SB': ff99SB,
+#        'ff03.r1': ff03_r1, 'ff10': ff10, 'ff12SB': ff12SB}
+if ambv == 14:
+    # Old FFs
+    ff94 = force_field('oldff/leaprc.ff94', 'parm94.mol2', 'parm94.dat')
+    ff99 = force_field('oldff/leaprc.ff99', 'parm94.mol2', 'parm99.dat')
+    ff03 = force_field('oldff/leaprc.ff03', 'parm03.mol2', 'parm99.dat',
+        ['frcmod.ff03'])
+    ff99SB = force_field('oldff/leaprc.ff99SB', 'parm94.mol2', 'parm99.dat',
+        ['frcmod.ff99SB'])
+    ff10 = force_field('oldff/leaprc.ff10', 'parm10.mol2', 'parm10.dat')
+    # New FFs
+    ff03_r1 = force_field('leaprc.ff03.r1', 'parm03_r1.mol2', 'parm99.dat',
+        ['frcmod.ff03'])
+    ff12SB = force_field('leaprc.ff12SB', 'parm12.mol2', 'parm10.dat',
+        ['frcmod.ff12SB'])
+    ff14iqp = force_field('leaprc.ff14ipq', 'parm14ipq.mol2',
+        'parm14ipq.dat', ['frcmod.tip4pew'])
+    ff14SB = force_field('leaprc.ff14SB', 'parm12.mol2', 'parm10.dat',
+        ['frcmod.ff14SB'])
+    ff14SBonlysc = force_field('leaprc.ff14SBonlysc', 'parm12.mol2', 'parm10.dat',
+        ['frcmod.ff14SB', 'frcmod.ff99SB14'])
+    FF_DICT = {'ff94': ff94, 'ff99': ff99, 'ff03': ff03, 'ff99SB': ff99SB,
+        'ff10': ff10, 'ff03.r1': ff03_r1, 'ff12SB': ff12SB, 'ff14iqp': ff14iqp,
+        'ff14SB': ff14SB, 'ff14SBonlysc': ff14SBonlysc}
+elif ambv == 16:
+    # Old FFs
+    ff94 = force_field('oldff/leaprc.ff94', 'parm94.mol2', 'parm94.dat')
+    ff99 = force_field('oldff/leaprc.ff99', 'parm94.mol2', 'parm99.dat')
+    ff03 = force_field('oldff/leaprc.ff03', 'parm03.mol2', 'parm99.dat',
+        ['frcmod.ff03'])
+    ff99SB = force_field('oldff/leaprc.ff99SB', 'parm94.mol2', 'parm99.dat',
+        ['frcmod.ff99SB'])
+    ff10 = force_field('oldff/leaprc.ff10', 'parm10.mol2', 'parm10.dat')
+    ff14ipq = force_field('oldff/leaprc.ff14ipq', 'parm14ipq.mol2',
+        'parm14ipq.dat', ['frcmod.tip4pew'])
+    ff14SB = force_field('oldff/leaprc.ff14SB', 'parm12.mol2', 'parm10.dat',
+        ['frcmod.ff14SB'])
+    # New FFs
+    ff03_r1 = force_field('leaprc.protein.ff03.r1', 'parm03_r1.mol2',
+        'parm99.dat', ['frcmod.ff03'])
+    ff14SB_redq = force_field('leaprc.ff14SB.redq', 'parm12_redq.mol2', 'parm10.dat',
+        ['frcmod.ff14SB'])
+    ff14SBonlysc = force_field('leaprc.protein.ff14SBonlysc', 'parm12.mol2', 'parm10.dat',
+        ['frcmod.ff14SB', 'frcmod.ff99SB14'])
+    ff15ipq = force_field('leaprc.protein.ff15ipq', 'parm15ipq_10.0.mol2',
+        'parm15ipq_10.3.dat')
+    ff15ipq_vac = force_field('leaprc.protein.ff15ipq-vac', 'parm15ipq-vac_10.0.mol2',
+        'parm15ipq_10.3.dat')
+    fb15 = force_field('leaprc.protein.fb15', 'parm_fb15.mol2', 'parm99.dat',
+        ['frcmod.fb15', 'frcmod.tip3pfb'])
+    FF_DICT = {'ff94': ff94, 'ff99': ff99, 'ff03': ff03, 'ff99SB': ff99SB,
+        'ff10': ff10, 'ff14ipq': ff14ipq, 'ff14SB': ff14SB, 'ff03.r1': ff03_r1, 
+        'ff14SB.redq': ff14SB_redq, 'ff14SBonlysc': ff14SBonlysc, 'ff15ipq': ff15ipq,
+        'ff15ipq-vac': ff15ipq_vac, 'fb15': fb15}
 
 #-----------------------------------------------------------------------------
 # About the force field lib parameters

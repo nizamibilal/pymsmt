@@ -6,10 +6,11 @@ Python Metal Site Modeling Toolbox
     at Michigan State University.
 
     This software is free of charge and a version 1.0 Beta1 has been
-    released in AmberTools15 package.
+    released in AmberTools15 package, a version 1.0 has been released
+    in GitHub, and version 2.0 has been released in AmberTools16.
 
-    It should be used with AmberTools15 due to it uses other code and
-    files inside the packge.
+    It should be used with AmberTools15 (or higher version) due to it
+    uses other code and files inside the AmberTools packge.
 
 # License
 

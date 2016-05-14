@@ -2,7 +2,10 @@
 from __future__ import absolute_import, print_function, division
 import linecache
 import numpy
-from parmed.periodic_table import AtomicNum
+try:
+    from parmed.periodic_table import AtomicNum
+except:
+    from chemistry.periodic_table import AtomicNum
 from msmtmol.constants import B_TO_A
 
 #------------------------------------------------------------------------------

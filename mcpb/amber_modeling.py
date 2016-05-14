@@ -7,7 +7,7 @@ from msmtmol.readpdb import get_atominfo_fpdb, writepdb
 from msmtmol.readmol2 import get_atominfo
 from msmtmol.getlist import get_mc_blist
 from msmtmol.element import resnamel, IonHFEparal, IonCMparal, IonIODparal
-from lib.lib import FF_DICT
+from lib.lib import ambv, FF_DICT
 from mcpb.rename_residues import rename_res, get_diS_bond
 from pymsmtexp import *
 import warnings
@@ -172,10 +172,14 @@ def gene_leaprc(gname, orpdbf, fipdbf, stpdbf, stfpf, ionids,\
         mol2, atids2, resids2 = get_atominfo_fpdb(stpdbf)
         blist = get_mc_blist(mol2, atids2, ionids, stfpf)
         blist1 = [(i[0], i[1]) for i in blist]
-        if paraset == 'cm':
-            frcmodf = get_frcmod_fname('Na', 1, watermodel, 'hfe')
-        else:
-            frcmodf = get_frcmod_fname('Na', 1, watermodel, paraset)
+
+        if ambv == 14:
+            frcmodf = 'frcmod.ionsjc_' + watermodel
+        elif ambv == 16:
+            if paraset == 'cm':
+                frcmodf = get_frcmod_fname('Na', 1, watermodel, 'hfe')
+            else:
+                frcmodf = get_frcmod_fname('Na', 1, watermodel, paraset)
 
         frcmodfs.append(frcmodf)
 
@@ -222,14 +226,16 @@ def gene_leaprc(gname, orpdbf, fipdbf, stpdbf, stfpf, ionids,\
     print("source %s" %FF_DICT[ff_choice].sleaprcf, file=lp)
 
     # Source GAFF
+    if (ambv == 14) and (gaff == 2):
+        raise pymsmtError("Only Amber16 or higher versions supports GAFF2.")
+
     if gaff == 1:
         print('source leaprc.gaff', file=lp)
     elif gaff == 2:
         print('source leaprc.gaff2')
 
     # Source water model
-    if ff_choice in ['ff94', 'ff99', 'ff99SB', 'ff03', 'ff10', 'ff14ipq', 'ff14SB']:
-    # For the old force fields, default is TIP3P water model
+    if ambv == 14:
         if watermodel == 'spce':
             print('HOH = SPC', file=lp)
             print('WAT = SPC', file=lp)
@@ -238,10 +244,21 @@ def gene_leaprc(gname, orpdbf, fipdbf, stpdbf, stfpf, ionids,\
             print('HOH = T4P', file=lp)
             print('WAT = T4P', file=lp)
             print('loadAmberParams frcmod.tip4pew', file=lp)
-    elif ff_choice == 'fb15': # fb15 use tip3pfb
-        pass
-    else: # For other new force fields
-        print('source leaprc.water.' + watermodel, file=lp)
+    elif ambv == 16:
+        if ff_choice in ['ff94', 'ff99', 'ff99SB', 'ff03', 'ff10', 'ff14ipq', 'ff14SB']:
+        # For the old force fields, default is TIP3P water model
+            if watermodel == 'spce':
+                print('HOH = SPC', file=lp)
+                print('WAT = SPC', file=lp)
+                print('loadAmberParams frcmod.spce', file=lp)
+            elif watermodel == 'tip4pew':
+                print('HOH = T4P', file=lp)
+                print('WAT = T4P', file=lp)
+                print('loadAmberParams frcmod.tip4pew', file=lp)
+        elif ff_choice == 'fb15': # fb15 use tip3pfb
+            pass
+        else: # For other new force fields
+            print('source leaprc.water.' + watermodel, file=lp)
 
     # Add atom types, only for models 1 and 2
     if model in [1, 2]:

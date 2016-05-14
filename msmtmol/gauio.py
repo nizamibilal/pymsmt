@@ -7,7 +7,10 @@ import numpy
 import linecache
 from pymsmtexp import *
 from msmtmol.constants import B_TO_A
-from parmed.periodic_table import AtomicNum
+try:
+    from parmed.periodic_table import AtomicNum
+except:
+    from chemistry.periodic_table import AtomicNum
 
 #------------------------------------------------------------------------------
 #------------------------Write Gaussian input file-----------------------------

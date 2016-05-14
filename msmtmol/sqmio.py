@@ -2,7 +2,10 @@
 from __future__ import absolute_import, print_function
 import linecache
 from msmtmol.mol import gauatm
-from parmed.periodic_table import AtomicNum
+try:
+    from parmed.periodic_table import AtomicNum
+except:
+    from chemistry.periodic_table import AtomicNum
 
 #------------------------------------------------------------------------------
 #------------------------------Write SQM input file----------------------------
