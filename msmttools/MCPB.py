@@ -8,12 +8,12 @@ It is written to assist the metal center modeling in mixed systems
 It is a re-written python program of MCPB in MTK++.
 It optimize the workflow of the MCPB and has better supports of different
 ions and force feilds.
+It supports AmberTools12 or higher version.
+It supports a series of AMBER force fields.
 It supports modeling of more than 80 ions from +1 to +8 oxidation states.
-It supports a series of AMBER force fields (GAFF, ff94, ff99, ff99SB, ff03,
-ff03.r1, ff10, ff12SB, ff14SB).
 
 To cite the program please use:
-** P. Li, K. M. Merz, JCIM, 2016, Accepted, DOI: 10.1021/acs.jcim.5b00674
+** P. Li, K. M. Merz, JCIM, 2016, 56, 599-604
 
 The parameterization scheme is adapted from:
 ** M. B. Peters, Y. Yang, B. Wang, L. Fusti-Molnar, M. N. Weaver, K. M. Merz,
@@ -636,7 +636,7 @@ print("="*66)
 print("To cite MCPB.py please use the following reference:")
 print("Pengfei Li and Kenneth M. Merz, Jr., \"MCPB.py: A Python Based")
 print("  Metal Center Parameter Builder.\" J. Chem. Inf. Model., 2016,")
-print("  Article ASAP, DOI: 10.1021/acs.jcim.5b00674")
+print("  56, 599-604.")
 print(" ")
 
 quit()
