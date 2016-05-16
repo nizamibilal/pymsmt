@@ -72,7 +72,7 @@ cutoff = 2.8
 if ambv < 12:
     raise pymsmtError('Only support AmberTools12 or higher version!')
 elif ambv in [12, 13]:
-    ff_choice == 'ff12SB'
+    ff_choice = 'ff12SB'
 else:
     ff_choice = 'ff14SB'
 
