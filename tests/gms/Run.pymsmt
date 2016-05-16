@@ -13,7 +13,7 @@ $mcpbpy -i $input -s 1 > $output 2>&1 || error
 $mcpbpy -i $input -s 2 >> $output 2>&1 || error
 $mcpbpy -i $input -s 3 >> $output 2>&1 || error
 $mcpbpy -i $input -s 4 >> $output 2>&1 || error
-tleap -s -f 1A5T_tleap.in > 1A5T_tleap.out
+#tleap -s -f 1A5T_tleap.in > 1A5T_tleap.out
 
 #For modeling files generation
 ../../../dacdif 1A5T_small.pdb.save 1A5T_small.pdb
@@ -41,13 +41,13 @@ tleap -s -f 1A5T_tleap.in > 1A5T_tleap.out
 #For generating new PDB file
 ../../../dacdif 1A5T_mcpbpy.pdb.save 1A5T_mcpbpy.pdb
 #For the tleap modeling
-../../../dacdif 1A5T_tleap.in.save 1A5T_tleap.in
-../../../dacdif 1A5T_dry.prmtop.save 1A5T_dry.prmtop
-../../../dacdif 1A5T_dry.inpcrd.save 1A5T_dry.inpcrd
-../../../dacdif 1A5T_dry.pdb.save 1A5T_dry.pdb
-../../../dacdif 1A5T_solv.prmtop.save 1A5T_solv.prmtop
-../../../dacdif 1A5T_solv.inpcrd.save 1A5T_solv.inpcrd
-../../../dacdif 1A5T_solv.pdb.save 1A5T_solv.pdb
+#../../../dacdif 1A5T_tleap.in.save 1A5T_tleap.in
+#../../../dacdif 1A5T_dry.prmtop.save 1A5T_dry.prmtop
+#../../../dacdif 1A5T_dry.inpcrd.save 1A5T_dry.inpcrd
+#../../../dacdif 1A5T_dry.pdb.save 1A5T_dry.pdb
+#../../../dacdif 1A5T_solv.prmtop.save 1A5T_solv.prmtop
+#../../../dacdif 1A5T_solv.inpcrd.save 1A5T_solv.inpcrd
+#../../../dacdif 1A5T_solv.pdb.save 1A5T_solv.pdb
 
 /bin/rm -f $output leap.log 1A5T_large_mk.esp resp1.chg resp1.out resp1.pch resp1_calc.esp resp2.chg resp2.out resp1.pch resp2_calc.esp
 
