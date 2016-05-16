@@ -173,7 +173,7 @@ def gene_leaprc(gname, orpdbf, fipdbf, stpdbf, stfpf, ionids,\
         blist = get_mc_blist(mol2, atids2, ionids, stfpf)
         blist1 = [(i[0], i[1]) for i in blist]
 
-        if ambv == 14:
+        if ambv in [12, 13, 14, 15]:
             frcmodf = 'frcmod.ionsjc_' + watermodel
         elif ambv == 16:
             if paraset == 'cm':
@@ -226,7 +226,7 @@ def gene_leaprc(gname, orpdbf, fipdbf, stpdbf, stfpf, ionids,\
     print("source %s" %FF_DICT[ff_choice].sleaprcf, file=lp)
 
     # Source GAFF
-    if (ambv == 14) and (gaff == 2):
+    if (ambv in [12, 13, 14, 15]) and (gaff == 2):
         raise pymsmtError("Only Amber16 or higher versions supports GAFF2.")
 
     if gaff == 1:
@@ -235,7 +235,7 @@ def gene_leaprc(gname, orpdbf, fipdbf, stpdbf, stfpf, ionids,\
         print('source leaprc.gaff2')
 
     # Source water model
-    if ambv == 14:
+    if ambv in [12, 13, 14, 15]:
         if watermodel == 'spce':
             print('HOH = SPC', file=lp)
             print('WAT = SPC', file=lp)

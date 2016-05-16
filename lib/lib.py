@@ -85,23 +85,23 @@ class force_field:
             self.frcmodfs = frcmodfs
 
 #Define the avaliable force fields
-#if ambv == 12:
+if ambv in [12, 13]:
     # Old FFs
-#    ff94 = force_field('oldff/leaprc.ff94', 'parm94.mol2', 'parm94.dat')
-#    ff99 = force_field('oldff/leaprc.ff99', 'parm94.mol2', 'parm99.dat')
-#    ff03 = force_field('oldff/leaprc.ff03', 'parm03.mol2', 'parm99.dat',
-#        ['frcmod.ff03'])
+    ff94 = force_field('oldff/leaprc.ff94', 'parm94.mol2', 'parm94.dat')
+    ff99 = force_field('oldff/leaprc.ff99', 'parm94.mol2', 'parm99.dat')
+    ff03 = force_field('oldff/leaprc.ff03', 'parm03.mol2', 'parm99.dat',
+        ['frcmod.ff03'])
     # New FFs
-#    ff99SB = force_field('leaprc.ff99SB', 'parm94.mol2', 'parm99.dat',
-#        ['frcmod.ff99SB'])
-#    ff03_r1 = force_field('leaprc.ff03.r1', 'parm03_r1.mol2', 'parm99.dat',
-#        ['frcmod.ff03'])
-#    ff10 = force_field('leaprc.ff10', 'parm10.mol2', 'parm10.dat')
-#    ff12SB = force_field('leaprc.ff12SB', 'parm12.mol2', 'parm10.dat',
-#        ['frcmod.ff12SB'])
-#    FF_DICT = {'ff94': ff94, 'ff99': ff99, 'ff03': ff03, 'ff99SB': ff99SB,
-#        'ff03.r1': ff03_r1, 'ff10': ff10, 'ff12SB': ff12SB}
-if ambv == 14:
+    ff99SB = force_field('leaprc.ff99SB', 'parm94.mol2', 'parm99.dat',
+        ['frcmod.ff99SB'])
+    ff03_r1 = force_field('leaprc.ff03.r1', 'parm03_r1.mol2', 'parm99.dat',
+        ['frcmod.ff03'])
+    ff10 = force_field('leaprc.ff10', 'parm10.mol2', 'parm10.dat')
+    ff12SB = force_field('leaprc.ff12SB', 'parm12.mol2', 'parm10.dat',
+        ['frcmod.ff12SB'])
+    FF_DICT = {'ff94': ff94, 'ff99': ff99, 'ff03': ff03, 'ff99SB': ff99SB,
+        'ff03.r1': ff03_r1, 'ff10': ff10, 'ff12SB': ff12SB}
+elif ambv == [14, 15]:
     # Old FFs
     ff94 = force_field('oldff/leaprc.ff94', 'parm94.mol2', 'parm94.dat')
     ff99 = force_field('oldff/leaprc.ff99', 'parm94.mol2', 'parm99.dat')
