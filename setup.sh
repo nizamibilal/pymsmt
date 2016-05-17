@@ -8,6 +8,6 @@ done
 
 for prog in CartHess2FC.py espgen.py MCPB.py PdbSearcher.py
 do
-sed -e "s@\/usr\/bin\/env python@$2@g" < msmttools/$prog > $1/$prog
+sed 's/\/usr\/bin\/env python/$2/' msmttools/$prog $1/$prog
 chmod +x $1/$prog
 done
