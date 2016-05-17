@@ -49,6 +49,6 @@ $mcpbpy -i $input -s 4 >> $output 2>&1 || error
 #../../../dacdif 1A5T_solv.inpcrd.save 1A5T_solv.inpcrd
 #../../../dacdif 1A5T_solv.pdb.save 1A5T_solv.pdb
 
-/bin/rm -f $output leap.log 1A5T_large_mk.esp resp1.chg resp1.out resp1.pch resp1_calc.esp resp2.chg resp2.out resp1.pch resp2_calc.esp
+/bin/rm -f $output 1A5T_large_mk.esp resp1.chg resp1.out resp1.pch resp1_calc.esp resp2.chg resp2.out resp1.pch resp2_calc.esp
 
 exit 0
