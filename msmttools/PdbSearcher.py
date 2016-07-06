@@ -106,6 +106,7 @@ print('PDB,', 'ION_RESID,', 'ION_RESNAME,', 'ION_ATOM_ID,', \
 #==============================================================================
 
 for fname in pdbfnl:
+ try: ## try to catch index Error exception in case the metal is found but the cut off citeria is not met.
     print("***Performing the " + fname + " file")
 
     #get the metal list
@@ -256,6 +257,7 @@ for fname in pdbfnl:
                  ',', len(atids), ',', len(metallist),',', residi,\
                  ',', resnamei,',', i,',', atnamei,',', reslets,',', geo,\
                  ',', round(georms, 3), file=sf)
-
+ except (IndexError, KeyError):                         
+   print ('metal found but failed to meet cutoff criteria... :(\n')
 sf.close()
 ef.close()
