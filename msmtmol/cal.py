@@ -99,7 +99,7 @@ def det_geo(crds):
     metcrd = crds[0]
     crds = crds[1::2]
     angles = get_angles(metcrd, crds)
-
+    
     if len(crds) == 1: #1-Coordinated, no angle
         angrms = 0.0
         angrms = round(angrms, 3)

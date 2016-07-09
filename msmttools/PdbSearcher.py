@@ -16,6 +16,10 @@ from msmtmol.cal import calc_bond, det_geo
 from optparse import OptionParser
 from title import print_title
 import os
+import numpy as np
+import scipy.stats as stats
+import pylab as pl
+from analysis import do_analysis
 
 #==============================================================================
 # Setting the options
@@ -101,9 +105,18 @@ print('PDB,', 'ION_RESID,', 'ION_RESNAME,', 'ION_ATOM_ID,', \
              'DISTANCE,', 'GEOMETRY,', 'GEO_RMS,', 'COORDINATE_SPHERE,', \
              'EXP_TECH,', 'RESOLUTION', file=ef)
 
+## write the analysis file
+############################
+
+af = open ('analysis.txt', 'w')
+print ('Geometry,', '1,', 'Ln2,', 'Tr3,', 'Te4,', 'Sq4,', 'Tp5,', 'Sp5,', 'Tn5,' ,'Oc6,', 'Bt7,', 'Bt8', file=af )
+
 #==============================================================================
 # Do analysis for each pdb file
 #==============================================================================
+one = Ln2 = Tr3 = Te4 = Sq4 = Tp5 = Sp5 = Tn5 = Oc6 = Bt7 = Bt8 = 0
+georms_analysis = []
+geo_analysis = []
 
 for fname in pdbfnl:
  try: ## try to catch index Error exception in case the metal is found but the cut off citeria is not met.
@@ -196,8 +209,14 @@ for fname in pdbfnl:
 
         #Get the geometry and geometry rms
         geo, georms = det_geo(mccrds)
-
-        #add the metal ions into the mcresids
+        print (geo, georms)
+        
+        ##store the geo and georms in a list
+        geo_analysis.append(geo)
+        georms_analysis.append(georms) 
+           	
+    
+    #add the metal ions into the mcresids
         if mol.atoms[i].resid not in mcresids:
             mcresids.append(mol.atoms[i].resid)
 
@@ -261,5 +280,14 @@ for fname in pdbfnl:
                  ',', round(georms, 3), file=sf)
  except (IndexError, KeyError):                         
    print ('metal found but failed to meet cutoff criteria... :(\n')
+
+## get the analysis done   
+do_analysis(geo_analysis, georms_analysis)
+#print (geo_analysis)
+#print (georms_analysis)
+#print analysis file
+print ('Count', ',',one, ',',Ln2, ',',Tr3, ',',Te4, ',',Sq4, ',',Tp5, ',',Sp5, ',',Tn5, ',',Oc6, ',',Bt7, ',',Bt8, file=af)  
+
 sf.close()
 ef.close()
+af.close()
