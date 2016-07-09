@@ -218,5 +218,5 @@ def det_geo(crds):
         angrms = angrms11 + angrms12
         angrms = [abs(i) for i in angrms]
         angrms = numpy.sqrt(numpy.average(angrms))
-        angrms = round(angrms3, 3)
+        angrms = round(angrms, 3)
         return '8Bt', angrms
