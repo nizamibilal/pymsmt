@@ -108,7 +108,6 @@ print('PDB,', 'ION_RESID,', 'ION_RESNAME,', 'ION_ATOM_ID,', \
 #==============================================================================
 
 for fname in pdbfnl:
- try: ## try to catch index Error exception in case the metal is found but the cut off citeria is not met.
     print("***Performing the " + fname + " file")
 
     #get the metal list
@@ -156,18 +155,6 @@ for fname in pdbfnl:
 
         #Get the residues which is the metal site
         for j in atids:
-
-            try:
-                if j != i:
-                    atnamej = mol.atoms[j].atname
-                    crdj = mol.atoms[j].crd
-                    residj = mol.atoms[j].resid
-                    resnamej = mol.residues[residj].resname
-                    elmtj = mol.atoms[j].element
-                    radiusj = CoRadiiDict[elmtj]
-                    radiusij = radiusi + radiusj + 0.40
-                    disij = calc_bond(crdi, crdj)
-
             if j != i:
                 atnamej = mol.atoms[j].atname
                 crdj = mol.atoms[j].crd
@@ -206,22 +193,6 @@ for fname in pdbfnl:
                     if (residj not in mcresids):
                         mcresids.append(residj)
 
-                    if options.cutoff == None:
-                        if (disij >= 0.1) and (disij <= radiusij) \
-                            and (elmtj != 'H'):
-                            mccrds.append(crdi)
-                            mccrds.append(crdj)
-                            if (residj not in mcresids):
-                                mcresids.append(residj)
-                    else:
-                        if (disij >= 0.1) and (disij <= options.cutoff) \
-                            and (elmtj != 'H'):
-                            mccrds.append(crdi)
-                            mccrds.append(crdj)
-                            if (residj not in mcresids):
-                                mcresids.append(residj)
-            except:# (IndexError, KeyError):
-                print ('Metal found but cut off citeria failed')
         #Getting the ligating reidue letters
         reslets = ''
         for j in mcresids:
@@ -310,7 +281,6 @@ for fname in pdbfnl:
                  ',', len(atids), ',', len(metallist),',', residi,\
                  ',', resnamei,',', i,',', atnamei,',', reslets,',', geo,\
                  ',', round(georms, 3), file=sf)
- except (IndexError, KeyError):                         
-   print ('metal found but failed to meet cutoff criteria... :(\n')
+
 sf.close()
 ef.close()
