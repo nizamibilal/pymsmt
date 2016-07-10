@@ -4,15 +4,26 @@ import os
 import numpy as np
 import scipy.stats as stats
 import pylab as pl
+import itertools
    
 #==============================================================================
 # function for statistical analysis of Pdbsearcher.py results
 #==============================================================================
 
 def do_analysis(geo1, georms1):
+    af = open ('analysis.txt', 'w')
     one = Ln2 = Tr3 = Te4 = Sq4 = Tp5 = Sp5 = Tn5 = Oc6 = Bt7 = Bt8 = 0
-    Ln2_georms = Tr3_georms = Te4_georms = Sq4_georms = Tp5_georms = Sp5_georms = Tn5_georms = Oc6_georms = Bt7_georms = Bt8_georms = []
-    for geo, georms in zip(geo1, georms1):
+    Ln2_georms = []
+    Tr3_georms = []
+    Te4_georms = []
+    Sq4_georms = []
+    Tp5_georms = []
+    Sp5_georms = []
+    Tn5_georms = []
+    Oc6_georms = []
+    Bt7_georms = []
+    Bt8_georms = []
+    for geo, georms in itertools.izip(geo1, georms1):
         print (georms)
         print (geo)
         if geo == '1':
@@ -77,13 +88,13 @@ def do_analysis(geo1, georms1):
     if len(Ln2_georms) >0:
         #fit = stats.norm.pdf(Ln2_georms, np.mean(Ln2_georms), np.std(Ln2_georms))
         #pl.plot(Ln2_georms,fit,'-o')
-        pl.hist(Ln2_georms,normed=True)
+        pl.hist(Ln2_georms)
         pl.savefig('distln2.png')
 
     if len(Tr3_georms) >0: 
         #fit = stats.norm.pdf(Tr3_georms, np.mean(Tr3_georms), np.std(Tr3_georms))
         #pl.plot(Tr3_georms,fit,'-o')
-        pl.hist(Tr3_georms,normed=True)
+        pl.hist(Tr3_georms)
         pl.savefig('disttr3.png')
         
     if len(Te4_georms) >0:
@@ -132,4 +143,8 @@ def do_analysis(geo1, georms1):
         #pl.plot(Bt8_georms,fit,'-o')
         pl.hist(Bt8_georms,normed=True)
         pl.savefig('distbt8.png') 
+    #print analysis file
+    print ('Geom,', 'one,','Ln2,','Tr3,','Te4,','Sq4,','Tp5,','Sp5,','Tn5,','Oc6,','Bt7,', 'Bt8,', file=af)
+    print ('Count', ',',one, ',',Ln2, ',',Tr3, ',',Te4, ',',Sq4, ',',Tp5, ',',Sp5, ',',Tn5, ',',Oc6, ',',Bt7, ',',Bt8, file=af) 
+    af.close()
     return;
