@@ -101,7 +101,7 @@ if ambv in [12, 13]:
         ['frcmod.ff12SB'])
     FF_DICT = {'ff94': ff94, 'ff99': ff99, 'ff03': ff03, 'ff99SB': ff99SB,
         'ff03.r1': ff03_r1, 'ff10': ff10, 'ff12SB': ff12SB}
-elif ambv == [14, 15]:
+elif ambv in [14, 15]:
     # Old FFs
     ff94 = force_field('oldff/leaprc.ff94', 'parm94.mol2', 'parm94.dat')
     ff99 = force_field('oldff/leaprc.ff99', 'parm94.mol2', 'parm99.dat')

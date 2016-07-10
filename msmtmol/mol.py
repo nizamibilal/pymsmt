@@ -165,14 +165,22 @@ def get_reslist(mol, resids):
 
         if (set(['CA', 'N', 'C', 'O', 'OXT', 'H2', 'H3']) < set(atnames)) or \
            (set(['CA', 'N', 'C', 'O', 'OXT', 'HN2', 'HN3']) < set(atnames)):
+        # If there is a isolated residue
             nonstd.append(i)
         elif (set(['CA', 'N', 'C', 'O', 'H2', 'H3']) < set(atnames)) or \
              (set(['CA', 'N', 'C', 'O', 'HN2', 'HN3']) < set(atnames)):
+        # If it is a N-terminal residue
             nterm.append(i)
         elif set(['CA', 'N', 'C', 'O', 'OXT']) < set(atnames):
+        # If it is a C-terminal residue
             cterm.append(i)
         elif set(['CA', 'N', 'C', 'O']) < set(atnames):
-            std.append(i)
+            if i == min(resids):
+                nterm.append(i)
+            elif i == max(resids):
+                cterm.append(i)
+            else:
+                std.append(i)
         else:
             nonstd.append(i)
 

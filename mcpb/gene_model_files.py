@@ -76,7 +76,7 @@ def get_ms_resnames(pdbfile, ionids, cutoff, addres, addbpairs):
     for i in msresids:
         if len(mol.residues[i].resname) == 3:
             nresname = mol.residues[i].resname[0:3:2]
-        elif len(mol.residues[i].resname) == 2:
+        elif len(mol.residues[i].resname) in [1, 2]:
             nresname = mol.residues[i].resname
 
         counter = 1

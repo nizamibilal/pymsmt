@@ -15,6 +15,8 @@ from msmtmol.mol import pdbatm
 from msmtmol.cal import calc_bond, det_geo
 from optparse import OptionParser
 from title import print_title
+from pymsmtexp import *
+import warnings
 import os
 
 #==============================================================================
@@ -154,6 +156,7 @@ for fname in pdbfnl:
 
         #Get the residues which is the metal site
         for j in atids:
+
             try:
                 if j != i:
                     atnamej = mol.atoms[j].atname
@@ -164,6 +167,44 @@ for fname in pdbfnl:
                     radiusj = CoRadiiDict[elmtj]
                     radiusij = radiusi + radiusj + 0.40
                     disij = calc_bond(crdi, crdj)
+
+            if j != i:
+                atnamej = mol.atoms[j].atname
+                crdj = mol.atoms[j].crd
+                residj = mol.atoms[j].resid
+                resnamej = mol.residues[residj].resname
+                elmtj = mol.atoms[j].element
+                radiusj = CoRadiiDict[elmtj]
+                radiusij = radiusi + radiusj + 0.40
+                disij = calc_bond(crdi, crdj)
+
+                addon = 0
+                if options.cutoff == None:
+                    if (disij >= 0.1) and (disij <= radiusij) \
+                       and (elmtj != 'H'):
+                           addon = 1
+                else:
+                    if (disij >= 0.1) and (disij <= options.cutoff) \
+                       and (elmtj != 'H'):
+                           addon = 1
+
+                if addon == 1:
+                    #Warning of ligating atoms
+                    if elmtj not in ['O', 'N', 'S', 'F', 'Cl', 'Br', 'I']:
+                        if options.cutoff == None:
+                            warnings.warn('Element %s was found ligating to %s '
+                                      'with distance %5.3f, may need to '
+                                      'specify the cut off value.'
+                                      %(elmtj, elmti, disij), pymsmtWarning)
+                        else:
+                            warnings.warn('Element %s was found ligating to %s '
+                                      'with distance %5.3f, the cut off value '
+                                      '%5.3f may need to change.'
+                              %(elmtj, elmti, disij, options.cutoff), pymsmtWarning)
+                    mccrds.append(crdi)
+                    mccrds.append(crdj)
+                    if (residj not in mcresids):
+                        mcresids.append(residj)
 
                     if options.cutoff == None:
                         if (disij >= 0.1) and (disij <= radiusij) \
@@ -195,7 +236,17 @@ for fname in pdbfnl:
         print('   Find metal center', reslets)
 
         #Get the geometry and geometry rms
-        geo, georms = det_geo(mccrds)
+        try:
+            geo, georms = det_geo(mccrds)
+        except:
+            if options.cutoff == None:
+                warnings.warn('No atoms were found coordinated to the metal! '
+                          'Suggest to specify explicit cut off value.'
+                          , pymsmtWarning)
+            else:
+                warnings.warn('No atoms were found coordinated to the metal! '
+                          'The cut off value %5.3f may need to change.'
+                          %options.cutoff, pymsmtWarning)
 
         #add the metal ions into the mcresids
         if mol.atoms[i].resid not in mcresids:

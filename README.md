@@ -9,12 +9,12 @@ Python Metal Site Modeling Toolbox
     released in AmberTools15 package, a version 1.0 has been released
     in GitHub, and version 2.0 has been released in AmberTools16.
 
-    It should be used with AmberTools15 (or higher version) due to it
-    uses other code and files inside the AmberTools packge.
+    It should be used with AmberTools12 (or higher version) due to it
+    uses other code, programs and files inside the AmberTools packge.
 
 # License
 
-    Copyright (C) 2015 Pengfei Li
+    Copyright (C) 2016 Pengfei Li
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,8 +28,4 @@ Python Metal Site Modeling Toolbox
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-    The `setup_env.sh` and `pt.py` code is released under the GNU Lesser
-    General Public License, version 2.1, Copyright (C) Jason Swails.
-    See GNU_LGPL_v2 in this directory for details.
 
