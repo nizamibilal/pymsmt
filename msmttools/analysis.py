@@ -183,49 +183,30 @@ def do_stat(geo1, reslets1):
         
     
 def do_stat1(geo1):
-    'docstring'
-    
+    'count occurance of each type of geometry. results are written to a file'
     one = Ln2 = Tr3 = Te4 = Sq4 = Tp5 = Sp5 = Tn5 = Oc6 = Bt7 = Bt8 = 0
-    af = open ('analysis2.txt', 'w')
+    af = open ('geo_analysis.txt', 'w')
     for geo in geo1:
         if geo == '1':
             one = one+1
-            
         if geo == '2Ln':
-            Ln2 = Ln2+1
-     
+            Ln2 = Ln2+1    
         if geo == '3Tr':
-            Tr3 = Tr3+1
-            
-	
+            Tr3 = Tr3+1	
         if geo == '4Te':
-            Te4 = Te4+1
-            
-        
+            Te4 = Te4+1     
         if geo == '4Sq':
-            Sq4 = Sq4+1
-            
-        
+            Sq4 = Sq4+1        
         if geo == '5Tp':
-            Tp5 = Tp5+1
-            
-        
+            Tp5 = Tp5+1        
         if geo == '5Sp':
-            Sp5 = Sp5+1
-            
-        
+            Sp5 = Sp5+1        
         if geo == '5Tn':
-            Tn5 = Tn5+1
-            
-        
+            Tn5 = Tn5+1        
         if geo == '6Oc':
-            Oc6 = Oc6+1
-            
-        
+            Oc6 = Oc6+1       
         if geo == '7Bt':
-            Bt7 = Bt7+1
-            
-	
+            Bt7 = Bt7+1	
         if geo == '8Bt':
             Bt8 = Bt8+1
             

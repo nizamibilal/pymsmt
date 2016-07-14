@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 # Filename: PdbSearcher.py
 """
 This is the PdbSeacher.py program written by Pengfei Li in Merz Research Group
@@ -15,12 +15,7 @@ from msmtmol.mol import pdbatm
 from msmtmol.cal import calc_bond, det_geo
 from optparse import OptionParser
 from title import print_title
-from pymsmtexp import *
-import warnings
 import os
-import numpy as np
-import scipy.stats as stats
-import pylab as pl
 from analysis import do_analysis
 from analysis import do_stat, do_stat1
 
@@ -107,14 +102,16 @@ print('PDB,', 'ION_RESID,', 'ION_RESNAME,', 'ION_ATOM_ID,', \
              'ION_ATOM_NAME,', 'RESID,', 'RESNAME,', 'ATOM_ID,', 'ATOM_NAME,',\
              'DISTANCE,', 'GEOMETRY,', 'GEO_RMS,', 'COORDINATE_SPHERE,', \
              'EXP_TECH,', 'RESOLUTION', file=ef)
-## write the analysis file
-############################
 
+#==============================================================================
+# Do analysis for each pdb file
+#==============================================================================
 georms_analysis = []
 geo_analysis = []
 reslets_analysis = []
 
 for fname in pdbfnl:
+ try:                 			### by bilal
     print("***Performing the " + fname + " file")
 
     #get the metal list
@@ -149,10 +146,12 @@ for fname in pdbfnl:
                 metallist.append(i)
 
     #for each metal ion in the metal list, print the metal center
+    ##print ( 'metallist\n', metallist)  ###bilal is dubugging here
     for i in metallist:
 
         mccrds = [] #The crds of metal site
         crdi = mol.atoms[i].crd
+        ##print ('crdi\n', crdi)  ###bilal is checking here ..............................................
         elmti = mol.atoms[i].element
         residi = mol.atoms[i].resid
         atnamei = mol.atoms[i].atname
@@ -161,47 +160,42 @@ for fname in pdbfnl:
         mcresids = [] #MetalCenter residue IDs
 
         #Get the residues which is the metal site
+        ##print ( 'atom ids\n',atids)  ###bilal is debugging here ..........................................
         for j in atids:
             if j != i:
-                atnamej = mol.atoms[j].atname
+		atnamej = mol.atoms[j].atname
                 crdj = mol.atoms[j].crd
+		##print ('crdj\n', crdj)  ###bilal is checking here...................................................
                 residj = mol.atoms[j].resid
                 resnamej = mol.residues[residj].resname
                 elmtj = mol.atoms[j].element
+                ##print ("elmtj.....\n", elmtj) ##### bilal is debugging here.....
                 radiusj = CoRadiiDict[elmtj]
                 radiusij = radiusi + radiusj + 0.40
+                #print ("radiusij", radiusij) ##### bilal is debugging here......................................
                 disij = calc_bond(crdi, crdj)
-
-                addon = 0
+		#print ('disij\n', disij) ### bilal is debugging here..............................................
                 if options.cutoff == None:
                     if (disij >= 0.1) and (disij <= radiusij) \
                        and (elmtj != 'H'):
-                           addon = 1
+                        #print ('condition has passed of cutoff for \n', fname)### bilal is debugging here....
+                        ##print ('elmtj\n', elmtj)  ### bilal is debugging here...
+                        mccrds.append(crdi)
+                        mccrds.append(crdj)
+                        if (residj not in mcresids):
+                            mcresids.append(residj)
+                            #print ('condition has passed residj not in mcresids for\n', fname)   ### bilal is debugging here............
                 else:
                     if (disij >= 0.1) and (disij <= options.cutoff) \
                        and (elmtj != 'H'):
-                           addon = 1
-
-                if addon == 1:
-                    #Warning of ligating atoms
-                    if elmtj not in ['O', 'N', 'S', 'F', 'Cl', 'Br', 'I']:
-                        if options.cutoff == None:
-                            warnings.warn('Element %s was found ligating to %s '
-                                      'with distance %5.3f, may need to '
-                                      'specify the cut off value.'
-                                      %(elmtj, elmti, disij), pymsmtWarning)
-                        else:
-                            warnings.warn('Element %s was found ligating to %s '
-                                      'with distance %5.3f, the cut off value '
-                                      '%5.3f may need to change.'
-                              %(elmtj, elmti, disij, options.cutoff), pymsmtWarning)
-                    mccrds.append(crdi)
-                    mccrds.append(crdj)
-                    if (residj not in mcresids):
-                        mcresids.append(residj)
+                        mccrds.append(crdi)
+                        mccrds.append(crdj)
+                        if (residj not in mcresids):
+                            mcresids.append(residj)
 
         #Getting the ligating reidue letters
         reslets = ''
+        #print ('mcresid\n', mcresids) #### bilal is debugging here...........................................................
         for j in mcresids:
             resname = mol.residues[j].resname
             if resname in list(resdict.keys()):
@@ -212,28 +206,13 @@ for fname in pdbfnl:
         nospace = ''
         reslets = nospace.join(sorted(reslets))
         print('   Find metal center', reslets)
-        
-        #store cordination sphere in a list  
-        reslets_analysis.append(reslets)
 
         #Get the geometry and geometry rms
-        try:
-            geo, georms = det_geo(mccrds)
-            #print (geo, reslets)
+        #print ('for debug\n', mccrds)  ### for debugging..................................................................
+        geo, georms = det_geo(mccrds)
         
-            ##store the geo and georms in a list
-            geo_analysis.append(geo)
-            georms_analysis.append(georms) 
-        except:
-            if options.cutoff == None:
-                warnings.warn('No atoms were found coordinated to the metal! '
-                          'Suggest to specify explicit cut off value.'
-                          , pymsmtWarning)
-            else:
-                warnings.warn('No atoms were found coordinated to the metal! '
-                          'The cut off value %5.3f may need to change.'
-                          %options.cutoff, pymsmtWarning)
-
+        geo_analysis.append(geo)
+        georms_analysis.append(georms)
         #add the metal ions into the mcresids
         if mol.atoms[i].resid not in mcresids:
             mcresids.append(mol.atoms[i].resid)
@@ -296,14 +275,15 @@ for fname in pdbfnl:
                  ',', len(atids), ',', len(metallist),',', residi,\
                  ',', resnamei,',', i,',', atnamei,',', reslets,',', geo,\
                  ',', round(georms, 3), file=sf)
-        
+ except (IndexError, KeyError):                         #### by bilal
+   print ('metal found but failed to meet cutoff criteria... :(\n')
 ## get the analysis done   
 #do_analysis(geo_analysis, georms_analysis)
 #do_stat(geo_analysis, reslets_analysis)
 do_stat1(geo_analysis)
-#print (l5tp)
-print (geo_analysis)
-#print (georms_analysis) 
 
+#print (l5tp)
+#print (geo_analysis)
+#print (georms_analysis) 	
 sf.close()
 ef.close()
