@@ -24,15 +24,14 @@ def do_analysis(geo1, georms1):
     Bt7_georms = []
     Bt8_georms = []
     for geo, georms in itertools.izip(geo1, georms1):
-        print (georms)
-        print (geo)
+        
         if geo == '1':
             one = one+1
             #one_georms.append(georms)
         if geo == '2Ln':
             Ln2 = Ln2+1
             Ln2_georms.append(georms)
-            print(Ln2_georms)
+            
 	
         if geo == '3Tr':
             Tr3 = Tr3+1
@@ -83,7 +82,7 @@ def do_analysis(geo1, georms1):
     Oc6_georms = sorted(Oc6_georms)
     Bt7_georms = sorted(Bt7_georms)
     Bt8_georms = sorted(Bt8_georms)
-    #print (Tr3_georms, Te4_georms, Sq4_georms, Tp5_georms, Sp5_georms, Tn5_georms, Oc6_georms, Bt7_georms, Bt8_georms)
+    
 
     if len(Ln2_georms) >0:
         #fit = stats.norm.pdf(Ln2_georms, np.mean(Ln2_georms), np.std(Ln2_georms))
@@ -148,3 +147,90 @@ def do_analysis(geo1, georms1):
     print ('Count', ',',one, ',',Ln2, ',',Tr3, ',',Te4, ',',Sq4, ',',Tp5, ',',Sp5, ',',Tn5, ',',Oc6, ',',Bt7, ',',Bt8, file=af) 
     af.close()
     return;
+
+    
+    
+def do_stat(geo1, reslets1):
+    d5tp = {}
+    #d5tp.setdefault(5tp,[])
+    af = open ('analysis2.txt', 'w')
+    #print ('Geo,', 'sphere,', file=af)
+    geo_uniq = set(geo1)
+    geo_uniq = list(geo1)
+    print (len(geo1))
+    reslets_uniq = set(reslets1)
+    reslets_uniq = list(reslets1)
+    print(len(reslets1))
+    for geo, r in itertools.izip(geo1, reslets1):
+        print(geo)
+        if geo == '5Tp':
+            d5tp = {}
+            d5tp.setdefault('5tp', []).append(r)
+            print(d5tp)
+            
+                #count = 0
+            print(r, file=af)
+            #elif geo == '8Bt':
+            #    print(geo, ',', file=af)
+            #    count = 0
+            #    print(r, file=af)
+            #elif geo == '1':'
+            #    print(geo, ',', file=af)
+            #    count = 0
+            #    print(r, file=af)
+    af.close()
+    return;        
+        
+    
+def do_stat1(geo1):
+    'docstring'
+    
+    one = Ln2 = Tr3 = Te4 = Sq4 = Tp5 = Sp5 = Tn5 = Oc6 = Bt7 = Bt8 = 0
+    af = open ('analysis2.txt', 'w')
+    for geo in geo1:
+        if geo == '1':
+            one = one+1
+            
+        if geo == '2Ln':
+            Ln2 = Ln2+1
+     
+        if geo == '3Tr':
+            Tr3 = Tr3+1
+            
+	
+        if geo == '4Te':
+            Te4 = Te4+1
+            
+        
+        if geo == '4Sq':
+            Sq4 = Sq4+1
+            
+        
+        if geo == '5Tp':
+            Tp5 = Tp5+1
+            
+        
+        if geo == '5Sp':
+            Sp5 = Sp5+1
+            
+        
+        if geo == '5Tn':
+            Tn5 = Tn5+1
+            
+        
+        if geo == '6Oc':
+            Oc6 = Oc6+1
+            
+        
+        if geo == '7Bt':
+            Bt7 = Bt7+1
+            
+	
+        if geo == '8Bt':
+            Bt8 = Bt8+1
+            
+    print ('Geom,', 'one,','Ln2,','Tr3,','Te4,','Sq4,','Tp5,','Sp5,','Tn5,','Oc6,','Bt7,', 'Bt8,', file=af)
+    print ('Count', ',',one, ',',Ln2, ',',Tr3, ',',Te4, ',',Sq4, ',',Tp5, ',',Sp5, ',',Tn5, ',',Oc6, ',',Bt7, ',',Bt8, file=af)
+    af.close()
+    return;    
+    

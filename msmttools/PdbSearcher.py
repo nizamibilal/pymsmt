@@ -22,6 +22,7 @@ import numpy as np
 import scipy.stats as stats
 import pylab as pl
 from analysis import do_analysis
+from analysis import do_stat, do_stat1
 
 #==============================================================================
 # Setting the options
@@ -111,6 +112,7 @@ print('PDB,', 'ION_RESID,', 'ION_RESNAME,', 'ION_ATOM_ID,', \
 
 georms_analysis = []
 geo_analysis = []
+reslets_analysis = []
 
 for fname in pdbfnl:
     print("***Performing the " + fname + " file")
@@ -210,11 +212,14 @@ for fname in pdbfnl:
         nospace = ''
         reslets = nospace.join(sorted(reslets))
         print('   Find metal center', reslets)
+        
+        #store cordination sphere in a list  
+        reslets_analysis.append(reslets)
 
         #Get the geometry and geometry rms
         try:
             geo, georms = det_geo(mccrds)
-            print (georms)
+            #print (geo, reslets)
         
             ##store the geo and georms in a list
             geo_analysis.append(geo)
@@ -291,10 +296,14 @@ for fname in pdbfnl:
                  ',', len(atids), ',', len(metallist),',', residi,\
                  ',', resnamei,',', i,',', atnamei,',', reslets,',', geo,\
                  ',', round(georms, 3), file=sf)
+        
 ## get the analysis done   
-do_analysis(geo_analysis, georms_analysis)
+#do_analysis(geo_analysis, georms_analysis)
+#do_stat(geo_analysis, reslets_analysis)
+do_stat1(geo_analysis)
+#print (l5tp)
 print (geo_analysis)
-print (georms_analysis) 
+#print (georms_analysis) 
 
 sf.close()
 ef.close()
